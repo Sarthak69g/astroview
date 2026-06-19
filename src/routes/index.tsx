@@ -197,7 +197,7 @@ function Header() {
       <div className="mx-auto max-w-7xl px-6 h-18 py-3 flex items-center justify-between">
         {/* Logo */}
         <a href="#" className="flex items-center gap-2.5 shrink-0">
-          <img src={logoUrl} alt="AstraGuru" className="h-10 w-10" />
+          <img src={logoAsset.url} alt="AstraGuru" className="h-10 w-10" />
           <span className="text-xl font-display font-semibold tracking-tight">
             Astra<span className="text-primary">Guru</span>
           </span>
@@ -398,7 +398,7 @@ function Hero() {
             <div className="absolute -inset-8 rounded-full bg-gradient-primary opacity-20 blur-2xl animate-pulse-glow" />
             <div className="relative h-[340px] w-[340px] md:h-[420px] md:w-[420px] rounded-full bg-gradient-to-br from-card to-accent/50 shadow-glow flex items-center justify-center animate-float-slow">
               <img
-                src={logoUrl}
+                src={logoAsset.url}
                 alt="AstraGuru emblem"
                 className="h-[78%] w-[78%] object-contain drop-shadow-xl"
               />
@@ -602,7 +602,7 @@ function Why() {
               })}
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <img src={logoUrl} alt="" className="h-28 w-28 opacity-90 drop-shadow-2xl" />
+              <img src={logoAsset.url} alt="" className="h-28 w-28 opacity-90 drop-shadow-2xl" />
             </div>
           </div>
         </div>
@@ -769,7 +769,7 @@ function CTA() {
   return (
     <section id="cta" className="py-24 md:py-32">
       <div className="mx-auto max-w-3xl px-6 text-center">
-        <img src={logoUrl} alt="" className="mx-auto h-16 w-16 animate-float-slow" />
+        <img src={logoAsset.url} alt="" className="mx-auto h-16 w-16 animate-float-slow" />
         <h2 className="mt-6 text-4xl md:text-6xl font-display font-semibold tracking-tight">
           Be among the <span className="text-gradient">first</span> to sit with us.
         </h2>
@@ -841,7 +841,7 @@ function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-14 grid md:grid-cols-[1.4fr_1fr_1fr] gap-10">
         <div>
           <div className="flex items-center gap-2.5">
-            <img src={logoUrl} alt="" className="h-9 w-9" />
+            <img src={logoAsset.url} alt="" className="h-9 w-9" />
             <span className="text-lg font-display font-semibold">
               Astra<span className="text-primary">Guru</span>
             </span>
