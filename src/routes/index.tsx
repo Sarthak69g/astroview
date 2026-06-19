@@ -24,7 +24,7 @@ import {
 // ─── Logo ────────────────────────────────────────────────────────────────────
 // If you're running inside Lovable keep the original logoAsset.url import.
 // Outside Lovable, drop your logo.png into src/assets/ and use this instead:
-import logoAsset from "@/assets/logo.png.asset.json";
+import logoAsset.url from "@/assets/logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -234,24 +234,27 @@ function Header() {
         </button>
       </div>
 
-      {/* Mobile drawer overlay */}
+      {/* Mobile drawer overlay — full screen dark bg */}
       {menuOpen && (
         <div
-          className="fixed inset-0 z-50 bg-foreground/20 backdrop-blur-sm"
+          className="fixed inset-0 z-[60] bg-foreground/40 backdrop-blur-sm md:hidden"
           onClick={() => setMenuOpen(false)}
         />
       )}
 
-      {/* Mobile drawer panel */}
+      {/* Mobile drawer panel — slides in from right */}
       <div
-        className={`fixed top-0 right-0 z-50 h-full w-72 bg-card border-l border-border shadow-2xl flex flex-col transition-transform duration-300 ${
+        className={`fixed top-0 right-0 z-[70] h-full w-[280px] bg-background border-l border-border shadow-2xl flex flex-col md:hidden transition-transform duration-300 ease-in-out ${
           menuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="flex items-center justify-between px-6 py-5 border-b border-border">
-          <span className="font-display font-semibold text-lg">
-            Astra<span className="text-primary">Guru</span>
-          </span>
+          <div className="flex items-center gap-2">
+            <img src={logoAsset.url} alt="" className="h-8 w-8" />
+            <span className="font-display font-semibold text-lg">
+              Astra<span className="text-primary">Guru</span>
+            </span>
+          </div>
           <button
             onClick={() => setMenuOpen(false)}
             className="p-1.5 rounded-full hover:bg-accent transition"
@@ -260,23 +263,23 @@ function Header() {
             <X className="h-5 w-5" />
           </button>
         </div>
-        <nav className="flex flex-col gap-1 p-5">
+        <nav className="flex flex-col gap-1 p-4 flex-1">
           {navLinks.map((l) => (
             <a
               key={l.href}
               href={l.href}
               onClick={() => setMenuOpen(false)}
-              className="px-4 py-3 rounded-xl text-sm font-medium text-foreground hover:bg-accent transition"
+              className="px-4 py-3.5 rounded-xl text-base font-medium text-foreground hover:bg-accent transition"
             >
               {l.label}
             </a>
           ))}
         </nav>
-        <div className="mt-auto p-5 border-t border-border">
+        <div className="p-5 border-t border-border">
           <a
             href="#cta"
             onClick={() => setMenuOpen(false)}
-            className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow-soft"
+            className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-primary px-5 py-3.5 text-sm font-medium text-primary-foreground shadow-soft"
           >
             Join early <ArrowRight className="h-4 w-4" />
           </a>
@@ -306,7 +309,7 @@ function Hero() {
         <div className="absolute inset-28 rounded-full border border-primary/10" />
       </div>
 
-      <div className="mx-auto max-w-7xl px-6 pt-20 pb-28 md:pt-28 md:pb-36 grid lg:grid-cols-[1.1fr_0.9fr] gap-14 items-center">
+      <div className="mx-auto max-w-7xl px-6 pt-16 pb-20 md:pt-28 md:pb-36 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-14 items-center">
         {/* Left */}
         <div className="relative">
           <div
@@ -321,7 +324,7 @@ function Hero() {
           </div>
 
           <h1
-            className="mt-6 font-display font-semibold text-5xl md:text-7xl leading-[1.02] tracking-tight"
+            className="mt-6 font-display font-semibold text-4xl sm:text-5xl md:text-7xl leading-[1.02] tracking-tight"
             style={{
               opacity: loaded ? 1 : 0,
               transform: loaded ? "translateY(0)" : "translateY(16px)",
@@ -386,7 +389,7 @@ function Hero() {
 
         {/* Right — floating logo orb */}
         <div
-          className="relative flex items-center justify-center"
+          className="hidden lg:flex relative items-center justify-center"
           style={{
             opacity: loaded ? 1 : 0,
             transform: loaded ? "scale(1)" : "scale(0.9)",
@@ -421,6 +424,23 @@ function Hero() {
                 <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Nakshatra</p>
                 <p className="text-sm font-medium">A gentle day</p>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile-only: compact logo orb, no floating chips */}
+        <div
+          className="lg:hidden flex justify-center pt-2"
+          style={{
+            opacity: loaded ? 1 : 0,
+            transform: loaded ? "scale(1)" : "scale(0.92)",
+            transition: "opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s",
+          }}
+        >
+          <div className="relative">
+            <div className="absolute -inset-4 rounded-full bg-gradient-primary opacity-15 blur-2xl animate-pulse-glow" />
+            <div className="relative h-[220px] w-[220px] rounded-full bg-gradient-to-br from-card to-accent/50 shadow-glow flex items-center justify-center animate-float-slow">
+              <img src={logoAsset.url} alt="AstraGuru emblem" className="h-[78%] w-[78%] object-contain drop-shadow-xl" />
             </div>
           </div>
         </div>
@@ -466,8 +486,8 @@ function TrustStrip() {
     "Hindi · English",
   ];
   return (
-    <div className="border-y border-border/60 bg-card/40">
-      <div className="mx-auto max-w-7xl px-6 py-5 flex flex-wrap items-center justify-center gap-x-10 gap-y-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+    <div className="border-y border-border/60 bg-card/40 overflow-x-auto">
+      <div className="mx-auto max-w-7xl px-6 py-5 flex items-center justify-start md:justify-center gap-x-8 md:gap-x-10 gap-y-2 text-xs uppercase tracking-[0.18em] text-muted-foreground min-w-max md:min-w-0 flex-nowrap md:flex-wrap">
         {items.map((item) => (
           <span key={item} className="flex items-center gap-2">
             <span className="h-1 w-1 rounded-full bg-primary/60" />
@@ -483,7 +503,7 @@ function TrustStrip() {
 
 function Services() {
   return (
-    <section id="services" className="relative py-24 md:py-32">
+    <section id="services" className="relative py-14 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="max-w-2xl">
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
@@ -527,9 +547,9 @@ function Why() {
   return (
     <section
       id="why"
-      className="relative py-24 md:py-32 bg-gradient-to-b from-background via-accent/30 to-background"
+      className="relative py-14 md:py-32 bg-gradient-to-b from-background via-accent/30 to-background"
     >
-      <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-2 gap-16 items-center">
+      <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <div>
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
             Why AstraGuru
@@ -615,7 +635,7 @@ function Why() {
 
 function Journey() {
   return (
-    <section id="journey" className="py-24 md:py-32">
+    <section id="journey" className="py-14 md:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="max-w-2xl">
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
@@ -654,7 +674,7 @@ function Journey() {
 
 function Promise() {
   return (
-    <section className="py-24 md:py-28">
+    <section className="py-14 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
         <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-cosmic p-10 md:p-16 shadow-glow">
           <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-primary/30 blur-3xl pointer-events-none" />
@@ -722,7 +742,7 @@ function FAQ() {
   return (
     <section
       id="faq"
-      className="py-24 md:py-32 bg-gradient-to-b from-background to-accent/30"
+      className="py-14 md:py-32 bg-gradient-to-b from-background to-accent/30"
     >
       <div className="mx-auto max-w-4xl px-6">
         <div className="text-center">
@@ -767,10 +787,10 @@ function CTA() {
   };
 
   return (
-    <section id="cta" className="py-24 md:py-32">
+    <section id="cta" className="py-16 md:py-24">
       <div className="mx-auto max-w-3xl px-6 text-center">
         <img src={logoAsset.url} alt="" className="mx-auto h-16 w-16 animate-float-slow" />
-        <h2 className="mt-6 text-4xl md:text-6xl font-display font-semibold tracking-tight">
+        <h2 className="mt-6 text-3xl sm:text-4xl md:text-6xl font-display font-semibold tracking-tight">
           Be among the <span className="text-gradient">first</span> to sit with us.
         </h2>
         <p className="mt-5 text-muted-foreground text-lg">
