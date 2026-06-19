@@ -24,7 +24,7 @@ import {
 // ─── Logo ────────────────────────────────────────────────────────────────────
 // If you're running inside Lovable keep the original logoAsset.url import.
 // Outside Lovable, drop your logo.png into src/assets/ and use this instead:
-import logoUrl from "@/assets/logo.png";
+import logoAsset from "@/assets/logo.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
