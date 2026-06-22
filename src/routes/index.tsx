@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useRef, useEffect, type FormEvent } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Sparkles,
   Moon,
@@ -19,23 +19,20 @@ import {
   Facebook,
   Menu,
   X,
+  MapPin,
 } from "lucide-react";
-
-// ─── Logo ────────────────────────────────────────────────────────────────────
-// If you're running inside Lovable keep the original logoAsset import.
-// Outside Lovable, drop your logo.png into src/assets/ and use this instead:
 import logoAsset from "@/assets/logo.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "AstraGuru — Vedic Astrology, Reimagined" },
+      { title: "AstroView — Vedic Astrology, Reimagined" },
       {
         name: "description",
         content:
-          "Discover your path with AstraGuru — personalized Vedic astrology, kundli & spiritual guidance crafted for the modern seeker.",
+          "Discover your path with AstroView — personalized Vedic astrology, kundli & spiritual guidance crafted for the modern seeker.",
       },
-      { property: "og:title", content: "AstraGuru — Vedic Astrology, Reimagined" },
+      { property: "og:title", content: "AstroView — Vedic Astrology, Reimagined" },
       {
         property: "og:description",
         content: "Personalized Vedic astrology and spiritual guidance for the modern seeker.",
@@ -47,40 +44,57 @@ export const Route = createFileRoute("/")({
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
+const CONTACT = {
+  email: "support@kamleshkhyatiinfosolution.com",
+  phone: "+91-9319843151",
+  address: [
+    "Unit No.202, Second Floor, Plot No. 103,",
+    "Block A, Sector 63 Noida,",
+    "Gautam Budh Nagar UP – 201301",
+  ],
+};
+
 const navLinks = [
   { label: "Services", href: "#services" },
-  { label: "Why AstraGuru", href: "#why" },
+  { label: "Why Us", href: "#why" },
   { label: "Journey", href: "#journey" },
+  { label: "Contact", href: "#contact" },
   { label: "FAQ", href: "#faq" },
 ];
 
-const services = [
+export const services = [
   {
+    slug: "live-call",
     icon: Phone,
     title: "Live Call Consultations",
     text: "One-on-one voice sessions with seasoned astrologers, anywhere you are.",
   },
   {
+    slug: "chat-readings",
     icon: MessageCircle,
     title: "Chat Readings",
     text: "Quick, private chat sessions for moments when you need clarity, fast.",
   },
   {
+    slug: "janam-kundli",
     icon: ScrollText,
     title: "Janam Kundli",
     text: "A meticulously cast Vedic birth chart that decodes your life's blueprint.",
   },
   {
+    slug: "love-compatibility",
     icon: HeartHandshake,
     title: "Love & Compatibility",
     text: "Guna Milan and synastry insights to understand the bonds that matter.",
   },
   {
+    slug: "gemstone-remedies",
     icon: Gem,
     title: "Gemstone & Remedies",
     text: "Personalised gemstone, mantra and ritual suggestions rooted in tradition.",
   },
   {
+    slug: "career-direction",
     icon: Compass,
     title: "Career & Direction",
     text: "Map planetary cycles to make confident decisions about your work and path.",
@@ -130,8 +144,8 @@ const journey = [
 
 const faqs = [
   {
-    q: "Is AstraGuru live yet?",
-    a: "We're building thoughtfully. This is our home — readings, accounts and bookings will open in our next release. Drop your email below to be the first to know.",
+    q: "Is AstroView live yet?",
+    a: "We're building thoughtfully. This is our home — readings, accounts and bookings will open in our next release.",
   },
   {
     q: "What kind of astrology do you practice?",
@@ -152,7 +166,6 @@ const faqs = [
 function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      {/* Scroll padding so sticky header doesn't cover jump targets */}
       <style>{`html { scroll-padding-top: 80px; scroll-behavior: smooth; }`}</style>
       <Header />
       <Hero />
@@ -161,8 +174,8 @@ function Landing() {
       <Why />
       <Journey />
       <Promise />
+      <Contact />
       <FAQ />
-      <CTA />
       <Footer />
     </div>
   );
@@ -180,7 +193,6 @@ function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -196,15 +208,15 @@ function Header() {
     >
       <div className="mx-auto max-w-7xl px-6 h-18 py-3 flex items-center justify-between">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2.5 shrink-0">
-          <img src={logoAsset} alt="AstraGuru" className="h-10 w-10" />
+        <a href="/" className="flex items-center gap-2.5 shrink-0">
+          <img src={logoAsset} alt="AstroView" className="h-10 w-10" />
           <span className="text-xl font-display font-semibold tracking-tight">
-            Astra<span className="text-primary">Guru</span>
+            Astro<span className="text-primary">View</span>
           </span>
         </a>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-9">
+        <nav className="hidden md:flex items-center gap-7">
           {navLinks.map((l) => (
             <a
               key={l.href}
@@ -214,14 +226,20 @@ function Header() {
               {l.label}
             </a>
           ))}
+          <a
+            href="/about"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            About
+          </a>
         </nav>
 
         {/* Desktop CTA */}
         <a
-          href="#cta"
+          href="/services"
           className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 transition"
         >
-          Join early <ArrowRight className="h-4 w-4" />
+          Our services <ArrowRight className="h-4 w-4" />
         </a>
 
         {/* Mobile hamburger */}
@@ -234,7 +252,7 @@ function Header() {
         </button>
       </div>
 
-      {/* Mobile drawer overlay — full screen dark bg */}
+      {/* Mobile overlay */}
       {menuOpen && (
         <div
           className="fixed inset-0 z-[60] bg-foreground/40 backdrop-blur-sm md:hidden"
@@ -242,7 +260,7 @@ function Header() {
         />
       )}
 
-      {/* Mobile drawer panel — slides in from right */}
+      {/* Mobile drawer */}
       <div
         className={`fixed top-0 right-0 z-[70] h-full w-[280px] bg-background border-l border-border shadow-2xl flex flex-col md:hidden transition-transform duration-300 ease-in-out ${
           menuOpen ? "translate-x-0" : "translate-x-full"
@@ -252,7 +270,7 @@ function Header() {
           <div className="flex items-center gap-2">
             <img src={logoAsset} alt="" className="h-8 w-8" />
             <span className="font-display font-semibold text-lg">
-              Astra<span className="text-primary">Guru</span>
+              Astro<span className="text-primary">View</span>
             </span>
           </div>
           <button
@@ -274,14 +292,21 @@ function Header() {
               {l.label}
             </a>
           ))}
+          <a
+            href="/about"
+            onClick={() => setMenuOpen(false)}
+            className="px-4 py-3.5 rounded-xl text-base font-medium text-foreground hover:bg-accent transition"
+          >
+            About
+          </a>
         </nav>
         <div className="p-5 border-t border-border">
           <a
-            href="#cta"
+            href="/services"
             onClick={() => setMenuOpen(false)}
             className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-primary px-5 py-3.5 text-sm font-medium text-primary-foreground shadow-soft"
           >
-            Join early <ArrowRight className="h-4 w-4" />
+            Our services <ArrowRight className="h-4 w-4" />
           </a>
         </div>
       </div>
@@ -345,7 +370,7 @@ function Hero() {
               transition: "opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s",
             }}
           >
-            AstraGuru is a thoughtful home for Vedic astrology — built for seekers who want
+            AstroView is a thoughtful home for Vedic astrology — built for seekers who want
             clarity without noise, tradition without theatre, and guidance that respects your time.
           </p>
 
@@ -358,16 +383,16 @@ function Hero() {
             }}
           >
             <a
-              href="#cta"
+              href="/services"
               className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-6 py-3.5 text-sm font-medium text-primary-foreground shadow-glow hover:scale-[1.02] transition"
             >
-              Reserve your reading <ArrowRight className="h-4 w-4" />
+              Explore our services <ArrowRight className="h-4 w-4" />
             </a>
             <a
-              href="#services"
+              href="#contact"
               className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3.5 text-sm font-medium hover:bg-accent transition"
             >
-              Explore what's coming
+              Get in touch
             </a>
           </div>
 
@@ -387,7 +412,7 @@ function Hero() {
           </div>
         </div>
 
-        {/* Right — floating logo orb */}
+        {/* Right — floating logo orb (desktop) */}
         <div
           className="hidden lg:flex relative items-center justify-center"
           style={{
@@ -402,7 +427,7 @@ function Hero() {
             <div className="relative h-[340px] w-[340px] md:h-[420px] md:w-[420px] rounded-full bg-gradient-to-br from-card to-accent/50 shadow-glow flex items-center justify-center animate-float-slow">
               <img
                 src={logoAsset}
-                alt="AstraGuru emblem"
+                alt="AstroView emblem"
                 className="h-[78%] w-[78%] object-contain drop-shadow-xl"
               />
             </div>
@@ -428,7 +453,7 @@ function Hero() {
           </div>
         </div>
 
-        {/* Mobile-only: compact logo orb, no floating chips */}
+        {/* Mobile-only: compact logo orb */}
         <div
           className="lg:hidden flex justify-center pt-2"
           style={{
@@ -440,7 +465,7 @@ function Hero() {
           <div className="relative">
             <div className="absolute -inset-4 rounded-full bg-gradient-primary opacity-15 blur-2xl animate-pulse-glow" />
             <div className="relative h-[220px] w-[220px] rounded-full bg-gradient-to-br from-card to-accent/50 shadow-glow flex items-center justify-center animate-float-slow">
-              <img src={logoAsset} alt="AstraGuru emblem" className="h-[78%] w-[78%] object-contain drop-shadow-xl" />
+              <img src={logoAsset} alt="AstroView emblem" className="h-[78%] w-[78%] object-contain drop-shadow-xl" />
             </div>
           </div>
         </div>
@@ -462,13 +487,7 @@ function Starfield() {
         <span
           key={i}
           className="absolute rounded-full bg-primary animate-twinkle"
-          style={{
-            top: s.top,
-            left: s.left,
-            width: s.size,
-            height: s.size,
-            animationDelay: s.delay,
-          }}
+          style={{ top: s.top, left: s.left, width: s.size, height: s.size, animationDelay: s.delay }}
         />
       ))}
     </div>
@@ -478,13 +497,7 @@ function Starfield() {
 // ─── Trust strip ──────────────────────────────────────────────────────────────
 
 function TrustStrip() {
-  const items = [
-    "Vedic · Parashari",
-    "Jaimini timing",
-    "Private & ad-free",
-    "Human astrologers",
-    "Hindi · English",
-  ];
+  const items = ["Vedic · Parashari", "Jaimini timing", "Private & ad-free", "Human astrologers", "Hindi · English"];
   return (
     <div className="border-y border-border/60 bg-card/40 overflow-x-auto">
       <div className="mx-auto max-w-7xl px-6 py-5 flex items-center justify-start md:justify-center gap-x-8 md:gap-x-10 gap-y-2 text-xs uppercase tracking-[0.18em] text-muted-foreground min-w-max md:min-w-0 flex-nowrap md:flex-wrap">
@@ -507,21 +520,21 @@ function Services() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="max-w-2xl">
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
-            What we're building
+            What we offer
           </p>
           <h2 className="mt-3 text-4xl md:text-5xl font-display font-semibold tracking-tight">
             Six ways to meet your chart.
           </h2>
           <p className="mt-4 text-muted-foreground text-lg">
-            A focused set of services — none of the clutter. Each one is being shaped with care and
-            will arrive in our first release.
+            A focused set of services — each shaped with care. Click any to learn more.
           </p>
         </div>
 
         <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {services.map((s) => (
-            <div
+            <a
               key={s.title}
+              href={`/services/${s.slug}`}
               className="group relative rounded-3xl border border-border bg-card p-7 shadow-card hover:shadow-glow hover:-translate-y-1 transition-all duration-300"
             >
               <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition" />
@@ -530,11 +543,20 @@ function Services() {
               </div>
               <h3 className="mt-5 text-xl font-display font-semibold">{s.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.text}</p>
-              <span className="mt-5 inline-flex items-center text-xs font-medium text-primary-deep/70">
-                Coming soon
+              <span className="mt-5 inline-flex items-center gap-1 text-xs font-medium text-primary-deep/80 group-hover:gap-2 transition-all">
+                Learn more <ArrowRight className="h-3 w-3" />
               </span>
-            </div>
+            </a>
           ))}
+        </div>
+
+        <div className="mt-10 text-center">
+          <a
+            href="/services"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-medium hover:bg-accent transition"
+          >
+            View all services <ArrowRight className="h-4 w-4" />
+          </a>
         </div>
       </div>
     </section>
@@ -552,13 +574,13 @@ function Why() {
       <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <div>
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
-            Why AstraGuru
+            Why AstroView
           </p>
           <h2 className="mt-3 text-4xl md:text-5xl font-display font-semibold tracking-tight">
             A different kind of astrology platform.
           </h2>
           <p className="mt-5 text-muted-foreground text-lg leading-relaxed">
-            We started AstraGuru because the experience of seeking guidance online had become loud,
+            We started AstroView because the experience of seeking guidance online had become loud,
             transactional and oddly cold. This is our attempt at something else — slower, more
             personal, more honest.
           </p>
@@ -582,10 +604,7 @@ function Why() {
           <div className="aspect-square max-w-lg mx-auto relative">
             <div className="absolute inset-0 rounded-[3rem] bg-gradient-cosmic shadow-glow" />
             <div className="absolute inset-0 rounded-[3rem] bg-[radial-gradient(circle_at_30%_20%,oklch(0.83_0.15_70_/_0.35),transparent_60%)]" />
-            <svg
-              viewBox="0 0 400 400"
-              className="absolute inset-0 m-auto p-8 text-primary-glow/60"
-            >
+            <svg viewBox="0 0 400 400" className="absolute inset-0 m-auto p-8 text-primary-glow/60">
               <g fill="none" stroke="currentColor" strokeWidth="0.6">
                 <circle cx="200" cy="200" r="180" />
                 <circle cx="200" cy="200" r="140" />
@@ -607,14 +626,8 @@ function Why() {
               {["♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"].map((g, i) => {
                 const a = (i * Math.PI) / 6 - Math.PI / 12;
                 return (
-                  <text
-                    key={i}
-                    x={200 + Math.cos(a) * 160}
-                    y={200 + Math.sin(a) * 160}
-                    fill="currentColor"
-                    fontSize="16"
-                    textAnchor="middle"
-                    dominantBaseline="middle"
+                  <text key={i} x={200 + Math.cos(a) * 160} y={200 + Math.sin(a) * 160}
+                    fill="currentColor" fontSize="16" textAnchor="middle" dominantBaseline="middle"
                   >
                     {g}
                   </text>
@@ -690,8 +703,66 @@ function Promise() {
             <div className="mt-8 flex items-center gap-4">
               <div className="h-px flex-1 bg-primary-glow/20" />
               <p className="text-sm text-cosmic-foreground/70 tracking-wide shrink-0">
-                — The AstraGuru team
+                — The AstroView team
               </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Contact ──────────────────────────────────────────────────────────────────
+
+function Contact() {
+  return (
+    <section id="contact" className="py-14 md:py-24 bg-gradient-to-b from-background to-accent/30">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="max-w-2xl mx-auto text-center mb-12">
+          <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">Get in touch</p>
+          <h2 className="mt-3 text-4xl md:text-5xl font-display font-semibold tracking-tight">
+            We'd love to hear from you.
+          </h2>
+          <p className="mt-4 text-muted-foreground text-base leading-relaxed">
+            Reach out with your questions, feedback, or just to say hello — we read every message personally.
+          </p>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {/* Address */}
+          <div className="h-full rounded-3xl border border-border bg-card p-7 shadow-card flex flex-col gap-4">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-primary text-primary-foreground flex items-center justify-center shadow-soft shrink-0">
+              <MapPin className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">Address</p>
+              {CONTACT.address.map((line, i) => (
+                <p key={i} className="text-sm text-foreground leading-relaxed">{line}</p>
+              ))}
+            </div>
+          </div>
+          {/* Email */}
+          <div className="h-full rounded-3xl border border-border bg-card p-7 shadow-card flex flex-col gap-4">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-primary text-primary-foreground flex items-center justify-center shadow-soft shrink-0">
+              <Mail className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">Email</p>
+              <a href={`mailto:${CONTACT.email}`} className="text-sm text-foreground hover:text-primary transition-colors whitespace-nowrap">
+                {CONTACT.email}
+              </a>
+            </div>
+          </div>
+          {/* Phone */}
+          <div className="h-full rounded-3xl border border-border bg-card p-7 shadow-card flex flex-col gap-4">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-primary text-primary-foreground flex items-center justify-center shadow-soft shrink-0">
+              <Phone className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">Phone</p>
+              <a href={`tel:${CONTACT.phone}`} className="text-sm text-foreground hover:text-primary transition-colors">
+                {CONTACT.phone}
+              </a>
             </div>
           </div>
         </div>
@@ -721,7 +792,6 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
           +
         </span>
       </button>
-      {/* Animated body */}
       <div
         ref={bodyRef}
         className="overflow-hidden"
@@ -740,10 +810,7 @@ function FAQ() {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   return (
-    <section
-      id="faq"
-      className="py-14 md:py-32 bg-gradient-to-b from-background to-accent/30"
-    >
+    <section id="faq" className="py-14 md:py-32">
       <div className="mx-auto max-w-4xl px-6">
         <div className="text-center">
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
@@ -769,158 +836,101 @@ function FAQ() {
   );
 }
 
-// ─── CTA — with success state ─────────────────────────────────────────────────
-
-function CTA() {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setLoading(true);
-    // Simulate async (replace with your real API call)
-    setTimeout(() => {
-  setLoading(false);
-  setSubmitted(true);
-}, 800);
-
-return;
-  };
-
-  return (
-    <section id="cta" className="py-16 md:py-24">
-      <div className="mx-auto max-w-3xl px-6 text-center">
-        <img src={logoAsset} alt="" className="mx-auto h-16 w-16 animate-float-slow" />
-        <h2 className="mt-6 text-3xl sm:text-4xl md:text-6xl font-display font-semibold tracking-tight">
-          Be among the <span className="text-gradient">first</span> to sit with us.
-        </h2>
-        <p className="mt-5 text-muted-foreground text-lg">
-          We're opening AstraGuru to a small circle of early seekers. Leave your email and we'll
-          reach out personally when your reading is ready to book.
-        </p>
-
-        {submitted ? (
-          <div className="mt-9 inline-flex flex-col items-center gap-2">
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-primary/30 bg-primary/5 px-6 py-3.5 text-sm font-medium text-primary-deep">
-              <Sparkles className="h-4 w-4" />
-              You're on the list — we'll reach out when we're ready.
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Check your inbox for a confirmation from hello@astraguru.app
-            </p>
-          </div>
-        ) : (
-          <form
-            onSubmit={handleSubmit}
-            className="mt-9 flex flex-col sm:flex-row gap-3 max-w-lg mx-auto"
-          >
-            <div className="relative flex-1">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@somewhere.com"
-                disabled={loading}
-                className="w-full rounded-full border border-border bg-card pl-11 pr-5 py-3.5 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition disabled:opacity-60"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="rounded-full bg-gradient-primary px-6 py-3.5 text-sm font-medium text-primary-foreground shadow-glow hover:scale-[1.02] transition disabled:opacity-70 disabled:cursor-not-allowed min-w-[110px]"
-            >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-                  </svg>
-                  Saving…
-                </span>
-              ) : (
-                "Notify me"
-              )}
-            </button>
-          </form>
-        )}
-
-        <p className="mt-4 text-xs text-muted-foreground">
-          No spam, no newsletters — just one quiet note when we're ready.
-        </p>
-      </div>
-    </section>
-  );
-}
-
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
 function Footer() {
   return (
     <footer className="border-t border-border bg-card/40">
-      <div className="mx-auto max-w-7xl px-6 py-14 grid md:grid-cols-[1.4fr_1fr_1fr] gap-10">
+      <div className="mx-auto max-w-7xl px-6 py-14 grid md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10">
+        {/* Brand col */}
         <div>
           <div className="flex items-center gap-2.5">
             <img src={logoAsset} alt="" className="h-9 w-9" />
             <span className="text-lg font-display font-semibold">
-              Astra<span className="text-primary">Guru</span>
+              Astro<span className="text-primary">View</span>
             </span>
           </div>
           <p className="mt-4 text-sm text-muted-foreground max-w-sm leading-relaxed">
             A modern home for Vedic astrology. Built slowly, with care, for seekers who value
             tradition and clarity in equal measure.
           </p>
+          <div className="mt-5 flex items-center gap-3">
+            <a href="#" aria-label="Instagram" className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition">
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a href="#" aria-label="YouTube" className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition">
+              <Youtube className="h-4 w-4" />
+            </a>
+            <a href="#" aria-label="Facebook" className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition">
+              <Facebook className="h-4 w-4" />
+            </a>
+          </div>
         </div>
 
+        {/* Explore col */}
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Explore</p>
           <ul className="mt-4 space-y-2.5 text-sm">
-            {navLinks.map((l) => (
-              <li key={l.href}>
-                <a href={l.href} className="hover:text-primary transition">
-                  {l.label}
-                </a>
+            {[
+              ["Services", "#services"],
+              ["Why Us", "#why"],
+              ["Journey", "#journey"],
+              ["FAQ", "#faq"],
+              ["About Us", "/about"],
+            ].map(([label, href]) => (
+              <li key={href}><a href={href} className="hover:text-primary transition">{label}</a></li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Services col */}
+        <div>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Services</p>
+          <ul className="mt-4 space-y-2.5 text-sm">
+            {services.map((s) => (
+              <li key={s.slug}>
+                <a href={`/services/${s.slug}`} className="hover:text-primary transition">{s.title}</a>
               </li>
             ))}
           </ul>
         </div>
 
+        {/* Contact col */}
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Stay in touch</p>
-          <div className="mt-4 flex items-center gap-3">
-            <a
-              href="#"
-              aria-label="Instagram"
-              className="h-10 w-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
-            >
-              <Instagram className="h-4 w-4" />
-            </a>
-            <a
-              href="#"
-              aria-label="YouTube"
-              className="h-10 w-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
-            >
-              <Youtube className="h-4 w-4" />
-            </a>
-            <a
-              href="#"
-              aria-label="Facebook"
-              className="h-10 w-10 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
-            >
-              <Facebook className="h-4 w-4" />
-            </a>
-          </div>
-          <p className="mt-6 text-xs text-muted-foreground">hello@astraguru.app</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Contact</p>
+          <ul className="mt-4 space-y-4">
+            <li className="flex gap-3">
+              <div className="h-9 w-9 rounded-lg border border-border flex items-center justify-center shrink-0 text-muted-foreground">
+                <MapPin className="h-4 w-4" />
+              </div>
+              <div className="text-sm text-muted-foreground leading-relaxed">
+                {CONTACT.address.map((line, i) => <span key={i} className="block">{line}</span>)}
+              </div>
+            </li>
+            <li className="flex gap-3">
+              <div className="h-9 w-9 rounded-lg border border-border flex items-center justify-center shrink-0 text-muted-foreground">
+                <Mail className="h-4 w-4" />
+              </div>
+              <a href={`mailto:${CONTACT.email}`} className="text-sm text-muted-foreground hover:text-primary transition self-center">
+                {CONTACT.email}
+              </a>
+            </li>
+            <li className="flex gap-3">
+              <div className="h-9 w-9 rounded-lg border border-border flex items-center justify-center shrink-0 text-muted-foreground">
+                <Phone className="h-4 w-4" />
+              </div>
+              <a href={`tel:${CONTACT.phone}`} className="text-sm text-muted-foreground hover:text-primary transition self-center">
+                {CONTACT.phone}
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
 
       <div className="border-t border-border/60">
         <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} AstraGuru. Crafted with reverence.</p>
-          <p>Made for seekers, not scrollers.</p>
+          <p>© {new Date().getFullYear()} AstroView. All rights reserved.</p>
+          <p>KamleshKhyati Infosolution Pvt. Ltd.</p>
         </div>
       </div>
     </footer>
