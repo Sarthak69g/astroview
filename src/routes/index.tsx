@@ -283,8 +283,8 @@ function Header() {
 
     </header>
 
-    {/* Portal — rendered directly on document.body, fully escapes header stacking context */}
-    {typeof document !== "undefined" && createPortal(
+    {/* Portal — rendered only after hydration to avoid SSR/client mismatch */}
+    {mounted && createPortal(
       <>
         {/* Overlay */}
         <div
