@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { createPortal } from "react-dom";
-import emailjs from "@emailjs/browser";
+import { sendContactEmail } from "@/lib/emailjs-config";
 import {
   Sparkles,
   Moon,
@@ -25,6 +25,7 @@ import {
   MapPin,
 } from "lucide-react";
 import logoAsset from "@/assets/logo.png";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
