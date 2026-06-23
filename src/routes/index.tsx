@@ -821,25 +821,20 @@ if (formData.message.trim().length < 10) {
 
     try {
       setLoading(true);
-const templateParams = {
-  from_name: formData.from_name,
-  from_email: formData.from_email,
-  phone: formData.phone,
-  service: formData.service,
-  message: formData.message,
-  source: "Website Contact Form",
-  time: new Date().toLocaleString(),
-};
-      await emailjs.send(
-  import.meta.env.VITE_EMAILJS_SERVICE_ID,
-  import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-  templateParams,
-  import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-);
+      const templateParams = {
+        from_name: formData.from_name,
+        from_email: formData.from_email,
+        phone: formData.phone,
+        service: formData.service,
+        message: formData.message,
+        source: "Website Contact Form",
+        time: new Date().toLocaleString(),
+      };
+      await sendContactEmail(templateParams);
 
       toast.success(
-  "Inquiry submitted successfully. Our team will contact you within 24 hours."
-);
+        "Inquiry submitted successfully. Our team will contact you within 24 hours."
+      );
 
       setFormData({
         from_name: "",
@@ -849,15 +844,16 @@ const templateParams = {
         message: "",
       });
     } catch (error) {
-  console.error("EmailJS Error:", error);
+      console.error("EmailJS Error:", error);
 
-  toast.error(
-    "Unable to submit your inquiry. Please try again in a few moments."
-  );
-} finally {
-  setLoading(false);
-}
+      toast.error(
+        "Unable to submit your inquiry. Please try again in a few moments."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <section
