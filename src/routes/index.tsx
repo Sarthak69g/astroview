@@ -975,7 +975,7 @@ const templateParams = {
 }}
   placeholder="Full Name"
   required
-  className="h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary"
+  className="w-full h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary"
 />
 
               <input
@@ -986,7 +986,7 @@ const templateParams = {
   onChange={handleChange}
   placeholder="Email Address"
   required
-                className="h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary"
+                className=" w-full h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary"
               />
 
               <input
@@ -1004,14 +1004,14 @@ const templateParams = {
 }}
   placeholder="Phone Number"
   required
-                className="h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary"
+                className=" w-full h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary"
               />
 
               <select
   name="service"
   value={formData.service}
   onChange={handleChange}
-  className="h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary"
+  className=" w-full h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary"
 >
                 <option value="">Select Service</option>
 

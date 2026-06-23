@@ -2,8 +2,7 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { ArrowRight, ArrowLeft, Phone, MessageCircle, ScrollText, HeartHandshake, Gem, Compass, Clock, Layers, CheckCircle2, Menu, X, MapPin, Mail } from "lucide-react";
-import logoAsset from "@/assets/logo.png.asset.json";
-const LOGO = logoAsset.url;
+import LOGO from "@/assets/logo.png"
 
 const CONTACT = {
   email: "hello@astroview.app",
