@@ -8,7 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-
+import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
@@ -51,14 +51,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "AstraGuru — Vedic Astrology, Reimagined" },
-      { name: "description", content: "AstraGuru brings the timeless wisdom of Vedic astrology into a modern, beautiful experience. Discover your path with personalized guidance." },
-      { property: "og:title", content: "AstraGuru — Vedic Astrology, Reimagined" },
-      { property: "og:description", content: "AstraGuru brings the timeless wisdom of Vedic astrology into a modern, beautiful experience. Discover your path with personalized guidance." },
+      { title: "AstroView — Vedic Astrology, Reimagined" },
+      { name: "description", content: "AstroView is a thoughtful home for Vedic astrology — personalized guidance, classical tradition, and a calm modern experience for every seeker." },
+      { property: "og:title", content: "AstroView — Vedic Astrology, Reimagined" },
+      { property: "og:description", content: "AstroView is a thoughtful home for Vedic astrology — personalized guidance, classical tradition, and a calm modern experience for every seeker." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "AstraGuru — Vedic Astrology, Reimagined" },
-      { name: "twitter:description", content: "AstraGuru brings the timeless wisdom of Vedic astrology into a modern, beautiful experience. Discover your path with personalized guidance." },
+      { name: "twitter:title", content: "AstroView — Vedic Astrology, Reimagined" },
+      { name: "twitter:description", content: "AstroView is a thoughtful home for Vedic astrology — personalized guidance, classical tradition, and a calm modern experience for every seeker." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/b057de17-a4f0-4c4e-9381-6af9af3cca3a" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/b057de17-a4f0-4c4e-9381-6af9af3cca3a" },
     ],
@@ -86,12 +86,18 @@ function RootShell({ children }: { children: ReactNode }) {
     </html>
   );
 }
-
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+
+      <Toaster
+        position="top-right"
+        richColors
+        closeButton
+      />
     </QueryClientProvider>
   );
 }

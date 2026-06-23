@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useRef, useEffect } from "react";
+import { toast } from "sonner";
+import { useState, useRef, useEffect, FormEvent } from "react";
+import { createPortal } from "react-dom";
+import emailjs from "@emailjs/browser";
 import {
   Sparkles,
   Moon,
@@ -144,21 +147,39 @@ const journey = [
 
 const faqs = [
   {
-    q: "Is AstroView live yet?",
-    a: "We're building thoughtfully. This is our home — readings, accounts and bookings will open in our next release.",
+    question: "How do I book a consultation?",
+    answer:
+      "Simply fill out the contact form and select the service you're interested in. Our team will review your inquiry and contact you to schedule the consultation."
+  },
+
+  {
+    question: "What information do I need to provide?",
+    answer:
+      "Depending on the service, we may require your full name, date of birth, time of birth, and place of birth. Additional details may be requested for more personalized guidance."
   },
   {
-    q: "What kind of astrology do you practice?",
-    a: "Classical Vedic (Jyotish) astrology — primarily the Parashari system, with select use of Jaimini techniques for timing and direction.",
-  },
+  question: "Are consultations available online?",
+  answer:
+    "Yes. AstroView offers online consultations, allowing you to connect from anywhere through convenient digital communication channels."
+},
+
+{
+  question: "How long does a consultation usually take?",
+  answer:
+    "Consultation duration varies depending on the service selected. Most sessions typically range between 30 and 60 minutes."
+},
+
   {
-    q: "Will my information be private?",
-    a: "Always. Your birth details and conversations are yours alone. We will never sell, share, or surface them publicly.",
+    question: "Will my personal information remain confidential?",
+    answer:
+      "Absolutely. We respect your privacy and handle all personal information and consultation discussions with strict confidentiality."
   },
+
   {
-    q: "Do you make predictions or promises?",
-    a: "Astrology offers patterns and possibilities, not guarantees. Our guidance is honest, considered and meant to help you choose — never to scare you.",
-  },
+    question: "Can astrology guarantee specific outcomes?",
+    answer:
+      "No. Astrology is intended to provide guidance, insights, and perspectives. Personal decisions and actions ultimately shape individual outcomes."
+  }
 ];
 
 // ─── Root component ───────────────────────────────────────────────────────────
@@ -199,6 +220,7 @@ function Header() {
   }, [menuOpen]);
 
   return (
+    <>
     <header
       className={`sticky top-0 z-50 transition-all duration-300 ${
         scrolled
@@ -252,65 +274,73 @@ function Header() {
         </button>
       </div>
 
-      {/* Mobile overlay */}
-      {menuOpen && (
+    </header>
+
+    {/* Portal — rendered directly on document.body, fully escapes header stacking context */}
+    {typeof document !== "undefined" && createPortal(
+      <>
+        {/* Overlay */}
         <div
-          className="fixed inset-0 z-[60] bg-foreground/40 backdrop-blur-sm md:hidden"
+          className={`fixed inset-0 bg-foreground/40 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
+            menuOpen ? "opacity-100 z-[9998] pointer-events-auto" : "opacity-0 z-[-1] pointer-events-none"
+          }`}
           onClick={() => setMenuOpen(false)}
         />
-      )}
 
-      {/* Mobile drawer */}
-      <div
-        className={`fixed top-0 right-0 z-[70] h-full w-[280px] bg-background border-l border-border shadow-2xl flex flex-col md:hidden transition-transform duration-300 ease-in-out ${
-          menuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="flex items-center justify-between px-6 py-5 border-b border-border">
-          <div className="flex items-center gap-2">
-            <img src={logoAsset} alt="" className="h-8 w-8" />
-            <span className="font-display font-semibold text-lg">
-              Astro<span className="text-primary">View</span>
-            </span>
+        {/* Drawer panel */}
+        <div
+          className={`fixed top-0 right-0 h-full w-[280px] bg-background border-l border-border shadow-2xl flex flex-col md:hidden transition-transform duration-300 ease-in-out z-[9999] ${
+            menuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="flex items-center justify-between px-6 py-5 border-b border-border">
+            <div className="flex items-center gap-2">
+              <img src={logoAsset} alt="" className="h-8 w-8" />
+              <span className="font-display font-semibold text-lg">
+                Astro<span className="text-primary">View</span>
+              </span>
+            </div>
+            <button
+              onClick={() => setMenuOpen(false)}
+              className="p-1.5 rounded-full hover:bg-accent transition"
+              aria-label="Close menu"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
-          <button
-            onClick={() => setMenuOpen(false)}
-            className="p-1.5 rounded-full hover:bg-accent transition"
-            aria-label="Close menu"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <nav className="flex flex-col gap-1 p-4 flex-1">
-          {navLinks.map((l) => (
+          <nav className="flex flex-col gap-1 p-4 flex-1">
+            {navLinks.map((l) => (
+              <a
+                key={l.href}
+                href={l.href}
+                onClick={() => setMenuOpen(false)}
+                className="px-4 py-3.5 rounded-xl text-base font-medium text-foreground hover:bg-accent transition"
+              >
+                {l.label}
+              </a>
+            ))}
             <a
-              key={l.href}
-              href={l.href}
+              href="/about"
               onClick={() => setMenuOpen(false)}
               className="px-4 py-3.5 rounded-xl text-base font-medium text-foreground hover:bg-accent transition"
             >
-              {l.label}
+              About
             </a>
-          ))}
-          <a
-            href="/about"
-            onClick={() => setMenuOpen(false)}
-            className="px-4 py-3.5 rounded-xl text-base font-medium text-foreground hover:bg-accent transition"
-          >
-            About
-          </a>
-        </nav>
-        <div className="p-5 border-t border-border">
-          <a
-            href="/services"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-primary px-5 py-3.5 text-sm font-medium text-primary-foreground shadow-soft"
-          >
-            Our services <ArrowRight className="h-4 w-4" />
-          </a>
+          </nav>
+          <div className="p-5 border-t border-border">
+            <a
+              href="/services"
+              onClick={() => setMenuOpen(false)}
+              className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-primary px-5 py-3.5 text-sm font-medium text-primary-foreground shadow-soft"
+            >
+              Our services <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
         </div>
-      </div>
-    </header>
+      </>,
+      document.body
+    )}
+    </>
   );
 }
 
@@ -716,55 +746,313 @@ function Promise() {
 // ─── Contact ──────────────────────────────────────────────────────────────────
 
 function Contact() {
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    from_name: "",
+    from_email: "",
+    phone: "",
+    service: "",
+    message: "",
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+   if (!formData.from_name.trim()) {
+  toast.error("Please enter your name");
+  return;
+}
+
+const nameRegex = /^[A-Za-z\s]{2,50}$/;
+
+if (!nameRegex.test(formData.from_name.trim())) {
+  toast.error("Please enter a valid name");
+  return;
+}
+
+if (!formData.from_email.trim()) {
+  toast.error("Please enter your email");
+  return;
+}
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+if (!emailRegex.test(formData.from_email)) {
+  toast.error("Please enter a valid email address");
+  return;
+}
+
+if (!formData.phone.trim()) {
+  toast.error("Please enter your phone number");
+  return;
+}
+
+const phoneRegex = /^[6-9]\d{9}$/;
+if (!phoneRegex.test(formData.phone)) {
+  toast.error("Please enter a valid 10-digit phone number");
+  return;
+}
+
+if (!formData.service.trim()) {
+  toast.error("Please select a service");
+  return;
+}
+
+if (!formData.message.trim()) {
+  toast.error("Please enter your message");
+  return;
+}
+
+if (formData.message.trim().length < 10) {
+  toast.error("Message must be at least 10 characters long");
+  return;
+}
+
+    try {
+      setLoading(true);
+const templateParams = {
+  from_name: formData.from_name,
+  from_email: formData.from_email,
+  phone: formData.phone,
+  service: formData.service,
+  message: formData.message,
+  source: "Website Contact Form",
+  time: new Date().toLocaleString(),
+};
+      await emailjs.send(
+  import.meta.env.VITE_EMAILJS_SERVICE_ID,
+  import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+  templateParams,
+  import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+);
+
+      toast.success(
+  "Inquiry submitted successfully. Our team will contact you within 24 hours."
+);
+
+      setFormData({
+        from_name: "",
+        from_email: "",
+        phone: "",
+        service: "",
+        message: "",
+      });
+    } catch (error) {
+  console.error("EmailJS Error:", error);
+
+  toast.error(
+    "Unable to submit your inquiry. Please try again in a few moments."
+  );
+} finally {
+  setLoading(false);
+}
+  };
+
   return (
-    <section id="contact" className="py-14 md:py-24 bg-gradient-to-b from-background to-accent/30">
+    <section
+      id="contact"
+      className="py-20 md:py-28 bg-gradient-to-b from-background to-accent/30"
+    >
       <div className="mx-auto max-w-7xl px-6">
-        <div className="max-w-2xl mx-auto text-center mb-12">
-          <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">Get in touch</p>
-          <h2 className="mt-3 text-4xl md:text-5xl font-display font-semibold tracking-tight">
+        <div className="max-w-3xl mx-auto text-center mb-14">
+          <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
+            Get In Touch
+          </p>
+
+          <h2 className="mt-4 text-4xl md:text-5xl font-display font-semibold tracking-tight">
             We'd love to hear from you.
           </h2>
-          <p className="mt-4 text-muted-foreground text-base leading-relaxed">
-            Reach out with your questions, feedback, or just to say hello — we read every message personally.
+
+          <p className="mt-4 text-muted-foreground text-lg">
+            Reach out with your questions, feedback, or simply say hello.
           </p>
         </div>
-        <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {/* Address */}
-          <div className="h-full rounded-3xl border border-border bg-card p-7 shadow-card flex flex-col gap-4">
-            <div className="h-12 w-12 rounded-2xl bg-gradient-primary text-primary-foreground flex items-center justify-center shadow-soft shrink-0">
-              <MapPin className="h-5 w-5" />
+
+        <div className="grid lg:grid-cols-[360px_1fr] gap-6 lg:gap-8">
+          {/* LEFT COLUMN */}
+
+          <div className="space-y-5">
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-card">
+              <div className="flex gap-4">
+                <MapPin className="h-5 w-5 text-primary mt-1" />
+
+                <div>
+                  <h3 className="font-display text-lg font-semibold">
+                    Visit Our Office
+                  </h3>
+
+                  <div className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                    {CONTACT.address.map((line, i) => (
+                      <p key={i}>{line}</p>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">Address</p>
-              {CONTACT.address.map((line, i) => (
-                <p key={i} className="text-sm text-foreground leading-relaxed">{line}</p>
-              ))}
+
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-card">
+              <div className="flex gap-4">
+                <Phone className="h-5 w-5 text-primary mt-1" />
+
+                <div>
+                  <h3 className="font-display text-lg font-semibold">
+                    Call Us
+                  </h3>
+
+                  <a
+                    href={`tel:${CONTACT.phone}`}
+                    className="mt-2 block text-muted-foreground hover:text-primary transition"
+                  >
+                    {CONTACT.phone}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-card">
+              <div className="flex gap-4">
+                <Mail className="h-5 w-5 text-primary mt-1" />
+
+                <div>
+                  <h3 className="font-display text-lg font-semibold">
+                    Email Us
+                  </h3>
+
+                  <a
+                    href={`mailto:${CONTACT.email}`}
+                    className="mt-2 block text-muted-foreground hover:text-primary transition"
+                  >
+                    {CONTACT.email}
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-card">
+              <h3 className="font-display text-lg font-semibold">
+                Availability
+              </h3>
+
+              <p className="mt-3 text-sm text-muted-foreground">
+                Monday – Saturday
+              </p>
+
+              <p className="text-sm text-muted-foreground">
+                10:00 AM – 7:00 PM
+              </p>
             </div>
           </div>
-          {/* Email */}
-          <div className="h-full rounded-3xl border border-border bg-card p-7 shadow-card flex flex-col gap-4">
-            <div className="h-12 w-12 rounded-2xl bg-gradient-primary text-primary-foreground flex items-center justify-center shadow-soft shrink-0">
-              <Mail className="h-5 w-5" />
+
+          {/* RIGHT COLUMN */}
+
+          <form
+            onSubmit={handleSubmit}
+            className="rounded-[2rem] border border-border bg-card p-5 md:p-10 shadow-card"
+          >
+            <div className="grid md:grid-cols-2 gap-6">
+              <input
+               disabled={loading}
+  type="text"
+  name="from_name"
+  value={formData.from_name}
+  onChange={(e) => {
+  const value = e.target.value.replace(/[^A-Za-z\s]/g, "");
+
+  setFormData({
+    ...formData,
+    from_name: value,
+  });
+}}
+  placeholder="Full Name"
+  required
+  className="h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary"
+/>
+
+              <input
+               disabled={loading}
+  type="email"
+  name="from_email"
+  value={formData.from_email}
+  onChange={handleChange}
+  placeholder="Email Address"
+  required
+                className="h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary"
+              />
+
+              <input
+               disabled={loading}
+  type="tel"
+  name="phone"
+  value={formData.phone}
+  onChange={(e) => {
+  const value = e.target.value.replace(/\D/g, "");
+
+  setFormData({
+    ...formData,
+    phone: value,
+  });
+}}
+  placeholder="Phone Number"
+  required
+                className="h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary"
+              />
+
+              <select
+  name="service"
+  value={formData.service}
+  onChange={handleChange}
+  className="h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary"
+>
+                <option value="">Select Service</option>
+
+                {services.map((service) => (
+                  <option
+  key={service.slug}
+  value={service.title}
+>
+                    {service.title}
+                  </option>
+                ))}
+              </select>
             </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">Email</p>
-              <a href={`mailto:${CONTACT.email}`} className="text-sm text-foreground hover:text-primary transition-colors whitespace-nowrap">
-                {CONTACT.email}
-              </a>
-            </div>
-          </div>
-          {/* Phone */}
-          <div className="h-full rounded-3xl border border-border bg-card p-7 shadow-card flex flex-col gap-4">
-            <div className="h-12 w-12 rounded-2xl bg-gradient-primary text-primary-foreground flex items-center justify-center shadow-soft shrink-0">
-              <Phone className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground mb-2">Phone</p>
-              <a href={`tel:${CONTACT.phone}`} className="text-sm text-foreground hover:text-primary transition-colors">
-                {CONTACT.phone}
-              </a>
-            </div>
-          </div>
+
+            <textarea
+  rows={6}
+  name="message"
+  value={formData.message}
+  onChange={handleChange}
+  placeholder="Tell us how we can help..."
+  required
+              className="mt-6 w-full rounded-xl border border-border bg-background p-4 outline-none focus:border-primary"
+            />
+
+            <button
+  type="submit"
+  disabled={loading}
+  className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-primary px-8 py-3 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 transition"
+>
+  {loading ? (
+    <>
+      Sending Inquiry...
+    </>
+  ) : (
+    <>
+      Send Message
+      <ArrowRight className="h-4 w-4" />
+    </>
+  )}
+</button>
+          </form>
         </div>
       </div>
     </section>
@@ -823,12 +1111,12 @@ function FAQ() {
         <div className="mt-12 divide-y divide-border rounded-3xl border border-border bg-card shadow-card overflow-hidden">
           {faqs.map((f, i) => (
             <FAQItem
-              key={f.q}
-              q={f.q}
-              a={f.a}
-              isOpen={openIdx === i}
-              onToggle={() => setOpenIdx(openIdx === i ? null : i)}
-            />
+  key={f.question}
+  q={f.question}
+  a={f.answer}
+  isOpen={openIdx === i}
+  onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+/>
           ))}
         </div>
       </div>

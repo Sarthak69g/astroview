@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { ArrowRight, Menu, X, ShieldCheck, Eye, Heart, Sparkles, MapPin, Mail, Phone } from "lucide-react";
 import LOGO from "@/assets/logo.png";
 
@@ -40,6 +41,7 @@ function Header() {
   useEffect(() => { document.body.style.overflow = menuOpen ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [menuOpen]);
   const navLinks = [{ label: "Home", href: "/" }, { label: "Services", href: "/services" }, { label: "Why Us", href: "/#why" }, { label: "Contact", href: "/#contact" }];
   return (
+    <>
     <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? "backdrop-blur-xl bg-background/80 border-b border-border/50 shadow-[0_1px_12px_oklch(0.58_0.18_42_/_0.08)]" : "backdrop-blur-xl bg-background/70 border-b border-border/50"}`}>
       <div className="mx-auto max-w-7xl px-6 py-3 h-18 flex items-center justify-between">
         <a href="/" className="flex items-center gap-2.5 shrink-0"><img src={LOGO} alt="AstroView" className="h-10 w-10" /><span className="text-xl font-display font-semibold tracking-tight">Astro<span className="text-primary">View</span></span></a>
@@ -50,6 +52,11 @@ function Header() {
         <a href="/services" className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 transition">Our services <ArrowRight className="h-4 w-4" /></a>
         <button onClick={() => setMenuOpen(true)} className="md:hidden p-2 text-foreground rounded-lg hover:bg-accent transition"><Menu className="h-5 w-5" /></button>
       </div>
+
+    </header>
+
+    {typeof document !== "undefined" && createPortal(
+      <>
       {menuOpen && <div className="fixed inset-0 z-[60] bg-foreground/40 backdrop-blur-sm md:hidden" onClick={() => setMenuOpen(false)} />}
       <div className={`fixed top-0 right-0 z-[70] h-full w-[280px] bg-background border-l border-border shadow-2xl flex flex-col md:hidden transition-transform duration-300 ${menuOpen ? "translate-x-0" : "translate-x-full"}`}>
         <div className="flex items-center justify-between px-6 py-5 border-b border-border"><div className="flex items-center gap-2"><img src={LOGO} alt="" className="h-8 w-8" /><span className="font-display font-semibold text-lg">Astro<span className="text-primary">View</span></span></div><button onClick={() => setMenuOpen(false)} className="p-1.5 rounded-full hover:bg-accent transition"><X className="h-5 w-5" /></button></div>
@@ -59,7 +66,10 @@ function Header() {
         </nav>
         <div className="p-5 border-t border-border"><a href="/services" onClick={() => setMenuOpen(false)} className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-primary px-5 py-3.5 text-sm font-medium text-primary-foreground">Our services <ArrowRight className="h-4 w-4" /></a></div>
       </div>
-    </header>
+      </>,
+      document.body
+    )}
+    </>
   );
 }
 
