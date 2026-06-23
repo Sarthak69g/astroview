@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useState, useRef, useEffect, FormEvent } from "react";
 import { createPortal } from "react-dom";
-import emailjs from "@emailjs/browser";
+import { sendContactEmail } from "@/lib/emailjs-config";
 import {
   Sparkles,
   Moon,
@@ -25,6 +25,7 @@ import {
   MapPin,
 } from "lucide-react";
 import logoAsset from "@/assets/logo.png";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -207,12 +208,18 @@ function Landing() {
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -276,8 +283,8 @@ function Header() {
 
     </header>
 
-    {/* Portal — rendered directly on document.body, fully escapes header stacking context */}
-    {typeof document !== "undefined" && createPortal(
+    {/* Portal — rendered only after hydration to avoid SSR/client mismatch */}
+    {mounted && createPortal(
       <>
         {/* Overlay */}
         <div
@@ -820,25 +827,20 @@ if (formData.message.trim().length < 10) {
 
     try {
       setLoading(true);
-const templateParams = {
-  from_name: formData.from_name,
-  from_email: formData.from_email,
-  phone: formData.phone,
-  service: formData.service,
-  message: formData.message,
-  source: "Website Contact Form",
-  time: new Date().toLocaleString(),
-};
-      await emailjs.send(
-  import.meta.env.VITE_EMAILJS_SERVICE_ID,
-  import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-  templateParams,
-  import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-);
+      const templateParams = {
+        from_name: formData.from_name,
+        from_email: formData.from_email,
+        phone: formData.phone,
+        service: formData.service,
+        message: formData.message,
+        source: "Website Contact Form",
+        time: new Date().toLocaleString(),
+      };
+      await sendContactEmail(templateParams);
 
       toast.success(
-  "Inquiry submitted successfully. Our team will contact you within 24 hours."
-);
+        "Inquiry submitted successfully. Our team will contact you within 24 hours."
+      );
 
       setFormData({
         from_name: "",
@@ -848,15 +850,16 @@ const templateParams = {
         message: "",
       });
     } catch (error) {
-  console.error("EmailJS Error:", error);
+      console.error("EmailJS Error:", error);
 
-  toast.error(
-    "Unable to submit your inquiry. Please try again in a few moments."
-  );
-} finally {
-  setLoading(false);
-}
+      toast.error(
+        "Unable to submit your inquiry. Please try again in a few moments."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <section
