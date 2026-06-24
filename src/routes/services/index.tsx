@@ -43,7 +43,13 @@ function Header() {
   const navLinks = [{ label: "Home", href: "/" }, { label: "Why Us", href: "/#why" }, { label: "Contact", href: "/#contact" }, { label: "About", href: "/about" }];
   return (
     <>
-    <header className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? "backdrop-blur-xl bg-background/80 border-b border-border/50 shadow-[0_1px_12px_oklch(0.58_0.18_42_/_0.08)]" : "backdrop-blur-xl bg-background/70 border-b border-border/50"}`}>
+    <header
+  className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-300 ${
+    scrolled
+      ? "backdrop-blur-xl bg-background/80 border-b border-border/50 shadow-[0_1px_12px_oklch(0.58_0.18_42_/_0.08)]"
+      : "backdrop-blur-xl bg-background/70 border-b border-border/50"
+  }`}
+>
       <div className="mx-auto max-w-7xl px-6 py-3 h-18 flex items-center justify-between">
         <a href="/" className="flex items-center gap-2.5 shrink-0"><img src={LOGO} alt="AstroView" className="h-10 w-10" /><span className="text-xl font-display font-semibold tracking-tight">Astro<span className="text-primary">View</span></span></a>
         <nav className="hidden md:flex items-center gap-7">{navLinks.map((l) => <a key={l.href} href={l.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">{l.label}</a>)}<a href="/services" className="text-sm text-foreground font-medium">Services</a></nav>
@@ -72,8 +78,9 @@ function ServicesPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <Header />
+      <div className="h-[72px]" />
       {/* Hero */}
-      <section className="relative isolate overflow-hidden py-20 md:py-28">
+      <section className="relative isolate py-20 md:py-28">
         <div className="absolute inset-0 bg-gradient-hero -z-10" />
         <div className="mx-auto max-w-4xl px-6 text-center">
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">What we offer</p>
