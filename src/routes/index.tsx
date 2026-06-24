@@ -190,15 +190,15 @@ function Landing() {
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <style>{`html { scroll-padding-top: 80px; scroll-behavior: smooth; }`}</style>
       <Header />
-      <Hero />
-      <TrustStrip />
-      <Services />
-      <Why />
-      <Journey />
-      <Promise />
-      <Contact />
-      <FAQ />
-      <Footer />
+<Hero />
+<Services />
+<Why />
+<Values />
+<Promise />
+<Journey />
+<Contact />
+<FAQ />
+<Footer />
     </div>
   );
 }
@@ -229,7 +229,7 @@ function Header() {
   return (
     <>
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? "backdrop-blur-xl bg-background/80 border-b border-border/50 shadow-[0_1px_12px_oklch(0.58_0.18_42_/_0.08)]"
           : "backdrop-blur-xl bg-background/70 border-b border-border/50"
@@ -371,7 +371,7 @@ function Hero() {
         <div className="absolute inset-28 rounded-full border border-primary/10" />
       </div>
 
-      <div className="mx-auto max-w-7xl px-6 pt-16 pb-20 md:pt-28 md:pb-36 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-14 items-center">
+      <div className="mx-auto max-w-7xl px-6 pt-12 pb-8 md:pt-20 md:pb-16 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-14 items-center">
         {/* Left */}
         <div className="relative">
           <div
@@ -553,7 +553,7 @@ function TrustStrip() {
 
 function Services() {
   return (
-    <section id="services" className="relative py-14 md:py-32">
+    <section id="services" className="relative pt-14 pb-16 md:pt-20 md:pb-20">
       <div className="mx-auto max-w-7xl px-6">
         <div className="max-w-2xl">
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
@@ -587,7 +587,7 @@ function Services() {
           ))}
         </div>
 
-        <div className="mt-10 text-center">
+        <div className="mt-6 text-center">
           <a
             href="/services"
             className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-medium hover:bg-accent transition"
@@ -605,9 +605,9 @@ function Services() {
 function Why() {
   return (
     <section
-      id="why"
-      className="relative py-14 md:py-32 bg-gradient-to-b from-background via-accent/30 to-background"
-    >
+  id="why"
+  className="relative pt-4 pb-14 md:pt-8 md:pb-20 ..."
+>
       <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <div>
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
@@ -681,11 +681,65 @@ function Why() {
   );
 }
 
+function Values() {
+  const values = [
+    {
+      title: "Human Interpretation",
+      text: "Every reading is reviewed by a real astrologer, not generated automatically.",
+    },
+    {
+      title: "Privacy First",
+      text: "Your birth details and consultations remain confidential and treated with care.",
+    },
+    {
+      title: "Traditional Foundation",
+      text: "Built on classical Vedic principles rather than trend-driven astrology.",
+    },
+    {
+      title: "No Fear-Based Selling",
+      text: "We explain possibilities honestly without creating anxiety or pressure.",
+    },
+  ];
+
+  return (
+    <section className="py-16 md:py-24">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="max-w-2xl">
+          <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
+            Why People Choose AstroView
+          </p>
+
+          <h2 className="mt-3 text-4xl md:text-5xl font-display font-semibold tracking-tight">
+            Built on principles, not persuasion.
+          </h2>
+        </div>
+
+        <div className="mt-12 grid md:grid-cols-2 gap-5">
+          {values.map((value) => (
+            <div
+              key={value.title}
+              className="rounded-3xl border border-border bg-card p-7 shadow-card"
+            >
+              <h3 className="text-xl font-display font-semibold">
+                {value.title}
+              </h3>
+
+              <p className="mt-3 text-muted-foreground leading-relaxed">
+                {value.text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── Journey ──────────────────────────────────────────────────────────────────
 
 function Journey() {
   return (
-    <section id="journey" className="py-14 md:py-32">
+    <section id="journey" className="py-10 md:py-16">
       <div className="mx-auto max-w-7xl px-6">
         <div className="max-w-2xl">
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
@@ -696,7 +750,7 @@ function Journey() {
           </h2>
         </div>
 
-        <div className="mt-14 grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-4 gap-5">
           {journey.map((j, idx) => (
             <div
               key={j.step}
@@ -724,15 +778,15 @@ function Journey() {
 
 function Promise() {
   return (
-    <section className="py-14 md:py-28">
+    <section className="pt-10 pb-10 md:pt-14 md:pb-14">
       <div className="mx-auto max-w-5xl px-6">
         <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-cosmic p-10 md:p-16 shadow-glow">
           <div className="absolute -top-20 -right-20 h-72 w-72 rounded-full bg-primary/30 blur-3xl pointer-events-none" />
           <div className="absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-primary-glow/20 blur-3xl pointer-events-none" />
           <div className="relative">
             <p className="text-xs uppercase tracking-[0.25em] text-primary-glow font-medium">
-              Our promise
-            </p>
+  What we stand for
+</p>
             <p className="mt-5 text-2xl md:text-4xl font-display font-medium text-cosmic-foreground leading-snug">
               "We will never use fear to sell a remedy. We will never invent a problem to keep you
               on a call. Your story is not a script — and we will treat it that way."
@@ -863,9 +917,9 @@ if (formData.message.trim().length < 10) {
 
   return (
     <section
-      id="contact"
-      className="py-20 md:py-28 bg-gradient-to-b from-background to-accent/30"
-    >
+  id="contact"
+  className="pt-8 pb-20 md:pt-12 md:pb-28 bg-gradient-to-b from-background to-accent/30"
+>
       <div className="mx-auto max-w-7xl px-6">
         <div className="max-w-3xl mx-auto text-center mb-14">
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
