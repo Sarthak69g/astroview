@@ -20,6 +20,7 @@ import {
   Instagram,
   Youtube,
   Facebook,
+  Linkedin,
   Menu,
   X,
   MapPin,
@@ -1200,16 +1201,42 @@ function Footer() {
             tradition and clarity in equal measure.
           </p>
           <div className="mt-5 flex items-center gap-3">
-            <a href="#" aria-label="Instagram" className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition">
-              <Instagram className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="YouTube" className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition">
-              <Youtube className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="Facebook" className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition">
-              <Facebook className="h-4 w-4" />
-            </a>
-          </div>
+  <a
+    href="https://www.linkedin.com/company/kamleshkhyati-infosolutions/"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="LinkedIn"
+    className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
+  >
+    <Linkedin className="h-4 w-4" />
+  </a>
+
+  <a
+    href="https://www.instagram.com/kamleshkhyati_infosolutions/"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Instagram"
+    className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
+  >
+    <Instagram className="h-4 w-4" />
+  </a>
+
+  <a
+     href="https://www.youtube.com/@KamleshkhyatiInfosolution"
+    aria-label="YouTube"
+    className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
+  >
+    <Youtube className="h-4 w-4" />
+  </a>
+
+  <a
+    href="#"
+    aria-label="Facebook"
+    className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
+  >
+    <Facebook className="h-4 w-4" />
+  </a>
+</div>
         </div>
 
         {/* Explore col */}
