@@ -986,11 +986,11 @@ if (formData.message.trim().length < 10) {
                   </h3>
 
                   <a
-                    href={`mailto:${CONTACT.email}`}
-                    className="mt-2 block text-muted-foreground hover:text-primary transition"
-                  >
-                    {CONTACT.email}
-                  </a>
+  href={`mailto:${CONTACT.email}`}
+  className="mt-2 block break-all text-muted-foreground hover:text-primary transition"
+>
+  {CONTACT.email}
+</a>
                 </div>
               </div>
             </div>
