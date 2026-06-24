@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { ArrowRight, Menu, X, ShieldCheck, Eye, Heart, Sparkles, MapPin, Mail, Phone } from "lucide-react";
@@ -47,7 +47,13 @@ function Header() {
         <a href="/" className="flex items-center gap-2.5 shrink-0"><img src={LOGO} alt="AstroView" className="h-10 w-10" /><span className="text-xl font-display font-semibold tracking-tight">Astro<span className="text-primary">View</span></span></a>
         <nav className="hidden md:flex items-center gap-7">
           {navLinks.map((l) => <a key={l.href} href={l.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">{l.label}</a>)}
-          <a href="/about" className="text-sm text-foreground font-medium">About</a>
+          <Link
+  to="/about"
+  preload="intent"
+  className="text-sm text-foreground font-medium"
+>
+  About
+</Link>
         </nav>
         <a href="/services" className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 transition">Our services <ArrowRight className="h-4 w-4" /></a>
         <button onClick={() => setMenuOpen(true)} className="md:hidden p-2 text-foreground rounded-lg hover:bg-accent transition"><Menu className="h-5 w-5" /></button>

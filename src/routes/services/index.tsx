@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { ArrowRight, Phone, MessageCircle, ScrollText, HeartHandshake, Gem, Compass, Menu, X, Clock, Layers, MapPin, Mail } from "lucide-react";
