@@ -1,31 +1,29 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { toast } from "sonner";
-import { useState, useRef, useEffect, FormEvent } from "react";
-import { createPortal } from "react-dom";
+import logoAsset from "@/assets/logo.png";
 import { sendContactEmail } from "@/lib/emailjs-config";
+import { createFileRoute } from "@tanstack/react-router";
 import {
-  Sparkles,
-  Moon,
-  Sun,
-  Star,
-  Phone,
-  MessageCircle,
-  ScrollText,
-  HeartHandshake,
-  ShieldCheck,
   ArrowRight,
   Compass,
-  Gem,
-  Mail,
-  Instagram,
-  Youtube,
   Facebook,
+  Gem,
+  HeartHandshake,
+  Instagram,
   Linkedin,
-  Menu,
-  X,
+  Mail,
   MapPin,
+  MessageCircle,
+  Moon,
+  Phone,
+  ScrollText,
+  ShieldCheck,
+  Sparkles,
+  Star,
+  Sun,
+  Youtube
 } from "lucide-react";
-import logoAsset from "@/assets/logo.png";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+
 
 
 export const Route = createFileRoute("/")({
@@ -58,14 +56,7 @@ const CONTACT = {
     "Gautam Budh Nagar UP – 201301",
   ],
 };
-
-const navLinks = [
-  { label: "Services", href: "#services" },
-  { label: "Why Us", href: "#why" },
-  { label: "Journey", href: "#journey" },
-  { label: "Contact", href: "#contact" },
-  { label: "FAQ", href: "#faq" },
-];
+;
 
 export const services = [
   {
@@ -190,7 +181,7 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <style>{`html { scroll-padding-top: 80px; scroll-behavior: smooth; }`}</style>
-      <Header />
+      
 <Hero />
 <Services />
 <Why />
@@ -199,158 +190,11 @@ function Landing() {
 <Journey />
 <Contact />
 <FAQ />
-<Footer />
     </div>
   );
 }
 
-// ─── Header ───────────────────────────────────────────────────────────────────
 
-function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 16);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [menuOpen]);
-
-  return (
-    <>
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "backdrop-blur-xl bg-background/80 border-b border-border/50 shadow-[0_1px_12px_oklch(0.58_0.18_42_/_0.08)]"
-          : "backdrop-blur-xl bg-background/70 border-b border-border/50"
-      }`}
-    >
-      <div className="mx-auto max-w-7xl px-6 h-18 py-3 flex items-center justify-between">
-        {/* Logo */}
-        <a href="/" className="flex items-center gap-2.5 shrink-0">
-          <img src={logoAsset} alt="AstroView" className="h-10 w-10" />
-          <span className="text-xl font-display font-semibold tracking-tight">
-            Astro<span className="text-primary">View</span>
-          </span>
-        </a>
-
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-7">
-          {navLinks.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {l.label}
-            </a>
-          ))}
-          <a
-            href="/about"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            About
-          </a>
-        </nav>
-
-        {/* Desktop CTA */}
-        <a
-          href="/services"
-          className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 transition"
-        >
-          Our services <ArrowRight className="h-4 w-4" />
-        </a>
-
-        {/* Mobile hamburger */}
-        <button
-          onClick={() => setMenuOpen(true)}
-          className="md:hidden p-2 text-foreground rounded-lg hover:bg-accent transition"
-          aria-label="Open menu"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
-      </div>
-
-    </header>
-
-    {/* Portal — rendered only after hydration to avoid SSR/client mismatch */}
-    {mounted && createPortal(
-      <>
-        {/* Overlay */}
-        <div
-          className={`fixed inset-0 bg-foreground/40 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
-            menuOpen ? "opacity-100 z-[9998] pointer-events-auto" : "opacity-0 z-[-1] pointer-events-none"
-          }`}
-          onClick={() => setMenuOpen(false)}
-        />
-
-        {/* Drawer panel */}
-        <div
-          className={`fixed top-0 right-0 h-full w-[280px] bg-background border-l border-border shadow-2xl flex flex-col md:hidden transition-transform duration-300 ease-in-out z-[9999] ${
-            menuOpen ? "translate-x-0" : "translate-x-full"
-          }`}
-        >
-          <div className="flex items-center justify-between px-6 py-5 border-b border-border">
-            <div className="flex items-center gap-2">
-              <img src={logoAsset} alt="" className="h-8 w-8" />
-              <span className="font-display font-semibold text-lg">
-                Astro<span className="text-primary">View</span>
-              </span>
-            </div>
-            <button
-              onClick={() => setMenuOpen(false)}
-              className="p-1.5 rounded-full hover:bg-accent transition"
-              aria-label="Close menu"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-          <nav className="flex flex-col gap-1 p-4 flex-1">
-            {navLinks.map((l) => (
-              <a
-                key={l.href}
-                href={l.href}
-                onClick={() => setMenuOpen(false)}
-                className="px-4 py-3.5 rounded-xl text-base font-medium text-foreground hover:bg-accent transition"
-              >
-                {l.label}
-              </a>
-            ))}
-            <a
-              href="/about"
-              onClick={() => setMenuOpen(false)}
-              className="px-4 py-3.5 rounded-xl text-base font-medium text-foreground hover:bg-accent transition"
-            >
-              About
-            </a>
-          </nav>
-          <div className="p-5 border-t border-border">
-            <a
-              href="/services"
-              onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-primary px-5 py-3.5 text-sm font-medium text-primary-foreground shadow-soft"
-            >
-              Our services <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
-        </div>
-      </>,
-      document.body
-    )}
-    </>
-  );
-}
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
@@ -1179,132 +1023,5 @@ function FAQ() {
         </div>
       </div>
     </section>
-  );
-}
-
-// ─── Footer ───────────────────────────────────────────────────────────────────
-
-function Footer() {
-  return (
-    <footer className="border-t border-border bg-card/40">
-      <div className="mx-auto max-w-7xl px-6 py-14 grid md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10">
-        {/* Brand col */}
-        <div>
-          <div className="flex items-center gap-2.5">
-            <img src={logoAsset} alt="" className="h-9 w-9" />
-            <span className="text-lg font-display font-semibold">
-              Astro<span className="text-primary">View</span>
-            </span>
-          </div>
-          <p className="mt-4 text-sm text-muted-foreground max-w-sm leading-relaxed">
-            A modern home for Vedic astrology. Built slowly, with care, for seekers who value
-            tradition and clarity in equal measure.
-          </p>
-          <div className="mt-5 flex items-center gap-3">
-  <a
-    href="https://www.linkedin.com/company/kamleshkhyati-infosolutions/"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="LinkedIn"
-    className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
-  >
-    <Linkedin className="h-4 w-4" />
-  </a>
-
-  <a
-    href="https://www.instagram.com/kamleshkhyati_infosolutions/"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Instagram"
-    className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
-  >
-    <Instagram className="h-4 w-4" />
-  </a>
-
-  <a
-     href="https://www.youtube.com/@KamleshkhyatiInfosolution"
-    aria-label="YouTube"
-    className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
-  >
-    <Youtube className="h-4 w-4" />
-  </a>
-
-  <a
-    href="#"
-    aria-label="Facebook"
-    className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
-  >
-    <Facebook className="h-4 w-4" />
-  </a>
-</div>
-        </div>
-
-        {/* Explore col */}
-        <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Explore</p>
-          <ul className="mt-4 space-y-2.5 text-sm">
-            {[
-              ["Services", "#services"],
-              ["Why Us", "#why"],
-              ["Journey", "#journey"],
-              ["FAQ", "#faq"],
-              ["About Us", "/about"],
-            ].map(([label, href]) => (
-              <li key={href}><a href={href} className="hover:text-primary transition">{label}</a></li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Services col */}
-        <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Services</p>
-          <ul className="mt-4 space-y-2.5 text-sm">
-            {services.map((s) => (
-              <li key={s.slug}>
-                <a href={`/services/${s.slug}`} className="hover:text-primary transition">{s.title}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Contact col */}
-        <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Contact</p>
-          <ul className="mt-4 space-y-4">
-            <li className="flex gap-3">
-              <div className="h-9 w-9 rounded-lg border border-border flex items-center justify-center shrink-0 text-muted-foreground">
-                <MapPin className="h-4 w-4" />
-              </div>
-              <div className="text-sm text-muted-foreground leading-relaxed">
-                {CONTACT.address.map((line, i) => <span key={i} className="block">{line}</span>)}
-              </div>
-            </li>
-            <li className="flex gap-3">
-              <div className="h-9 w-9 rounded-lg border border-border flex items-center justify-center shrink-0 text-muted-foreground">
-                <Mail className="h-4 w-4" />
-              </div>
-              <a href={`mailto:${CONTACT.email}`} className="text-sm text-muted-foreground hover:text-primary transition self-center">
-                {CONTACT.email}
-              </a>
-            </li>
-            <li className="flex gap-3">
-              <div className="h-9 w-9 rounded-lg border border-border flex items-center justify-center shrink-0 text-muted-foreground">
-                <Phone className="h-4 w-4" />
-              </div>
-              <a href={`tel:${CONTACT.phone}`} className="text-sm text-muted-foreground hover:text-primary transition self-center">
-                {CONTACT.phone}
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="border-t border-border/60">
-        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} AstroView. All rights reserved.</p>
-          <p>KamleshKhyati Infosolution Pvt. Ltd.</p>
-        </div>
-      </div>
-    </footer>
   );
 }

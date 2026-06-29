@@ -1,161 +1,241 @@
+// src/routes/services/Services.tsx
+// Import path: ../../data/servicesData  (routes/services → src/data)
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { ArrowRight, Phone, MessageCircle, ScrollText, HeartHandshake, Gem, Compass, Menu, X, Clock, Layers, MapPin, Mail } from "lucide-react";
-import LOGO from "@/assets/logo.png";
-
-const CONTACT = {
-  email: "support@kamleshkhyatiinfosolution.com",
-  phone: "+91-9319843151",
-
-  footerAddress: "Sector 63, Noida",
-
-  address: [
-    "Unit No.202, Second Floor, Plot No. 103,",
-    "Block A, Sector 63 Noida,",
-    "Gautam Budh Nagar UP – 201301",
-  ],
-};
+import { services, type Service, type DeliveryMode } from "../../data/servicesData";
 export const Route = createFileRoute("/services/")({
-  head: () => ({
-    meta: [
-      { title: "Services — AstroView" },
-      { name: "description", content: "Explore AstroView's full range of Vedic astrology services — from live call consultations and Janam Kundli to compatibility and career guidance." },
-    ],
-  }),
   component: ServicesPage,
 });
 
-const services = [
-  { slug: "live-call", icon: Phone, title: "Live Call Consultations", short: "One-on-one voice sessions with seasoned astrologers, anywhere you are.", long: "Connect directly with a vetted astrologer over a live voice call. Whether you have a pressing career question, a relationship concern, or simply want to understand your chart better, our call consultations offer a personal, real-time conversation tailored entirely to your situation. Sessions are available in Hindi and English.", duration: "30–60 min", mode: "Voice call" },
-  { slug: "chat-readings", icon: MessageCircle, title: "Chat Readings", short: "Quick, private chat sessions for moments when you need clarity, fast.", long: "Not every question needs a full hour. Our chat readings let you ask specific questions and receive considered, written responses from a real astrologer — not a bot. Perfect for a quick check on timing, a yes/no that deserves more than a coin flip, or a second opinion before a decision.", duration: "15–30 min", mode: "Text chat" },
-  { slug: "janam-kundli", icon: ScrollText, title: "Janam Kundli", short: "A meticulously cast Vedic birth chart that decodes your life's blueprint.", long: "Your Janam Kundli is the foundation of Vedic astrology. We prepare a precise Parashari kundli from your birth date, time and place — then an astrologer actually reads it and provides a written interpretation covering your personality, health, career, relationships and spiritual path.", duration: "Delivered in 24–48 hrs", mode: "Written report + call" },
-  { slug: "love-compatibility", icon: HeartHandshake, title: "Love & Compatibility", short: "Guna Milan and synastry insights to understand the bonds that matter.", long: "Relationship guidance rooted in classical Guna Milan (36-point matching system) combined with modern synastry analysis. We look beyond a compatibility score to explain the actual dynamics at play — where you naturally align, where friction might arise, and how to navigate it together.", duration: "45–60 min or written report", mode: "Call or report" },
-  { slug: "gemstone-remedies", icon: Gem, title: "Gemstone & Remedies", short: "Personalised gemstone, mantra and ritual suggestions rooted in tradition.", long: "Remedies in Vedic astrology are tools for working with planetary energies. Based on a reading of your chart, we suggest gemstones, mantras, colours, fasting days or simple daily rituals that are personally calibrated — never a generic list.", duration: "Included with kundli or standalone", mode: "Written report" },
-  { slug: "career-direction", icon: Compass, title: "Career & Direction", short: "Map planetary cycles to make confident decisions about your work and path.", long: "Career decisions are among the most consequential choices you'll make. We use Dasha timelines (planetary period cycles) alongside your 10th house analysis to identify periods of opportunity, transition and consolidation — so you can act with confidence.", duration: "45–60 min", mode: "Voice call" },
-];
-
-function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => { const onScroll = () => setScrolled(window.scrollY > 16); window.addEventListener("scroll", onScroll, { passive: true }); return () => window.removeEventListener("scroll", onScroll); }, []);
-  useEffect(() => { document.body.style.overflow = menuOpen ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [menuOpen]);
-  const navLinks = [{ label: "Home", href: "/" }, { label: "Why Us", href: "/#why" }, { label: "Contact", href: "/#contact" }, { label: "About", href: "/about" }];
-  return (
-    <>
-    <header
-  className={`fixed top-0 left-0 right-0 z-[9999] transition-all duration-300 ${
-    scrolled
-      ? "backdrop-blur-xl bg-background/80 border-b border-border/50 shadow-[0_1px_12px_oklch(0.58_0.18_42_/_0.08)]"
-      : "backdrop-blur-xl bg-background/70 border-b border-border/50"
-  }`}
->
-      <div className="mx-auto max-w-7xl px-6 py-3 h-18 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-2.5 shrink-0"><img src={LOGO} alt="AstroView" className="h-10 w-10" /><span className="text-xl font-display font-semibold tracking-tight">Astro<span className="text-primary">View</span></span></a>
-        <nav className="hidden md:flex items-center gap-7">{navLinks.map((l) => <a key={l.href} href={l.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">{l.label}</a>)}<a href="/services" className="text-sm text-foreground font-medium">Services</a></nav>
-        <a href="/#contact" className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 transition">Get in touch <ArrowRight className="h-4 w-4" /></a>
-        <button onClick={() => setMenuOpen(true)} className="md:hidden p-2 text-foreground rounded-lg hover:bg-accent transition"><Menu className="h-5 w-5" /></button>
-      </div>
-
-    </header>
-
-    {typeof document !== "undefined" && createPortal(
-      <>
-      {menuOpen && <div className="fixed inset-0 z-[60] bg-foreground/40 backdrop-blur-sm md:hidden" onClick={() => setMenuOpen(false)} />}
-      <div className={`fixed top-0 right-0 z-[70] h-full w-[280px] bg-background border-l border-border shadow-2xl flex flex-col md:hidden transition-transform duration-300 ${menuOpen ? "translate-x-0" : "translate-x-full"}`}>
-        <div className="flex items-center justify-between px-6 py-5 border-b border-border"><div className="flex items-center gap-2"><img src={LOGO} alt="" className="h-8 w-8" /><span className="font-display font-semibold text-lg">Astro<span className="text-primary">View</span></span></div><button onClick={() => setMenuOpen(false)} className="p-1.5 rounded-full hover:bg-accent transition"><X className="h-5 w-5" /></button></div>
-        <nav className="flex flex-col gap-1 p-4 flex-1">{navLinks.map((l) => <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)} className="px-4 py-3.5 rounded-xl text-base font-medium hover:bg-accent transition">{l.label}</a>)}<a href="/services" onClick={() => setMenuOpen(false)} className="px-4 py-3.5 rounded-xl text-base font-medium text-primary">Services</a></nav>
-        <div className="p-5 border-t border-border"><a href="/#contact" onClick={() => setMenuOpen(false)} className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-primary px-5 py-3.5 text-sm font-medium text-primary-foreground">Get in touch <ArrowRight className="h-4 w-4" /></a></div>
-      </div>
-      </>,
-      document.body
-    )}
-    </>
-  );
-}
+const deliveryColours: Record<DeliveryMode, string> = {
+  Call: "bg-blue-50 text-blue-700 border-blue-200",
+  Chat: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  Report: "bg-amber-50 text-amber-700 border-amber-200",
+};
 
 function ServicesPage() {
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      <Header />
-      <div className="h-[72px]" />
-      {/* Hero */}
-      <section className="relative isolate py-20 md:py-28">
-        <div className="absolute inset-0 bg-gradient-hero -z-10" />
-        <div className="mx-auto max-w-4xl px-6 text-center">
-          <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">What we offer</p>
-          <h1 className="mt-4 font-display font-semibold text-5xl md:text-7xl leading-[1.02] tracking-tight">
-            Six ways to <span className="text-gradient">meet your chart.</span>
-          </h1>
-          <p className="mt-6 text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-            A focused set of services, each shaped with care. We'd rather offer six things done properly than sixty done carelessly. Click any service to learn more about what it involves.
-          </p>
-        </div>
-      </section>
+  <>
+    <main className="min-h-screen">
+      {/* Page hero */}
+      <section className="relative overflow-hidden px-6 pt-36 md:pt-40 pb-20">
 
-      {/* Services list */}
-      <section className="py-14 md:py-24">
-        <div className="mx-auto max-w-7xl px-6 space-y-6">
-          {services.map((s) => (
-            <a key={s.slug} href={`/services/${s.slug}`}
-              className="group flex flex-col md:flex-row gap-8 rounded-3xl border border-border bg-card p-8 shadow-card hover:shadow-glow hover:-translate-y-0.5 transition-all duration-300">
-              <div className="shrink-0 flex flex-col gap-4">
-                <div className="h-16 w-16 rounded-2xl bg-gradient-primary text-primary-foreground flex items-center justify-center shadow-soft"><s.icon className="h-7 w-7" /></div>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground"><Clock className="h-3.5 w-3.5" />{s.duration}</div>
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground"><Layers className="h-3.5 w-3.5" />{s.mode}</div>
-                </div>
-              </div>
-              <div className="flex-1">
-                <div className="flex items-start justify-between gap-4">
-                  <h2 className="text-2xl font-display font-semibold">{s.title}</h2>
-                  <span className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-primary-deep/80 group-hover:gap-2 transition-all mt-1">Read more <ArrowRight className="h-3 w-3" /></span>
-                </div>
-                <p className="mt-3 text-muted-foreground leading-relaxed">{s.long}</p>
-                <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs font-medium text-primary-deep">Coming soon</div>
-              </div>
-            </a>
+  {/* Soft background glow */}
+  <div className="absolute inset-0 -z-10 bg-gradient-to-b from-amber-50 via-white to-white" />
+
+  <div className="max-w-3xl mx-auto text-center">
+
+    <p className="text-sm uppercase tracking-[0.22em] text-amber-600 font-semibold mb-5">
+      OUR SERVICES
+    </p>
+
+    <h1 className="font-cormorant text-5xl md:text-7xl font-semibold text-stone-900 leading-tight">
+      Find the guidance
+      <br />
+      that's right for you.
+    </h1>
+
+    <p className="mt-6 text-2xl text-stone-400 leading-relaxed max-w-3xl mx-auto">
+      From birth chart analysis and relationship guidance to career
+      consultations and spiritual remedies, every session is conducted
+      by an experienced astrologer and tailored to your unique journey.
+    </p>
+
+    {/* Trust badges */}
+
+    <div className="mt-12 flex flex-wrap justify-center gap-4">
+
+      <span
+  className="
+    rounded-full
+    border
+    border-amber-200
+    bg-amber-50
+    px-4
+    py-2
+    text-sm
+    font-medium
+    text-amber-700
+    transition-all
+duration-300
+hover:-translate-y-1
+hover:shadow-xl
+hover:-translate-y-2
+cursor-default
+  "
+>
+        ✓ Experienced Astrologers
+      </span>
+
+      <span
+  className="
+    rounded-full
+    border
+    border-emerald-200
+    bg-emerald-50
+    px-4
+    py-2
+    text-sm
+    font-medium
+    text-emerald-700
+    transition-all
+    duration-300
+    hover:-translate-y-1
+    hover:shadow-xl
+hover:-translate-y-2
+    cursor-default
+  "
+>
+        ✓ Private Consultations
+      </span>
+
+      <span
+  className="
+    rounded-full
+    border
+    border-blue-200
+    bg-blue-50
+    px-4
+    py-2
+    text-sm
+    font-medium
+    text-blue-700
+    transition-all
+duration-300
+hover:-translate-y-1
+hover:shadow-xl
+hover:-translate-y-2
+cursor-default
+  "
+>
+        ✓ Personalised Guidance
+      </span>
+
+    </div>
+
+  </div>
+
+</section>
+
+      {/* Services grid */}
+      <section className="max-w-6xl mx-auto px-6 pb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {services.map((service: Service) => (
+            <ServiceCard key={service.slug} service={service} />
           ))}
         </div>
       </section>
 
-      {/* CTA band */}
-      <section className="py-14 md:py-20">
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-cosmic p-10 md:p-14 shadow-glow text-center">
-            <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-primary/30 blur-3xl pointer-events-none" />
-            <div className="relative">
-              <p className="text-xs uppercase tracking-[0.22em] text-primary-glow font-medium mb-4">Questions about a service?</p>
-              <h2 className="text-3xl md:text-4xl font-display font-semibold text-cosmic-foreground">We're happy to talk before you book.</h2>
-              <p className="mt-4 text-cosmic-foreground/70 max-w-xl mx-auto">Reach out by email or phone and we'll point you toward the right service — no pressure, no sales pitch.</p>
-              <div className="mt-8 flex flex-wrap gap-4 justify-center">
-                <a href={`mailto:${CONTACT.email}`} className="inline-flex items-center gap-2 rounded-full bg-primary/20 border border-primary/30 px-6 py-3 text-sm font-medium text-cosmic-foreground hover:bg-primary/30 transition">
-                  <Mail className="h-4 w-4" />{CONTACT.email}
-                </a>
-                <a href={`tel:${CONTACT.phone}`} className="inline-flex items-center gap-2 rounded-full bg-primary/20 border border-primary/30 px-6 py-3 text-sm font-medium text-cosmic-foreground hover:bg-primary/30 transition">
-                  <Phone className="h-4 w-4" />{CONTACT.phone}
-                </a>
-              </div>
-            </div>
-          </div>
+      {/* Bottom CTA */}
+      <section className="bg-stone-50 border-t border-stone-200 px-6 py-16 text-center">
+        <p className="text-stone-400 text-sm mb-2">Not sure which service fits?</p>
+        <h2 className="font-cormorant text-2xl font-semibold text-stone-900 mb-5">
+          We are happy to talk before you book.
+        </h2>
+        <p className="text-stone-400 mb-8 max-w-md mx-auto text-sm leading-relaxed">
+          Reach out by email or phone and we will point you toward the right
+          service — no pressure, no sales pitch.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="mailto:hello@astroview.app"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-stone-300 text-stone-700 text-sm hover:border-stone-400 hover:bg-white transition-all"
+          >
+            hello@astroview.app
+          </a>
+          <a
+            href="tel:+919319843151"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-amber-600 text-white text-sm hover:bg-amber-700 transition-all"
+          >
+            +91-9319843151
+          </a>
         </div>
       </section>
+    </main>
+    </>
+  );
+}
 
-      {/* Footer */}
-      <footer className="border-t border-border bg-card/40">
-        <div className="mx-auto max-w-7xl px-6 py-10 flex flex-col md:flex-row justify-between gap-6 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2.5"><img src={LOGO} alt="" className="h-8 w-8" /><span className="font-display font-semibold text-foreground">Astro<span className="text-primary">View</span></span></div>
-          <div className="flex items-center gap-2">
-  <MapPin className="h-4 w-4 shrink-0" />
-  <span>{CONTACT.footerAddress}</span>
+
+function ServiceCard({ service }: { service: Service }) {
+  const featured = service.slug === "birth-chart-analysis";
+  return (
+    <article
+  className={`
+    group relative flex flex-col overflow-hidden rounded-2xl bg-white
+    transition-all duration-300 hover:-translate-y-2 hover:shadow-xl
+    ${
+      featured
+        ? "border border-amber-300 ring-1 ring-amber-100 shadow-lg"
+        : "border border-stone-200 hover:border-stone-300"
+    }
+  `}
+>
+  {featured && (
+  <div className="absolute top-3
+right-4 z-20 rounded-full bg-amber-500 px-3 py-1 text-[7px] font-semibold uppercase tracking-wider tracking-[0.15em] text-white shadow-md">
+    Most Popular
+  </div>
+)}
+      {/* Top accent strip on hover */}
+      <div className="h-0.5 w-full bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+      <div className="flex flex-col flex-1 p-7">
+        {/* Icon + duration */}
+        <div className="flex items-start justify-between mb-4">
+  <div
+    className={`w-14 h-14 rounded-xl flex items-center justify-center ${service.accentColor}`}
+  >
+    <i
+      className={`ti ti-${service.icon} text-2xl ${service.textColor}`}
+      aria-hidden="true"
+    />
+  </div>
+
+  <span className="flex items-center text-sm text-stone-400 font-medium pt-1">
+    <i className="ti ti-clock mr-1 text-xs"></i>
+    {service.duration}
+  </span>
 </div>
-          <div className="flex items-center gap-2"><Mail className="h-4 w-4 shrink-0" /><a href={`mailto:${CONTACT.email}`} className="hover:text-primary transition">{CONTACT.email}</a></div>
-          <div className="flex items-center gap-2"><Phone className="h-4 w-4 shrink-0" /><a href={`tel:${CONTACT.phone}`} className="hover:text-primary transition">{CONTACT.phone}</a></div>
+
+        {/* Name + tagline */}
+        <h2 className="font-cormorant text-2xl font-semibold text-stone-900 mb-2 leading-snug">
+          {service.name}
+        </h2>
+        <p className="text-sm text-amber-600 font-medium mb-3 italic tracking-wide">{service.tagline}</p>
+
+        {/* Short description */}
+        <p className="text-stone-400 text-[15px] leading-relaxed mb-5 flex-1">{service.shortDesc}</p>
+
+        {/* Delivery badges */}
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {service.deliveryModes.map((mode: DeliveryMode) => (
+            <span
+              key={mode}
+              className={`text-sm px-2.5 py-0.5 rounded-full border font-medium ${deliveryColours[mode]}`}
+            >
+              {mode}
+            </span>
+          ))}
         </div>
-        <div className="border-t border-border/60 px-6 py-4 max-w-7xl mx-auto flex justify-between text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} AstroView. All rights reserved.</p><p>KamleshKhyati Infosolution Pvt. Ltd.</p>
-        </div>
-      </footer>
-    </div>
+
+       <Link
+  to="/services/$slug"
+  params={{ slug: service.slug }}
+  className="mt-auto block group/link"
+>
+  <div className="flex items-center justify-between border-t border-stone-100 pt-5">
+    <span className="text-sm font-semibold text-stone-900 transition-colors group-hover/link:text-amber-700">
+      Explore service →
+    </span>
+
+    <i
+      className="ti ti-arrow-up-right text-lg transition-transform duration-300 group-hover/link:translate-x-1 group-hover/link:-translate-y-1"
+      aria-hidden="true"
+    />
+  </div>
+</Link>
+
+      </div>
+    </article>
   );
 }
