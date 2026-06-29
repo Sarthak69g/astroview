@@ -188,19 +188,6 @@ const isActive = (href: string) => {
                 {link.label}
               </Link>
             ))}
-
-            {/* About — separate because it's not in the hash-links array */}
-            <Link
-  to="/about"
-  preload="intent"
-  className={`text-sm font-medium transition-all duration-200 px-4 py-2 rounded-full ${
-    isActive("/about")
-      ? "bg-primary/10 text-primary shadow-md"
-      : "text-muted-foreground hover:text-foreground"
-  }`}
->
-  About
-</Link>
           </nav>
 
           {/* Desktop CTA */}
