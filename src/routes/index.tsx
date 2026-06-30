@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import SunSignFinder from "@/components/SunSignFinder";
 
 
 
@@ -146,6 +147,7 @@ function Landing() {
       
 <Hero />
 {/* <TrustStrip /> — disabled for now, content not finalized */}
+<SunSignFinder />
 <Services />
 <Why />
 <Values />
@@ -182,17 +184,6 @@ function Hero() {
       <div className="mx-auto max-w-7xl px-6 pt-12 pb-8 md:pt-20 md:pb-16 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 lg:gap-14 items-center">
         {/* Left */}
         <div className="relative">
-          <div
-            className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/5 px-3 py-1 text-xs font-medium text-primary-deep"
-            style={{
-              opacity: loaded ? 1 : 0,
-              transform: loaded ? "translateY(0)" : "translateY(8px)",
-              transition: "opacity 0.5s ease 0.05s, transform 0.5s ease 0.05s",
-            }}
-          >
-            <Sparkles className="h-3.5 w-3.5" /> Quietly arriving soon
-          </div>
-
           <h1
             className="mt-6 font-display font-semibold text-4xl sm:text-5xl md:text-7xl leading-[1.02] tracking-tight"
             style={{

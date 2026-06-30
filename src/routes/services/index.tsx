@@ -14,6 +14,18 @@ export const Route = createFileRoute("/services/")({
         content:
           "Explore AstroView's Vedic astrology services — birth chart analysis, relationship guidance, career consultations, and spiritual remedies, each led by an experienced astrologer.",
       },
+      { property: "og:title", content: "Our Services — AstroView" },
+      {
+        property: "og:description",
+        content:
+          "Explore AstroView's Vedic astrology services — birth chart analysis, relationship guidance, career consultations, and spiritual remedies, each led by an experienced astrologer.",
+      },
+      { name: "twitter:title", content: "Our Services — AstroView" },
+      {
+        name: "twitter:description",
+        content:
+          "Explore AstroView's Vedic astrology services — birth chart analysis, relationship guidance, career consultations, and spiritual remedies, each led by an experienced astrologer.",
+      },
     ],
   }),
   component: ServicesPage,

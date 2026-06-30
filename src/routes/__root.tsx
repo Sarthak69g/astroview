@@ -61,8 +61,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "AstroView — Vedic Astrology, Reimagined" },
       { name: "twitter:description", content: "AstroView is a thoughtful home for Vedic astrology — personalized guidance, classical tradition, and a calm modern experience for every seeker." },
-      { property: "og:image", content: "/og-image.png" },
-      { name: "twitter:image", content: "/og-image.png" },
+      { property: "og:image", content: "https://astroview-one.vercel.app/og-image.png" },
+      { name: "twitter:image", content: "https://astroview-one.vercel.app/og-image.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

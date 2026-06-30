@@ -12,6 +12,10 @@ export const Route = createFileRoute("/about")({
     meta: [
       { title: "About — AstroView" },
       { name: "description", content: "AstroView is a modern home for Vedic astrology — built by KamleshKhyati Infosolution, designed for seekers who value tradition, honesty, and clarity." },
+      { property: "og:title", content: "About — AstroView" },
+      { property: "og:description", content: "AstroView is a modern home for Vedic astrology — built by KamleshKhyati Infosolution, designed for seekers who value tradition, honesty, and clarity." },
+      { name: "twitter:title", content: "About — AstroView" },
+      { name: "twitter:description", content: "AstroView is a modern home for Vedic astrology — built by KamleshKhyati Infosolution, designed for seekers who value tradition, honesty, and clarity." },
     ],
   }),
   component: AboutPage,

@@ -24,6 +24,32 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/services/$slug")({
+  head: ({ params }) => {
+    const service = getServiceBySlug(params.slug);
+
+    if (!service) {
+      return {
+        meta: [
+          { title: "Service not found — AstroView" },
+          { name: "description", content: "This service couldn't be found. Browse all AstroView services instead." },
+        ],
+      };
+    }
+
+    const title = `${service.name} — AstroView`;
+    const description = service.shortDesc;
+
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
+      ],
+    };
+  },
   component: ServiceDetailPage,
 });
 
@@ -231,7 +257,7 @@ function ServiceDetailPage() {
         <section className="max-w-5xl mx-auto px-6 py-14">
           <p className="text-xs tracking-[0.16em] uppercase text-primary font-medium mb-3">Explore</p>
           <h2 className="font-display text-2xl font-semibold text-foreground mb-8">Other services.</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid md:grid-cols-3 gap-5">
             {others.map((s: Service) => {
               const OtherIcon = getServiceIcon(s.icon);
               return (
