@@ -59,6 +59,7 @@ function getSunSign(month: number, day: number): ZodiacSign {
 export default function SunSignFinder() {
   const [dob, setDob] = useState("");
   const [sign, setSign] = useState<ZodiacSign | null>(null);
+  const maxDate = new Date().toISOString().split("T")[0]; // today, YYYY-MM-DD
 
   const handleChange = (value: string) => {
     setDob(value);
@@ -66,11 +67,21 @@ export default function SunSignFinder() {
       setSign(null);
       return;
     }
-    const [, monthStr, dayStr] = value.split("-");
+    const [yearStr, monthStr, dayStr] = value.split("-");
+    const year = parseInt(yearStr, 10);
     const month = parseInt(monthStr, 10);
     const day = parseInt(dayStr, 10);
-    if (month && day) {
+    const currentYear = new Date().getFullYear();
+
+    // Native <input type="date"> has no real upper bound on typed input —
+    // the year segment can be scrolled/typed up to year 275760 (JS Date max).
+    // min/max on the input covers normal interaction; this covers pasted/typed edge cases.
+    const isValidYear = year >= 1900 && year <= currentYear;
+
+    if (month && day && isValidYear) {
       setSign(getSunSign(month, day));
+    } else {
+      setSign(null);
     }
   };
 
@@ -98,6 +109,8 @@ export default function SunSignFinder() {
                 <input
                   id="sun-sign-dob"
                   type="date"
+                  min="1900-01-01"
+                  max={maxDate}
                   value={dob}
                   onChange={(e) => handleChange(e.target.value)}
                   className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
