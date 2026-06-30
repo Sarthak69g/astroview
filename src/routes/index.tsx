@@ -1,25 +1,18 @@
 import logoAsset from "@/assets/logo.png";
 import { sendContactEmail } from "@/lib/emailjs-config";
+import { services as allServices } from "@/data/servicesData";
+import { getServiceIcon } from "@/data/serviceIcons";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowRight,
-  Compass,
-  Facebook,
-  Gem,
-  HeartHandshake,
-  Instagram,
-  Linkedin,
   Mail,
   MapPin,
-  MessageCircle,
   Moon,
   Phone,
-  ScrollText,
   ShieldCheck,
   Sparkles,
   Star,
   Sun,
-  Youtube
 } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -56,46 +49,15 @@ const CONTACT = {
     "Gautam Budh Nagar UP – 201301",
   ],
 };
-;
 
-export const services = [
-  {
-    slug: "live-call",
-    icon: Phone,
-    title: "Live Call Consultations",
-    text: "One-on-one voice sessions with seasoned astrologers, anywhere you are.",
-  },
-  {
-    slug: "chat-readings",
-    icon: MessageCircle,
-    title: "Chat Readings",
-    text: "Quick, private chat sessions for moments when you need clarity, fast.",
-  },
-  {
-    slug: "janam-kundli",
-    icon: ScrollText,
-    title: "Janam Kundli",
-    text: "A meticulously cast Vedic birth chart that decodes your life's blueprint.",
-  },
-  {
-    slug: "love-compatibility",
-    icon: HeartHandshake,
-    title: "Love & Compatibility",
-    text: "Guna Milan and synastry insights to understand the bonds that matter.",
-  },
-  {
-    slug: "gemstone-remedies",
-    icon: Gem,
-    title: "Gemstone & Remedies",
-    text: "Personalised gemstone, mantra and ritual suggestions rooted in tradition.",
-  },
-  {
-    slug: "career-direction",
-    icon: Compass,
-    title: "Career & Direction",
-    text: "Map planetary cycles to make confident decisions about your work and path.",
-  },
-];
+// Six services featured on the homepage — sourced from the single
+// source of truth in servicesData.ts so slugs can never drift out of sync.
+export const services = allServices.slice(0, 6).map((s) => ({
+  slug: s.slug,
+  icon: getServiceIcon(s.icon),
+  title: s.name,
+  text: s.shortDesc,
+}));
 
 const pillars = [
   {
@@ -183,6 +145,7 @@ function Landing() {
       <style>{`html { scroll-padding-top: 80px; scroll-behavior: smooth; }`}</style>
       
 <Hero />
+{/* <TrustStrip /> — disabled for now, content not finalized */}
 <Services />
 <Why />
 <Values />
@@ -451,7 +414,7 @@ function Why() {
   return (
     <section
   id="why"
-  className="relative pt-4 pb-14 md:pt-8 md:pb-20 ..."
+  className="relative pt-4 pb-14 md:pt-8 md:pb-20"
 >
       <div className="mx-auto max-w-7xl px-6 grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         <div>
@@ -497,10 +460,10 @@ function Why() {
                   return (
                     <line
                       key={i}
-                      x1={200 + Math.cos(a) * 60}
-                      y1={200 + Math.sin(a) * 60}
-                      x2={200 + Math.cos(a) * 180}
-                      y2={200 + Math.sin(a) * 180}
+                      x1={Number((200 + Math.cos(a) * 60).toFixed(2))}
+                      y1={Number((200 + Math.sin(a) * 60).toFixed(2))}
+                      x2={Number((200 + Math.cos(a) * 180).toFixed(2))}
+                      y2={Number((200 + Math.sin(a) * 180).toFixed(2))}
                     />
                   );
                 })}
@@ -508,7 +471,7 @@ function Why() {
               {["♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"].map((g, i) => {
                 const a = (i * Math.PI) / 6 - Math.PI / 12;
                 return (
-                  <text key={i} x={200 + Math.cos(a) * 160} y={200 + Math.sin(a) * 160}
+                  <text key={i} x={Number((200 + Math.cos(a) * 160).toFixed(2))} y={Number((200 + Math.sin(a) * 160).toFixed(2))}
                     fill="currentColor" fontSize="16" textAnchor="middle" dominantBaseline="middle"
                   >
                     {g}
@@ -917,12 +880,12 @@ if (formData.message.trim().length < 10) {
 >
                 <option value="">Select Service</option>
 
-                {services.map((service) => (
+                {allServices.map((service) => (
                   <option
   key={service.slug}
-  value={service.title}
+  value={service.name}
 >
-                    {service.title}
+                    {service.name}
                   </option>
                 ))}
               </select>

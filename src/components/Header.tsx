@@ -54,7 +54,6 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
   const pathname = useRouterState({
   select: (state) => state.location.pathname,
 });
@@ -112,38 +111,6 @@ const isActive = (href: string) => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
-
-  useEffect(() => {
-  if (pathname !== "/") return;
-
-  const sections = [
-    "services",
-    "why",
-    "journey",
-    "contact",
-    "faq",
-  ];
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
-      });
-    },
-    {
-      threshold: 0.45,
-    }
-  );
-
-  sections.forEach((id) => {
-    const section = document.getElementById(id);
-    if (section) observer.observe(section);
-  });
-
-  return () => observer.disconnect();
-}, [pathname]);
 
   return (
     <>
@@ -264,23 +231,7 @@ const isActive = (href: string) => {
                 >
                   {link.label}
                 </Link>
-                
               ))}
-              
-
-              {/* About in drawer */}
-              <Link
-  to="/about"
-  preload="intent"
-  onClick={() => setMenuOpen(false)}
-  className={`px-4 py-3.5 rounded-xl text-base transition ${
-    isActive("/about")
-      ? "bg-primary/10 text-primary font-semibold"
-      : "text-foreground hover:bg-accent"
-  }`}
->
-  About
-</Link>
             </nav>
 
             {/* Drawer CTA */}

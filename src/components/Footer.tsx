@@ -1,28 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { toast } from "sonner";
-import { useState, useRef, useEffect, FormEvent } from "react";
-import { createPortal } from "react-dom";
-import { sendContactEmail } from "@/lib/emailjs-config";
+import { Link } from "@tanstack/react-router";
 import {
-  Sparkles,
-  Moon,
-  Sun,
-  Star,
   Phone,
-  MessageCircle,
-  ScrollText,
-  HeartHandshake,
-  ShieldCheck,
-  ArrowRight,
-  Compass,
-  Gem,
   Mail,
   Instagram,
   Youtube,
-  Facebook,
   Linkedin,
-  Menu,
-  X,
   MapPin,
 } from "lucide-react";
 import logoAsset from "@/assets/logo.png";
@@ -84,14 +66,6 @@ function Footer() {
     className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
   >
     <Youtube className="h-4 w-4" />
-  </a>
-
-  <a
-    href="#"
-    aria-label="Facebook"
-    className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
-  >
-    <Facebook className="h-4 w-4" />
   </a>
 </div>
         </div>

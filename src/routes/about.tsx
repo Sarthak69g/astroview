@@ -1,8 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
-import { ArrowRight, Menu, X, ShieldCheck, Eye, Heart, Sparkles, MapPin, Mail, Phone } from "lucide-react";
-import LOGO from "@/assets/logo.png";
+import { createFileRoute } from "@tanstack/react-router";
+import { ShieldCheck, Eye, Heart, Sparkles, MapPin, Mail, Phone } from "lucide-react";
 
 const CONTACT = {
   email: "support@kamleshkhyatiinfosolution.com",
@@ -33,51 +30,6 @@ const timeline = [
   { year: "The build", text: "We began building AstroView from scratch. The brief was simple: slow, private, honest, beautiful. No fake reviews. No manufactured urgency. No pop-ups. Just astrology, done properly." },
   { year: "Coming soon", text: "AstroView is in its final stages before launch. Our first release will include Janam Kundli reports, live call consultations, and chat readings — each built around real astrologers and real care." },
 ];
-
-function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => { const onScroll = () => setScrolled(window.scrollY > 16); window.addEventListener("scroll", onScroll, { passive: true }); return () => window.removeEventListener("scroll", onScroll); }, []);
-  useEffect(() => { document.body.style.overflow = menuOpen ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [menuOpen]);
-  const navLinks = [{ label: "Home", href: "/" }, { label: "Services", href: "/services" }, { label: "Why Us", href: "/#why" }, { label: "Contact", href: "/#contact" }];
-  return (
-    <>
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "backdrop-blur-xl bg-background/80 border-b border-border/50 shadow-[0_1px_12px_oklch(0.58_0.18_42_/_0.08)]" : "backdrop-blur-xl bg-background/70 border-b border-border/50"}`}>
-      <div className="mx-auto max-w-7xl px-6 py-3 h-18 flex items-center justify-between">
-        <a href="/" className="flex items-center gap-2.5 shrink-0"><img src={LOGO} alt="AstroView" className="h-10 w-10" /><span className="text-xl font-display font-semibold tracking-tight">Astro<span className="text-primary">View</span></span></a>
-        <nav className="hidden md:flex items-center gap-7">
-          {navLinks.map((l) => <a key={l.href} href={l.href} className="text-sm text-muted-foreground hover:text-foreground transition-colors">{l.label}</a>)}
-          <Link
-  to="/about"
-  preload="intent"
-  className="text-sm text-foreground font-medium"
->
-  About
-</Link>
-        </nav>
-        <a href="/services" className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 transition">Our services <ArrowRight className="h-4 w-4" /></a>
-        <button onClick={() => setMenuOpen(true)} className="md:hidden p-2 text-foreground rounded-lg hover:bg-accent transition"><Menu className="h-5 w-5" /></button>
-      </div>
-
-    </header>
-
-    {typeof document !== "undefined" && createPortal(
-      <>
-      {menuOpen && <div className="fixed inset-0 z-[60] bg-foreground/40 backdrop-blur-sm md:hidden" onClick={() => setMenuOpen(false)} />}
-      <div className={`fixed top-0 right-0 z-[70] h-full w-[280px] bg-background border-l border-border shadow-2xl flex flex-col md:hidden transition-transform duration-300 ${menuOpen ? "translate-x-0" : "translate-x-full"}`}>
-        <div className="flex items-center justify-between px-6 py-5 border-b border-border"><div className="flex items-center gap-2"><img src={LOGO} alt="" className="h-8 w-8" /><span className="font-display font-semibold text-lg">Astro<span className="text-primary">View</span></span></div><button onClick={() => setMenuOpen(false)} className="p-1.5 rounded-full hover:bg-accent transition"><X className="h-5 w-5" /></button></div>
-        <nav className="flex flex-col gap-1 p-4 flex-1">
-          {navLinks.map((l) => <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)} className="px-4 py-3.5 rounded-xl text-base font-medium hover:bg-accent transition">{l.label}</a>)}
-          <a href="/about" onClick={() => setMenuOpen(false)} className="px-4 py-3.5 rounded-xl text-base font-medium text-primary">About</a>
-        </nav>
-        <div className="p-5 border-t border-border"><a href="/services" onClick={() => setMenuOpen(false)} className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-primary px-5 py-3.5 text-sm font-medium text-primary-foreground">Our services <ArrowRight className="h-4 w-4" /></a></div>
-      </div>
-      </>,
-      document.body
-    )}
-    </>
-  );
-}
 
 function AboutPage() {
   return (

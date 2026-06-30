@@ -61,8 +61,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "AstroView — Vedic Astrology, Reimagined" },
       { name: "twitter:description", content: "AstroView is a thoughtful home for Vedic astrology — personalized guidance, classical tradition, and a calm modern experience for every seeker." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/b057de17-a4f0-4c4e-9381-6af9af3cca3a" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/b057de17-a4f0-4c4e-9381-6af9af3cca3a" },
+      { property: "og:image", content: "/og-image.png" },
+      { name: "twitter:image", content: "/og-image.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
