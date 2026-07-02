@@ -12,7 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesIndexRouteImport } from './routes/services/index'
+import { Route as HoroscopeIndexRouteImport } from './routes/horoscope/index'
 import { Route as ServicesSlugRouteImport } from './routes/services/$slug'
+import { Route as HoroscopeSignRouteImport } from './routes/horoscope/$sign'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -29,43 +31,80 @@ const ServicesIndexRoute = ServicesIndexRouteImport.update({
   path: '/services/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HoroscopeIndexRoute = HoroscopeIndexRouteImport.update({
+  id: '/horoscope/',
+  path: '/horoscope/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesSlugRoute = ServicesSlugRouteImport.update({
   id: '/services/$slug',
   path: '/services/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HoroscopeSignRoute = HoroscopeSignRouteImport.update({
+  id: '/horoscope/$sign',
+  path: '/horoscope/$sign',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/horoscope/$sign': typeof HoroscopeSignRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/horoscope/': typeof HoroscopeIndexRoute
   '/services/': typeof ServicesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/horoscope/$sign': typeof HoroscopeSignRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/horoscope': typeof HoroscopeIndexRoute
   '/services': typeof ServicesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/horoscope/$sign': typeof HoroscopeSignRoute
   '/services/$slug': typeof ServicesSlugRoute
+  '/horoscope/': typeof HoroscopeIndexRoute
   '/services/': typeof ServicesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/services/$slug' | '/services/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/horoscope/$sign'
+    | '/services/$slug'
+    | '/horoscope/'
+    | '/services/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/services/$slug' | '/services'
-  id: '__root__' | '/' | '/about' | '/services/$slug' | '/services/'
+  to:
+    | '/'
+    | '/about'
+    | '/horoscope/$sign'
+    | '/services/$slug'
+    | '/horoscope'
+    | '/services'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/horoscope/$sign'
+    | '/services/$slug'
+    | '/horoscope/'
+    | '/services/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  HoroscopeSignRoute: typeof HoroscopeSignRoute
   ServicesSlugRoute: typeof ServicesSlugRoute
+  HoroscopeIndexRoute: typeof HoroscopeIndexRoute
   ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
@@ -92,11 +131,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/horoscope/': {
+      id: '/horoscope/'
+      path: '/horoscope'
+      fullPath: '/horoscope/'
+      preLoaderRoute: typeof HoroscopeIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services/$slug': {
       id: '/services/$slug'
       path: '/services/$slug'
       fullPath: '/services/$slug'
       preLoaderRoute: typeof ServicesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/horoscope/$sign': {
+      id: '/horoscope/$sign'
+      path: '/horoscope/$sign'
+      fullPath: '/horoscope/$sign'
+      preLoaderRoute: typeof HoroscopeSignRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -105,7 +158,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  HoroscopeSignRoute: HoroscopeSignRoute,
   ServicesSlugRoute: ServicesSlugRoute,
+  HoroscopeIndexRoute: HoroscopeIndexRoute,
   ServicesIndexRoute: ServicesIndexRoute,
 }
 export const routeTree = rootRouteImport

@@ -22,6 +22,11 @@ label:"Services",
 to:"/services"
 },
 {
+id:"horoscope",
+label:"Horoscope",
+to:"/horoscope"
+},
+{
 id:"why",
 label:"Why Us",
 to:"/#why"
