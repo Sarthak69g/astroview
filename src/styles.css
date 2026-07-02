@@ -131,8 +131,17 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+@keyframes route-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
 
 @utility animate-float-slow { animation: float-slow 6s ease-in-out infinite; }
 @utility animate-pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
 @utility animate-twinkle { animation: twinkle 3s ease-in-out infinite; }
 @utility animate-orbit { animation: orbit 40s linear infinite; }
+@utility route-fade-in { animation: route-fade-in 0.4s ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .route-fade-in { animation: none; }
+}

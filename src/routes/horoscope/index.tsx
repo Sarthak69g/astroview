@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { zodiacSigns, getSignByDate, type Element, type ZodiacSign } from "../../data/zodiacData";
 import { ChevronRight } from "lucide-react";
+import Reveal from "@/components/Reveal";
 
 export const Route = createFileRoute("/horoscope/")({
   head: () => ({
@@ -206,64 +207,72 @@ function HoroscopeHub() {
 
       {/* Sign finder */}
       <section className="px-6 pb-16">
-        <SignFinder />
+        <Reveal>
+          <SignFinder />
+        </Reveal>
       </section>
 
       {/* Sign grid with element filter */}
       <section className="max-w-6xl mx-auto px-6 pb-24">
-        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-          <div>
-            <p className="text-xs tracking-[0.16em] uppercase text-primary font-medium mb-1">All Signs</p>
-            <h2 className="font-display text-2xl font-semibold text-foreground">Browse by element.</h2>
-          </div>
+        <Reveal>
+          <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+            <div>
+              <p className="text-xs tracking-[0.16em] uppercase text-primary font-medium mb-1">All Signs</p>
+              <h2 className="font-display text-2xl font-semibold text-foreground">Browse by element.</h2>
+            </div>
 
-          {/* Element filter pills */}
-          <div className="flex gap-2 flex-wrap">
-            {elements.map((el) => {
-              const isActive = activeElement === el;
-              const cfg = el !== "All" ? elementConfig[el] : null;
-              return (
-                <button
-                  key={el}
-                  onClick={() => setActiveElement(el)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all ${
-                    isActive
-                      ? "bg-gradient-primary text-primary-foreground border-transparent shadow-soft"
-                      : "bg-card border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
-                  }`}
-                >
-                  {cfg && <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />}
-                  {el}
-                </button>
-              );
-            })}
+            {/* Element filter pills */}
+            <div className="flex gap-2 flex-wrap">
+              {elements.map((el) => {
+                const isActive = activeElement === el;
+                const cfg = el !== "All" ? elementConfig[el] : null;
+                return (
+                  <button
+                    key={el}
+                    onClick={() => setActiveElement(el)}
+                    className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                      isActive
+                        ? "bg-gradient-primary text-primary-foreground border-transparent shadow-soft"
+                        : "bg-card border-border text-muted-foreground hover:border-primary/30 hover:text-foreground"
+                    }`}
+                  >
+                    {cfg && <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />}
+                    {el}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        </Reveal>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {filtered.map((sign) => (
-            <SignCard key={sign.slug} sign={sign} />
+          {filtered.map((sign, i) => (
+            <Reveal key={sign.slug} delay={(i % 4) * 60}>
+              <SignCard sign={sign} />
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* Bottom CTA */}
       <section className="bg-gradient-cosmic py-14 px-6 text-center">
-        <h2 className="font-display text-3xl font-semibold text-cosmic-foreground mb-3">
-          Your sun sign is one layer.
-        </h2>
-        <p className="text-cosmic-foreground/70 text-sm mb-7 max-w-md mx-auto leading-relaxed">
-          A full birth chart reading goes far deeper — your moon sign, rising sign, planetary
-          house positions, and Dasha timeline all shape who you are and what's ahead.
-        </p>
-        <Link
-          to="/services/$slug"
-          params={{ slug: "birth-chart-analysis" }}
-          className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-95 transition"
-        >
-          Explore birth chart analysis
-          <ChevronRight className="h-4 w-4" />
-        </Link>
+        <Reveal>
+          <h2 className="font-display text-3xl font-semibold text-cosmic-foreground mb-3">
+            Your sun sign is one layer.
+          </h2>
+          <p className="text-cosmic-foreground/70 text-sm mb-7 max-w-md mx-auto leading-relaxed">
+            A full birth chart reading goes far deeper — your moon sign, rising sign, planetary
+            house positions, and Dasha timeline all shape who you are and what's ahead.
+          </p>
+          <Link
+            to="/services/$slug"
+            params={{ slug: "birth-chart-analysis" }}
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-95 transition"
+          >
+            Explore birth chart analysis
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        </Reveal>
       </section>
 
     </main>

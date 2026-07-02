@@ -17,6 +17,7 @@ import {
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import SunSignFinder from "@/components/SunSignFinder";
+import Reveal from "@/components/Reveal";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -150,74 +151,79 @@ function Landing() {
   );
 }
 
-// ─── Scroll-reveal utility ────────────────────────────────────────────────────
-// SSR-safe: starts visible so hydration never flashes, hides & animates only
-// elements that are below the fold when the page first loads.
+// ─── Scroll parallax hook ──────────────────────────────────────────────────
+// Tracks window scroll and returns `scrollY * rate`, rAF-throttled. Used to
+// drift the hero's background layers (starfield, orbit rings) at different
+// speeds as the page scrolls past them, for a sense of depth. No-ops under
+// prefers-reduced-motion.
 
-function Reveal({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [state, setState] = useState<"visible" | "hidden" | "entering">("visible");
+function useScrollParallax(rate: number) {
+  const [offset, setOffset] = useState(0);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 0.92) return;
-    setState("hidden");
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setState("entering");
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.08 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+    let raf = 0;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      raf = requestAnimationFrame(() => {
+        setOffset(window.scrollY * rate);
+        ticking = false;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [rate]);
 
-  return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: state === "hidden" ? 0 : 1,
-        transform: state === "hidden" ? "translateY(22px)" : "none",
-        transition:
-          state === "entering"
-            ? `opacity 0.65s ease ${delay}ms, transform 0.65s ease ${delay}ms`
-            : "none",
-      }}
-    >
-      {children}
-    </div>
-  );
+  return offset;
 }
 
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 function Hero() {
   const [loaded, setLoaded] = useState(false);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
   useEffect(() => {
     const t = setTimeout(() => setLoaded(true), 60);
     return () => clearTimeout(t);
   }, []);
 
+  // Background layers drift at different rates as the page scrolls — the
+  // rings (closer, larger) move a bit more than the starfield (further back).
+  const ringOffset = useScrollParallax(0.14);
+  const starOffset = useScrollParallax(0.06);
+
+  function handleMouseMove(e: React.MouseEvent<HTMLElement>) {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const relX = (e.clientX - rect.left) / rect.width - 0.5;
+    const relY = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({ x: relX * 18, y: relY * 18 });
+  }
+
+  function resetTilt() {
+    setTilt({ x: 0, y: 0 });
+  }
+
   return (
-    <section className="relative isolate overflow-hidden">
+    <section
+      className="relative isolate overflow-hidden"
+      onMouseMove={handleMouseMove}
+      onMouseLeave={resetTilt}
+    >
       <div className="absolute inset-0 bg-gradient-hero -z-10" />
-      <Starfield />
-      <div className="pointer-events-none absolute left-1/2 top-[8%] -translate-x-1/2 w-[900px] h-[900px] -z-10 opacity-50">
+      <div style={{ transform: `translateY(${starOffset}px)` }}>
+        <Starfield />
+      </div>
+      <div
+        className="pointer-events-none absolute left-1/2 top-[8%] w-[900px] h-[900px] -z-10 opacity-50"
+        style={{ transform: `translateX(-50%) translateY(${ringOffset}px)` }}
+      >
         <div className="absolute inset-0 rounded-full border border-primary/15 animate-orbit" />
         <div className="absolute inset-12 rounded-full border border-primary/10" />
         <div className="absolute inset-28 rounded-full border border-primary/10" />
@@ -299,6 +305,13 @@ function Hero() {
             transition: "opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s",
           }}
         >
+          <div
+            className="relative"
+            style={{
+              transform: `translate(${tilt.x}px, ${tilt.y}px)`,
+              transition: "transform 0.3s ease-out",
+            }}
+          >
           <div className="absolute inset-0 bg-gradient-glow blur-3xl" />
           <div className="relative">
             <div className="absolute -inset-8 rounded-full bg-gradient-primary opacity-20 blur-2xl animate-pulse-glow" />
@@ -323,6 +336,7 @@ function Hero() {
                 <p className="text-sm font-medium">A gentle day</p>
               </div>
             </div>
+          </div>
           </div>
         </div>
 

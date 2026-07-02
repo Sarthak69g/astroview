@@ -154,6 +154,25 @@ function ServiceDetailPage() {
 
       <div className="max-w-5xl mx-auto px-6"><div className="border-t border-border" /></div>
 
+      {slug === "tarot-numerology" && (
+        <section className="max-w-5xl mx-auto px-6 pt-10">
+          <Link
+            to="/numerology"
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl bg-gradient-cosmic p-6 group hover:opacity-95 transition"
+          >
+            <div>
+              <p className="text-xs uppercase tracking-[0.18em] text-cosmic-foreground/60 mb-1.5">Try it free</p>
+              <p className="text-cosmic-foreground font-display text-lg font-semibold">
+                Calculate your Life Path, Destiny & Soul Urge numbers.
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-cosmic-foreground group-hover:gap-2.5 transition-all flex-shrink-0">
+              Open the numerology calculator <ArrowRight className="h-4 w-4" />
+            </span>
+          </Link>
+        </section>
+      )}
+
       {/* What you get + Who is it for */}
       <section className="max-w-5xl mx-auto px-6 py-14 grid md:grid-cols-2 gap-12">
         <div>

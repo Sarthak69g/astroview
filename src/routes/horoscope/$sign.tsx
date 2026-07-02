@@ -2,6 +2,7 @@ import { createFileRoute, Link, notFound, useParams } from "@tanstack/react-rout
 import { zodiacSigns, getSignBySlug, getCompatibility, type ZodiacSign, type Element } from "../../data/zodiacData";
 import { services } from "../../data/servicesData";
 import { ChevronRight, Star, Zap, AlertTriangle } from "lucide-react";
+import DailyHoroscope from "@/components/DailyHoroscope";
 
 export const Route = createFileRoute("/horoscope/$sign")({
   component: SignDetailPage,
@@ -194,6 +195,9 @@ function SignDetailPage() {
           </div>
         </div>
       </section>
+
+      {/* Daily / Weekly / Monthly horoscope */}
+      <DailyHoroscope signSlug={sign.slug} signName={sign.name} />
 
       {/* Traits pill row */}
       <section className="border-y border-border bg-accent/20 py-5 px-6">

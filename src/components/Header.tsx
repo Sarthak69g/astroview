@@ -5,14 +5,15 @@ import { ArrowRight, Menu, X } from "lucide-react";
 import logoAsset from "@/assets/logo.png";
 
 const navLinks = [
-  { id: "home",      label: "Home",      to: "/"          },
-  { id: "services",  label: "Services",  to: "/services"  },
-  { id: "horoscope", label: "Horoscope", to: "/horoscope" },
-  { id: "why",       label: "Why Us",    to: "/#why"      },
-  { id: "journey",   label: "Journey",   to: "/#journey"  },
-  { id: "contact",   label: "Contact",   to: "/#contact"  },
-  { id: "faq",       label: "FAQ",       to: "/#faq"      },
-  { id: "about",     label: "About",     to: "/about"     },
+  { id: "home",        label: "Home",        to: "/"            },
+  { id: "services",    label: "Services",    to: "/services"    },
+  { id: "horoscope",   label: "Horoscope",   to: "/horoscope"   },
+  { id: "numerology",  label: "Numerology",  to: "/numerology"  },
+  { id: "why",         label: "Why Us",      to: "/#why"        },
+  { id: "journey",     label: "Journey",     to: "/#journey"    },
+  { id: "contact",     label: "Contact",     to: "/#contact"    },
+  { id: "faq",         label: "FAQ",         to: "/#faq"        },
+  { id: "about",       label: "About",       to: "/about"       },
 ];
 
 const SECTION_IDS = ["why", "journey", "contact", "faq"];
@@ -53,6 +54,7 @@ export default function Header() {
     if (href === "/")           return pathname === "/" && !activeSection;
     if (href === "/services")   return pathname.startsWith("/services");
     if (href === "/horoscope")  return pathname.startsWith("/horoscope");
+    if (href === "/numerology") return pathname.startsWith("/numerology");
     if (href === "/about")      return pathname === "/about";
     if (href.startsWith("/#"))  return pathname === "/" && activeSection === href.substring(2);
     return false;

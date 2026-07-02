@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import RouteTransition from "@/components/RouteTransition";
 
 function NotFoundComponent() {
   return (
@@ -95,7 +96,9 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <Header />
 
-      <Outlet />
+      <RouteTransition>
+        <Outlet />
+      </RouteTransition>
 
       <Footer />
 
