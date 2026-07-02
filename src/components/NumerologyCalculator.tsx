@@ -76,7 +76,7 @@ export default function NumerologyCalculator() {
                   <input
                     id="numerology-dob"
                     type="date"
-                    min="1900-01-01"
+                    min="1000-01-01"
                     max={maxDate}
                     value={dob}
                     onChange={(e) => { setDob(e.target.value); setProfile(null); }}
