@@ -1,108 +1,29 @@
-// src/components/Header.tsx
-// Drop this file at src/components/Header.tsx (replace the existing one)
-
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { ArrowRight, Menu, X } from "lucide-react";
 import logoAsset from "@/assets/logo.png";
 
-// ─── Nav links ────────────────────────────────────────────────────────────────
-// "to" is used for Link — TanStack Router handles both /path and /#hash fine.
-
 const navLinks = [
-{
-id:"home",
-label:"Home",
-to:"/"
-},
-{
-id:"services",
-label:"Services",
-to:"/services"
-},
-{
-id:"horoscope",
-label:"Horoscope",
-to:"/horoscope"
-},
-{
-id:"why",
-label:"Why Us",
-to:"/#why"
-},
-{
-id:"journey",
-label:"Journey",
-to:"/#journey"
-},
-{
-id:"contact",
-label:"Contact",
-to:"/#contact"
-},
-{
-id:"faq",
-label:"FAQ",
-to:"/#faq"
-},
-{
-id:"about",
-label:"About",
-to:"/about"
-},
+  { id: "home",      label: "Home",      to: "/"          },
+  { id: "services",  label: "Services",  to: "/services"  },
+  { id: "horoscope", label: "Horoscope", to: "/horoscope" },
+  { id: "why",       label: "Why Us",    to: "/#why"      },
+  { id: "journey",   label: "Journey",   to: "/#journey"  },
+  { id: "contact",   label: "Contact",   to: "/#contact"  },
+  { id: "faq",       label: "FAQ",       to: "/#faq"      },
+  { id: "about",     label: "About",     to: "/about"     },
 ];
 
-// ─── Header ───────────────────────────────────────────────────────────────────
+const SECTION_IDS = ["why", "journey", "contact", "faq"];
 
 export default function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const pathname = useRouterState({
-  select: (state) => state.location.pathname,
-});
-const [hash, setHash] = useState("");
+  const [menuOpen,      setMenuOpen]      = useState(false);
+  const [scrolled,      setScrolled]      = useState(false);
+  const [mounted,       setMounted]       = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
-useEffect(() => {
-  const updateHash = () => {
-    setHash(window.location.hash);
-  };
-
-  updateHash(); // <-- initialize once
-
-  window.addEventListener("hashchange", updateHash);
-
-  return () => {
-    window.removeEventListener("hashchange", updateHash);
-  };
-}, []);
-
-const isActive = (href: string) => {
-  // Home
-  if (href === "/") {
-    return pathname === "/" && hash === "";
-  }
-
-  // Services
-  if (href === "/services") {
-    return pathname.startsWith("/services");
-  }
-
-  // About
-  if (href === "/about") {
-    return pathname === "/about";
-  }
-
-  // Homepage sections
-  if (href.startsWith("/#")) {
-    return pathname === "/" && hash === href.substring(1);
-  }
-  return false;
-};
-
-  // Hydration guard for portal
-  useEffect(() => { setMounted(true); }, []);
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   // Scroll shadow
   useEffect(() => {
@@ -111,67 +32,80 @@ const isActive = (href: string) => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock body scroll when drawer is open
+  // Section highlighting via IntersectionObserver (homepage only)
+  useEffect(() => {
+    if (pathname !== "/") { setActiveSection(null); return; }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.find((e) => e.isIntersecting);
+        if (visible) setActiveSection(visible.target.id);
+      },
+      { rootMargin: "-15% 0px -60% 0px", threshold: 0 }
+    );
+    SECTION_IDS.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  const isActive = (href: string): boolean => {
+    if (href === "/")           return pathname === "/" && !activeSection;
+    if (href === "/services")   return pathname.startsWith("/services");
+    if (href === "/horoscope")  return pathname.startsWith("/horoscope");
+    if (href === "/about")      return pathname === "/about";
+    if (href.startsWith("/#"))  return pathname === "/" && activeSection === href.substring(2);
+    return false;
+  };
+
+  useEffect(() => { setMounted(true); }, []);
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [menuOpen]);
 
+  const activeCls   = "text-sm font-medium text-primary bg-primary/10 px-4 py-2 rounded-full transition-all duration-200";
+  const inactiveCls = "text-sm text-muted-foreground hover:text-foreground px-4 py-2 rounded-full transition-all duration-200";
+
   return (
     <>
-      {/* ── Top bar ─────────────────────────────────────────────── */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? "backdrop-blur-xl bg-background/80 border-b border-border/50 shadow-[0_1px_12px_oklch(0.58_0.18_42_/_0.08)]"
-            : "backdrop-blur-xl bg-background/70 border-b border-border/50"
+            ? "backdrop-blur-xl bg-background/85 border-b border-border/50 shadow-[0_1px_12px_oklch(0.58_0.18_42_/_0.08)]"
+            : "backdrop-blur-xl bg-background/70 border-b border-border/30"
         }`}
       >
         <div className="mx-auto max-w-7xl px-6 h-18 py-3 flex items-center justify-between">
 
-          {/* Logo */}
-          <Link
-            to="/"
-            preload="intent"
-            className="flex items-center gap-2.5 shrink-0"
-          >
+          <Link to="/" preload="intent" className="flex items-center gap-2.5 shrink-0">
             <img src={logoAsset} alt="AstroView" className="h-10 w-10" />
             <span className="text-xl font-display font-semibold tracking-tight">
               Astro<span className="text-primary">View</span>
             </span>
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-7">
+          <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
                 preload="intent"
-                activeProps={{
-                       className:
-                            "text-sm font-medium text-primary bg-primary/10 px-4 py-2 rounded-full shadow-sm transition-all",
-            }}
-                inactiveProps={{
-                      className:
-                           "text-sm text-muted-foreground hover:text-foreground px-4 py-2 rounded-full transition-all",
-            }}
+                className={isActive(link.to) ? activeCls : inactiveCls}
               >
                 {link.label}
               </Link>
             ))}
           </nav>
 
-          {/* Desktop CTA */}
           <Link
             to="/services"
             preload="intent"
-            className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 transition"
+            className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] transition-all duration-200"
           >
             Our services <ArrowRight className="h-4 w-4" />
           </Link>
 
-          {/* Mobile hamburger */}
           <button
             onClick={() => setMenuOpen(true)}
             className="md:hidden p-2 text-foreground rounded-lg hover:bg-accent transition"
@@ -179,30 +113,22 @@ const isActive = (href: string) => {
           >
             <Menu className="h-5 w-5" />
           </button>
-
         </div>
       </header>
 
-      {/* ── Mobile drawer (portal) ──────────────────────────────── */}
       {mounted && createPortal(
         <>
-          {/* Overlay */}
           <div
             className={`fixed inset-0 bg-foreground/40 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
-              menuOpen
-                ? "opacity-100 z-[9998] pointer-events-auto"
-                : "opacity-0 z-[-1] pointer-events-none"
+              menuOpen ? "opacity-100 z-[9998] pointer-events-auto" : "opacity-0 z-[-1] pointer-events-none"
             }`}
             onClick={() => setMenuOpen(false)}
           />
-
-          {/* Drawer panel */}
           <div
             className={`fixed top-0 right-0 h-full w-[280px] bg-background border-l border-border shadow-2xl flex flex-col md:hidden transition-transform duration-300 ease-in-out z-[9999] ${
               menuOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
-            {/* Drawer header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-border">
               <div className="flex items-center gap-2">
                 <img src={logoAsset} alt="" className="h-8 w-8" />
@@ -219,7 +145,6 @@ const isActive = (href: string) => {
               </button>
             </div>
 
-            {/* Drawer nav links */}
             <nav className="flex flex-col gap-1 p-4 flex-1">
               {navLinks.map((link) => (
                 <Link
@@ -227,19 +152,17 @@ const isActive = (href: string) => {
                   to={link.to}
                   preload="intent"
                   onClick={() => setMenuOpen(false)}
-                  activeProps={{
-                    className: "px-4 py-3.5 rounded-xl text-base font-semibold text-foreground bg-accent transition",
-                  }}
-                  inactiveProps={{
-                    className: "px-4 py-3.5 rounded-xl text-base font-medium text-foreground hover:bg-accent transition",
-                  }}
+                  className={
+                    isActive(link.to)
+                      ? "px-4 py-3.5 rounded-xl text-base font-semibold text-foreground bg-accent transition"
+                      : "px-4 py-3.5 rounded-xl text-base font-medium text-foreground hover:bg-accent transition"
+                  }
                 >
                   {link.label}
                 </Link>
               ))}
             </nav>
 
-            {/* Drawer CTA */}
             <div className="p-5 border-t border-border">
               <Link
                 to="/services"

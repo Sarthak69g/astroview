@@ -89,8 +89,8 @@ function CompatibilityGrid({ sign }: { sign: ZodiacSign }) {
                 <span className="text-muted-foreground text-xs">&</span>
                 <span className="text-2xl">{other.symbol}</span>
               </div>
-              <p className="text-xs text-muted-foreground font-medium">
-                {sign.name.slice(0,3).toUpperCase()} & {other.name.slice(0,3).toUpperCase()}
+              <p className="text-[11px] text-muted-foreground font-medium leading-tight text-center">
+                {sign.name} & {other.name}
               </p>
 
               {/* Score bar */}
