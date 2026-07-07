@@ -1,6 +1,7 @@
 // src/routes/services/Services.tsx
 // Import path: ../../data/servicesData  (routes/services → src/data)
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { services, type Service, type DeliveryMode } from "../../data/servicesData";
 import { getServiceIcon } from "../../data/serviceIcons";
 import { ArrowUpRight, Clock } from "lucide-react";
@@ -38,6 +39,13 @@ const deliveryColours: Record<DeliveryMode, string> = {
 };
 
 function ServicesPage() {
+  const [filter, setFilter] = useState<DeliveryMode | "All">("All");
+
+  const filteredServices =
+    filter === "All" ? services : services.filter((s) => s.deliveryModes.includes(filter));
+
+  const FILTERS: (DeliveryMode | "All")[] = ["All", "Call", "Chat", "Report"];
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       {/* Page hero */}
@@ -82,11 +90,44 @@ function ServicesPage() {
 
       {/* Services grid */}
       <section className="max-w-6xl mx-auto px-6 pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {services.map((service: Service) => (
-            <ServiceCard key={service.slug} service={service} />
-          ))}
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+          <div>
+            <p className="text-xs tracking-[0.16em] uppercase text-primary font-medium mb-1">
+              All services
+            </p>
+            <h2 className="font-display text-2xl font-semibold text-foreground">
+              Pick what fits you.
+            </h2>
+          </div>
+
+          <div className="flex items-center gap-1.5 rounded-full border border-border bg-card p-1 self-start sm:self-auto">
+            {FILTERS.map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setFilter(mode)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                  filter === mode
+                    ? "bg-gradient-primary text-primary-foreground shadow-soft"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {mode}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {filteredServices.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredServices.map((service: Service) => (
+              <ServiceCard key={service.slug} service={service} />
+            ))}
+          </div>
+        ) : (
+          <p className="text-center text-muted-foreground text-sm py-16">
+            No services available via {filter} right now — try a different filter.
+          </p>
+        )}
       </section>
 
       {/* Bottom CTA */}

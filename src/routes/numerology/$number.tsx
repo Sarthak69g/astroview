@@ -12,23 +12,23 @@ export const Route = createFileRoute("/numerology/$number")({
 function NumberStrip({ current }: { current: string }) {
   return (
     <div className="overflow-x-auto scrollbar-none">
-      <div className="flex gap-2 min-w-max px-6 pb-2">
+      <div className="flex justify-center gap-2 min-w-max mx-auto px-6 pb-2">
         {numerologyNumbers.map((n) => (
           <Link
             key={n.slug}
             to="/numerology/$number"
             params={{ number: n.slug }}
-            className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all flex-shrink-0 ${
+            className={`flex flex-col items-center gap-1 px-3.5 py-2 rounded-xl transition-all flex-shrink-0 ${
               n.slug === current
                 ? "bg-primary/10 border border-primary/30"
                 : "hover:bg-accent border border-transparent"
             }`}
           >
             <span className="text-lg leading-none font-display font-semibold">{n.number}</span>
-            <span className={`text-[9px] uppercase tracking-wider font-semibold ${
+            <span className={`text-[9px] uppercase tracking-wider font-semibold whitespace-nowrap ${
               n.slug === current ? "text-primary-deep" : "text-muted-foreground"
             }`}>
-              {n.title.replace("The ", "").slice(0, 6)}
+              {n.title.replace("The ", "")}
             </span>
           </Link>
         ))}

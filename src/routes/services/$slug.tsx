@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { getServiceBySlug, getOtherServices, type Service, type ServiceFAQ, type DeliveryMode } from "../../data/servicesData";
 import { getServiceIcon } from "../../data/serviceIcons";
-import { useState } from "react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import {
   ChevronRight,
   Clock,
@@ -17,7 +17,6 @@ import {
   Tag,
   Check,
   User,
-  Plus,
   Mail,
   Phone,
   ArrowRight,
@@ -66,7 +65,6 @@ function ServiceDetailPage() {
   if (!service) throw notFound();
 
   const others = getOtherServices(slug, 3);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
   const Icon = getServiceIcon(service.icon);
 
   return (
@@ -84,7 +82,9 @@ function ServiceDetailPage() {
       </nav>
 
       {/* Hero */}
-      <section className="max-w-5xl mx-auto px-6 pt-10 pb-14 grid md:grid-cols-5 gap-10">
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 -z-10 bg-gradient-hero" />
+        <div className="max-w-5xl mx-auto px-6 pt-10 pb-14 grid md:grid-cols-5 gap-10">
 
         {/* Left — main content */}
         <div className="md:col-span-3">
@@ -130,15 +130,15 @@ function ServiceDetailPage() {
                   <p className="text-sm text-foreground font-medium">{service.deliveryModes.join(" · ")}</p>
                 </div>
               </div>
-              {service.startingFrom && (
-                <div className="flex items-start gap-3">
-                  <Tag className="h-4 w-4 text-muted-foreground mt-0.5" aria-hidden="true" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">Starting from</p>
-                    <p className="text-sm text-foreground font-medium">{service.startingFrom}</p>
-                  </div>
+              <div className="flex items-start gap-3">
+                <Tag className="h-4 w-4 text-muted-foreground mt-0.5" aria-hidden="true" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Starting from</p>
+                  <p className="text-sm text-foreground font-medium">
+                    {service.startingFrom ?? "Contact for pricing"}
+                  </p>
                 </div>
-              )}
+              </div>
             </div>
 
             <a href="/#contact" className="block w-full text-center bg-gradient-primary hover:opacity-95 text-primary-foreground text-sm font-medium px-5 py-2.5 rounded-full transition-colors mb-3 shadow-soft">
@@ -150,6 +150,7 @@ function ServiceDetailPage() {
             <p className="text-xs text-muted-foreground text-center mt-4">No pressure. Happy to answer questions first.</p>
           </div>
         </aside>
+        </div>
       </section>
 
       <div className="max-w-5xl mx-auto px-6"><div className="border-t border-border" /></div>
@@ -229,28 +230,18 @@ function ServiceDetailPage() {
       <section className="max-w-5xl mx-auto px-6 py-14">
         <p className="text-xs tracking-[0.16em] uppercase text-primary font-medium mb-3">Questions</p>
         <h2 className="font-display text-2xl font-semibold text-foreground mb-8">What you might be wondering.</h2>
-        <div className="divide-y divide-border max-w-2xl">
+        <Accordion type="single" collapsible className="max-w-2xl">
           {service.faqs.map((faq: ServiceFAQ, i: number) => (
-            <div key={i} className="py-4">
-              <button
-                onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                className="w-full flex items-start justify-between gap-4 text-left group"
-                aria-expanded={openFaq === i}
-              >
-                <span className="text-foreground text-sm font-medium group-hover:text-primary-deep transition-colors">
-                  {faq.question}
-                </span>
-                <Plus
-                  className={`h-4 w-4 text-muted-foreground flex-shrink-0 mt-0.5 transition-transform duration-200 ${openFaq === i ? "rotate-45 text-primary-deep" : ""}`}
-                  aria-hidden="true"
-                />
-              </button>
-              {openFaq === i && (
-                <p className="mt-3 text-muted-foreground text-sm leading-relaxed pr-8">{faq.answer}</p>
-              )}
-            </div>
+            <AccordionItem key={i} value={`faq-${i}`}>
+              <AccordionTrigger className="text-foreground text-sm font-medium hover:text-primary-deep hover:no-underline">
+                {faq.question}
+              </AccordionTrigger>
+              <AccordionContent className="text-muted-foreground text-sm leading-relaxed pr-8">
+                {faq.answer}
+              </AccordionContent>
+            </AccordionItem>
           ))}
-        </div>
+        </Accordion>
       </section>
 
       {/* Dark CTA banner */}
