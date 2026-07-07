@@ -7,9 +7,12 @@
 
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarIcon, Sparkles } from "lucide-react";
+import { format } from "date-fns";
 import { calculateNumerologyProfile, type NumerologyProfile } from "@/lib/numerology";
 import { getNumberByValue } from "@/data/numerologyData";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const RESULT_LABELS: { key: keyof NumerologyProfile; label: string; blurb: string }[] = [
   { key: "lifePath", label: "Life Path", blurb: "Who you fundamentally are" },
@@ -19,23 +22,23 @@ const RESULT_LABELS: { key: keyof NumerologyProfile; label: string; blurb: strin
 
 export default function NumerologyCalculator() {
   const [name, setName] = useState("");
-  const [dob, setDob] = useState("");
+  const [dob, setDob] = useState<Date | undefined>(undefined);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [profile, setProfile] = useState<NumerologyProfile | null>(null);
-  const maxDate = new Date().toISOString().split("T")[0];
+  const today = new Date();
+  const currentYear = today.getFullYear();
 
   function handleCalculate() {
     if (!name.trim() || !dob) return;
-    const [yearStr, monthStr, dayStr] = dob.split("-");
-    const year = parseInt(yearStr, 10);
-    const month = parseInt(monthStr, 10);
-    const day = parseInt(dayStr, 10);
-    const currentYear = new Date().getFullYear();
+    const year = dob.getFullYear();
+    const month = dob.getMonth() + 1;
+    const day = dob.getDate();
     if (!year || !month || !day || year < 1900 || year > currentYear) return;
 
     setProfile(calculateNumerologyProfile(name, { day, month, year }));
   }
 
-  const canCalculate = name.trim().length > 0 && dob.length > 0;
+  const canCalculate = name.trim().length > 0 && !!dob;
 
   return (
     <section className="py-14 md:py-20">
@@ -50,13 +53,16 @@ export default function NumerologyCalculator() {
                 What are your numbers?
               </h2>
               <p className="mt-3 text-muted-foreground max-w-md leading-relaxed">
-                Enter your full birth name and date of birth for an instant, real calculation
-                using the Pythagorean system — the same method most Western numerologists use.
+                Enter your full birth name and date of birth for an instant, real calculation using
+                the Pythagorean system — the same method most Western numerologists use.
               </p>
 
               <div className="mt-6 max-w-xs space-y-4">
                 <div>
-                  <label htmlFor="numerology-name" className="block text-xs font-medium text-muted-foreground mb-2">
+                  <label
+                    htmlFor="numerology-name"
+                    className="block text-xs font-medium text-muted-foreground mb-2"
+                  >
                     Full name at birth
                   </label>
                   <input
@@ -64,24 +70,52 @@ export default function NumerologyCalculator() {
                     type="text"
                     placeholder="e.g. Ram Kumar"
                     value={name}
-                    onChange={(e) => { setName(e.target.value); setProfile(null); }}
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      setProfile(null);
+                    }}
                     className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="numerology-dob" className="block text-xs font-medium text-muted-foreground mb-2">
+                  <label
+                    htmlFor="numerology-dob"
+                    className="block text-xs font-medium text-muted-foreground mb-2"
+                  >
                     Date of birth
                   </label>
-                  <input
-                    id="numerology-dob"
-                    type="date"
-                    min="1000-01-01"
-                    max={maxDate}
-                    value={dob}
-                    onChange={(e) => { setDob(e.target.value); setProfile(null); }}
-                    className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-                  />
+                  <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        id="numerology-dob"
+                        type="button"
+                        className="w-full flex items-center justify-between gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-left focus:outline-none focus:ring-2 focus:ring-primary/40 hover:border-primary/40 transition"
+                      >
+                        <span className={dob ? "text-foreground" : "text-muted-foreground"}>
+                          {dob ? format(dob, "d MMMM yyyy") : "Select date of birth"}
+                        </span>
+                        <CalendarIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={dob}
+                        onSelect={(date) => {
+                          setDob(date);
+                          setProfile(null);
+                          setCalendarOpen(false);
+                        }}
+                        captionLayout="dropdown"
+                        startMonth={new Date(1930, 0)}
+                        endMonth={today}
+                        disabled={{ after: today }}
+                        defaultMonth={dob ?? new Date(currentYear - 25, 0)}
+                        autoFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 <button
@@ -112,7 +146,9 @@ export default function NumerologyCalculator() {
                           {value}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">{label}</p>
+                          <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
+                            {label}
+                          </p>
                           <p className="text-sm font-semibold text-foreground">{meaning.title}</p>
                           <p className="text-xs text-muted-foreground truncate">{blurb}</p>
                         </div>

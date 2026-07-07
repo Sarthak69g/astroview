@@ -5,7 +5,10 @@
 
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarIcon, Sparkles } from "lucide-react";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface ZodiacSign {
   name: string;
@@ -57,25 +60,23 @@ function getSunSign(month: number, day: number): ZodiacSign {
 }
 
 export default function SunSignFinder() {
-  const [dob, setDob] = useState("");
+  const [dob, setDob] = useState<Date | undefined>(undefined);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [sign, setSign] = useState<ZodiacSign | null>(null);
-  const maxDate = new Date().toISOString().split("T")[0]; // today, YYYY-MM-DD
+  const today = new Date();
+  const currentYear = today.getFullYear();
 
-  const handleChange = (value: string) => {
-    setDob(value);
-    if (!value) {
+  const handleChange = (date: Date | undefined) => {
+    setDob(date);
+    setCalendarOpen(false);
+    if (!date) {
       setSign(null);
       return;
     }
-    const [yearStr, monthStr, dayStr] = value.split("-");
-    const year = parseInt(yearStr, 10);
-    const month = parseInt(monthStr, 10);
-    const day = parseInt(dayStr, 10);
-    const currentYear = new Date().getFullYear();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
 
-    // Native <input type="date"> has no real upper bound on typed input —
-    // the year segment can be scrolled/typed up to year 275760 (JS Date max).
-    // min/max on the input covers normal interaction; this covers pasted/typed edge cases.
     const isValidYear = year >= 1900 && year <= currentYear;
 
     if (month && day && isValidYear) {
@@ -106,15 +107,33 @@ export default function SunSignFinder() {
                 <label htmlFor="sun-sign-dob" className="block text-xs font-medium text-muted-foreground mb-2">
                   Your date of birth
                 </label>
-                <input
-                  id="sun-sign-dob"
-                  type="date"
-                  min="1900-01-01"
-                  max={maxDate}
-                  value={dob}
-                  onChange={(e) => handleChange(e.target.value)}
-                  className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-                />
+                <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                  <PopoverTrigger asChild>
+                    <button
+                      id="sun-sign-dob"
+                      type="button"
+                      className="w-full flex items-center justify-between gap-2 rounded-xl border border-border bg-background px-4 py-2.5 text-sm text-left focus:outline-none focus:ring-2 focus:ring-primary/40 hover:border-primary/40 transition"
+                    >
+                      <span className={dob ? "text-foreground" : "text-muted-foreground"}>
+                        {dob ? format(dob, "d MMMM yyyy") : "Select date of birth"}
+                      </span>
+                      <CalendarIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={dob}
+                      onSelect={handleChange}
+                      captionLayout="dropdown"
+                      startMonth={new Date(1930, 0)}
+                      endMonth={today}
+                      disabled={{ after: today }}
+                      defaultMonth={dob ?? new Date(currentYear - 25, 0)}
+                      autoFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
 
