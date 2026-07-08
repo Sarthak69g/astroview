@@ -18,6 +18,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import SunSignFinder from "@/components/SunSignFinder";
 import Reveal from "@/components/Reveal";
+import Starfield from "@/components/Starfield";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -358,42 +359,11 @@ function Hero() {
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
-        style={{ opacity: loaded ? 0.55 : 0, transition: "opacity 0.8s ease 1.1s" }}
-        aria-hidden="true"
-      >
-        <span className="text-[9px] uppercase tracking-[0.22em] text-muted-foreground">Scroll</span>
-        <div className="w-5 h-8 rounded-full border border-border/60 flex items-start justify-center pt-1.5">
-          <div className="w-1 h-2 rounded-full bg-primary/60 animate-bounce" />
-        </div>
-      </div>
     </section>
   );
 }
 
 // ─── Starfield ────────────────────────────────────────────────────────────────
-
-function Starfield() {
-  const stars = Array.from({ length: 28 }, (_, i) => ({
-    top: `${(i * 37) % 95}%`,
-    left: `${(i * 53) % 97}%`,
-    size: (i % 3) + 1,
-    delay: `${(i % 7) * 0.4}s`,
-  }));
-  return (
-    <div className="pointer-events-none absolute inset-0 -z-10">
-      {stars.map((s, i) => (
-        <span
-          key={i}
-          className="absolute rounded-full bg-primary animate-twinkle"
-          style={{ top: s.top, left: s.left, width: s.size, height: s.size, animationDelay: s.delay }}
-        />
-      ))}
-    </div>
-  );
-}
 
 // ─── Services ─────────────────────────────────────────────────────────────────
 

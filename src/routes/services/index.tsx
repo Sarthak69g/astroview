@@ -5,6 +5,7 @@ import { useState } from "react";
 import { services, type Service, type DeliveryMode } from "../../data/servicesData";
 import { getServiceIcon } from "../../data/serviceIcons";
 import { ArrowUpRight, Clock } from "lucide-react";
+import Starfield from "@/components/Starfield";
 
 export const Route = createFileRoute("/services/")({
   head: () => ({
@@ -52,8 +53,27 @@ function ServicesPage() {
       <section className="relative overflow-hidden px-6 pt-36 md:pt-40 pb-20">
         {/* Soft background glow */}
         <div className="absolute inset-0 -z-10 bg-gradient-hero" />
+        <Starfield />
 
-        <div className="max-w-3xl mx-auto text-center">
+        {/* Decorative symbols */}
+        <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none select-none" aria-hidden="true">
+          {["☉", "☾", "✦", "✧", "⟡", "☉", "✦", "☾", "✧", "⟡", "☉", "✦"].map((sym, i) => (
+            <span
+              key={i}
+              className="absolute text-primary/[0.14] font-display font-bold"
+              style={{
+                fontSize: `${((i * 41) % 40) + 26}px`,
+                left: `${(i * 8.4) % 100}%`,
+                top: `${(i * 13 + 6) % 85}%`,
+                transform: `rotate(${i * 14}deg)`,
+              }}
+            >
+              {sym}
+            </span>
+          ))}
+        </div>
+
+        <div className="max-w-4xl mx-auto text-center">
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium mb-5">
             Our Services
           </p>

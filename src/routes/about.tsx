@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ShieldCheck, Eye, Heart, Sparkles, MapPin, Mail, Phone } from "lucide-react";
+import Starfield from "@/components/Starfield";
 
 const CONTACT = {
   email: "support@kamleshkhyatiinfosolution.com",
@@ -52,6 +53,7 @@ function AboutPage() {
 function AboutHero() {
   return (
     <section className="relative overflow-hidden py-24 md:py-36 bg-gradient-hero">
+      <Starfield />
       <div className="mx-auto max-w-5xl px-6 text-center">
         <p className="text-xs uppercase tracking-[0.25em] text-primary font-medium">
           Who We Are

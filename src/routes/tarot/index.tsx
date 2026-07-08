@@ -66,7 +66,7 @@ function SpreadCard({ spread }: { spread: (typeof tarotSpreads)[number] }) {
     <Link
       to="/tarot/$spread"
       params={{ spread: spread.slug }}
-      className="group relative flex flex-col bg-card border border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-card transition-all duration-300 hover:-translate-y-1"
+      className="group relative flex flex-col h-full bg-card border border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-card transition-all duration-300 hover:-translate-y-1"
     >
       <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute top-0 left-0 rounded-t-2xl" />
 
@@ -138,7 +138,7 @@ function TarotHub() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {tarotSpreads.map((spread, i) => (
-            <Reveal key={spread.slug} delay={(i % 3) * 60}>
+            <Reveal key={spread.slug} delay={(i % 3) * 60} className="h-full">
               <SpreadCard spread={spread} />
             </Reveal>
           ))}

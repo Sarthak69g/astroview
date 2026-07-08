@@ -2,6 +2,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { numerologyNumbers } from "../../data/numerologyData";
 import NumerologyCalculator from "@/components/NumerologyCalculator";
+import Starfield from "@/components/Starfield";
 import { ChevronRight, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/numerology/")({
@@ -60,17 +61,18 @@ function NumerologyHub() {
       {/* Hero */}
       <section className="relative overflow-hidden px-6 pt-36 md:pt-40 pb-16">
         <div className="absolute inset-0 -z-10 bg-gradient-hero" />
+        <Starfield />
 
         {/* Decorative numerals */}
         <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none select-none" aria-hidden="true">
-          {["1", "2", "3", "4", "5", "6", "7", "8", "9", "11", "22", "33"].map((sym, i) => (
+          {["1", "2", "3", "4", "5", "6", "7", "8", "9", "11", "22", "33", "1", "4", "7", "9"].map((sym, i) => (
             <span
               key={i}
-              className="absolute text-primary/8 font-display font-bold"
+              className="absolute text-primary/[0.14] font-display font-bold"
               style={{
-                fontSize: `${((i * 37) % 30) + 24}px`,
-                left: `${(i * 8.5) % 100}%`,
-                top: `${(i * 13 + 10) % 80}%`,
+                fontSize: `${((i * 37) % 40) + 28}px`,
+                left: `${(i * 6.4) % 100}%`,
+                top: `${(i * 13 + 6) % 85}%`,
                 transform: `rotate(${i * 11 - 60}deg)`,
               }}
             >
@@ -79,7 +81,7 @@ function NumerologyHub() {
           ))}
         </div>
 
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto text-center">
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium mb-5">
             Numerology
           </p>

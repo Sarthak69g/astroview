@@ -3,6 +3,7 @@ import { useState } from "react";
 import { zodiacSigns, getSignByDate, type Element, type ZodiacSign } from "../../data/zodiacData";
 import { ChevronRight } from "lucide-react";
 import Reveal from "@/components/Reveal";
+import Starfield from "@/components/Starfield";
 
 export const Route = createFileRoute("/horoscope/")({
   head: () => ({
@@ -113,7 +114,7 @@ function SignCard({ sign }: { sign: ZodiacSign }) {
     <Link
       to="/horoscope/$sign"
       params={{ sign: sign.slug }}
-      className="group relative flex flex-col bg-card border border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-card transition-all duration-300 hover:-translate-y-1"
+      className="group relative flex flex-col h-full bg-card border border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-card transition-all duration-300 hover:-translate-y-1"
     >
       {/* Top accent */}
       <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute top-0 left-0 rounded-t-2xl" />
@@ -155,17 +156,18 @@ function HoroscopeHub() {
       {/* Hero */}
       <section className="relative overflow-hidden px-6 pt-36 md:pt-40 pb-16">
         <div className="absolute inset-0 -z-10 bg-gradient-hero" />
+        <Starfield />
 
         {/* Decorative zodiac symbols */}
         <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none select-none" aria-hidden="true">
-          {["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓"].map((sym, i) => (
+          {["♈","♉","♊","♋","♌","♍","♎","♏","♐","♑","♒","♓","♈","♍","♏","♑"].map((sym, i) => (
             <span
               key={i}
-              className="absolute text-primary/8 font-display font-bold"
+              className="absolute text-primary/[0.14] font-display font-bold"
               style={{
-                fontSize: `${Math.random() * 40 + 20}px`,
-                left: `${(i * 8.5) % 100}%`,
-                top: `${(i * 13 + 10) % 80}%`,
+                fontSize: `${((i * 41) % 46) + 26}px`,
+                left: `${(i * 6.4) % 100}%`,
+                top: `${(i * 13 + 6) % 85}%`,
                 transform: `rotate(${i * 15}deg)`,
               }}
             >
@@ -174,7 +176,7 @@ function HoroscopeHub() {
           ))}
         </div>
 
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto text-center">
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium mb-5">
             Zodiac & Horoscopes
           </p>
@@ -247,7 +249,7 @@ function HoroscopeHub() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {filtered.map((sign, i) => (
-            <Reveal key={sign.slug} delay={(i % 4) * 60}>
+            <Reveal key={sign.slug} delay={(i % 4) * 60} className="h-full">
               <SignCard sign={sign} />
             </Reveal>
           ))}
