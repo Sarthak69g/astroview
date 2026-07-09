@@ -2,7 +2,8 @@
 import { createFileRoute, Link, useParams, notFound } from "@tanstack/react-router";
 import { BadgeCheck, MessageCircle, Phone, Star, ArrowLeft } from "lucide-react";
 import Starfield from "@/components/Starfield";
-import AstrologerCard, { avatarUrl, handleConsultAction } from "@/components/AstrologerCard";
+import AstrologerCard from "@/components/AstrologerCard";
+import { avatarUrl, handleConsultAction } from "@/components/astrologer-helpers";
 import { getAstrologerBySlug, relatedAstrologers, formatOrders } from "@/data/astrologersData";
 import { getServiceBySlug } from "@/data/servicesData";
 
@@ -14,7 +15,10 @@ export const Route = createFileRoute("/consultation/$slug")({
       return {
         meta: [
           { title: "Astrologer not found — AstroView" },
-          { name: "description", content: "This astrologer couldn't be found. Browse all AstroView astrologers instead." },
+          {
+            name: "description",
+            content: "This astrologer couldn't be found. Browse all AstroView astrologers instead.",
+          },
         ],
       };
     }
@@ -40,9 +44,7 @@ function AstrologerProfilePage() {
 
   if (!astrologer) throw notFound();
 
-  const specialtyNames = astrologer.specialties
-    .map((s) => getServiceBySlug(s))
-    .filter(Boolean);
+  const specialtyNames = astrologer.specialties.map((s) => getServiceBySlug(s)).filter(Boolean);
   const related = relatedAstrologers(astrologer);
 
   return (
@@ -89,7 +91,9 @@ function AstrologerProfilePage() {
                     ({astrologer.reviews.toLocaleString()} reviews)
                   </span>
                 </span>
-                <span className="text-muted-foreground">{formatOrders(astrologer.orders)} orders</span>
+                <span className="text-muted-foreground">
+                  {formatOrders(astrologer.orders)} orders
+                </span>
                 <span className="font-semibold text-foreground">₹{astrologer.pricePerMin}/min</span>
               </div>
 

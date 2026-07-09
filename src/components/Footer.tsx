@@ -1,11 +1,5 @@
-import {
-  Phone,
-  Mail,
-  Instagram,
-  Youtube,
-  Linkedin,
-  MapPin,
-} from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Phone, Mail, Instagram, Youtube, Linkedin, MapPin } from "lucide-react";
 import logoAsset from "@/assets/logo.png";
 
 const CONTACT = {
@@ -17,7 +11,6 @@ const CONTACT = {
     "Gautam Budh Nagar UP – 201301",
   ],
 };
-;
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 
@@ -38,34 +31,36 @@ function Footer() {
             tradition and clarity in equal measure.
           </p>
           <div className="mt-5 flex items-center gap-3">
-  <a
-    href="https://www.linkedin.com/company/kamleshkhyati-infosolutions/"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="LinkedIn"
-    className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
-  >
-    <Linkedin className="h-4 w-4" />
-  </a>
+            <a
+              href="https://www.linkedin.com/company/kamleshkhyati-infosolutions/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
+            >
+              <Linkedin className="h-4 w-4" />
+            </a>
 
-  <a
-    href="https://www.instagram.com/kamleshkhyati_infosolutions/"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Instagram"
-    className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
-  >
-    <Instagram className="h-4 w-4" />
-  </a>
+            <a
+              href="https://www.instagram.com/kamleshkhyati_infosolutions/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
+            >
+              <Instagram className="h-4 w-4" />
+            </a>
 
-  <a
-     href="https://www.youtube.com/@KamleshkhyatiInfosolution"
-    aria-label="YouTube"
-    className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
-  >
-    <Youtube className="h-4 w-4" />
-  </a>
-</div>
+            <a
+              href="https://www.youtube.com/@KamleshkhyatiInfosolution"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="YouTube"
+              className="h-9 w-9 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition"
+            >
+              <Youtube className="h-4 w-4" />
+            </a>
+          </div>
         </div>
 
         {/* Explore col */}
@@ -80,7 +75,11 @@ function Footer() {
               ["Tarot", "/tarot"],
               ["About Us", "/about"],
             ].map(([label, href]) => (
-              <li key={href}><a href={href} className="hover:text-primary transition">{label}</a></li>
+              <li key={href}>
+                <Link to={href} className="hover:text-primary transition">
+                  {label}
+                </Link>
+              </li>
             ))}
           </ul>
         </div>
@@ -90,12 +89,16 @@ function Footer() {
           <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Company</p>
           <ul className="mt-4 space-y-2.5 text-sm">
             {[
-              ["Why Us", "#why"],
-              ["Journey", "#journey"],
-              ["FAQ", "#faq"],
-              ["Contact", "#contact"],
+              ["Why Us", "/#why"],
+              ["Journey", "/#journey"],
+              ["FAQ", "/#faq"],
+              ["Contact", "/#contact"],
             ].map(([label, href]) => (
-              <li key={href}><a href={href} className="hover:text-primary transition">{label}</a></li>
+              <li key={href}>
+                <Link to={href} className="hover:text-primary transition">
+                  {label}
+                </Link>
+              </li>
             ))}
           </ul>
         </div>
@@ -109,14 +112,21 @@ function Footer() {
                 <MapPin className="h-4 w-4" />
               </div>
               <div className="text-sm text-muted-foreground leading-relaxed">
-                {CONTACT.address.map((line, i) => <span key={i} className="block">{line}</span>)}
+                {CONTACT.address.map((line, i) => (
+                  <span key={i} className="block">
+                    {line}
+                  </span>
+                ))}
               </div>
             </li>
             <li className="flex gap-3">
               <div className="h-9 w-9 rounded-lg border border-border flex items-center justify-center shrink-0 text-muted-foreground">
                 <Mail className="h-4 w-4" />
               </div>
-              <a href={`mailto:${CONTACT.email}`} className="text-sm text-muted-foreground hover:text-primary transition self-center">
+              <a
+                href={`mailto:${CONTACT.email}`}
+                className="text-sm text-muted-foreground hover:text-primary transition self-center"
+              >
                 {CONTACT.email}
               </a>
             </li>
@@ -124,7 +134,10 @@ function Footer() {
               <div className="h-9 w-9 rounded-lg border border-border flex items-center justify-center shrink-0 text-muted-foreground">
                 <Phone className="h-4 w-4" />
               </div>
-              <a href={`tel:${CONTACT.phone}`} className="text-sm text-muted-foreground hover:text-primary transition self-center">
+              <a
+                href={`tel:${CONTACT.phone}`}
+                className="text-sm text-muted-foreground hover:text-primary transition self-center"
+              >
                 {CONTACT.phone}
               </a>
             </li>

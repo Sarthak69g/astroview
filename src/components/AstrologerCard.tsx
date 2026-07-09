@@ -7,25 +7,15 @@
 
 import { Link } from "@tanstack/react-router";
 import { MessageCircle, Phone, Star, BadgeCheck } from "lucide-react";
-import { toast } from "sonner";
 import { type Astrologer, type ConsultMode, formatOrders } from "@/data/astrologersData";
 import { getServiceBySlug } from "@/data/servicesData";
-
-export function avatarUrl(seed: string) {
-  return `https://api.dicebear.com/8.x/personas/svg?seed=${encodeURIComponent(seed)}&backgroundColor=fde9d0,fbe0c4,f7d9b0&radius=50`;
-}
+import { avatarUrl, handleConsultAction } from "@/components/astrologer-helpers";
 
 const badgeStyles: Record<NonNullable<Astrologer["badge"]>, string> = {
   "Top Choice": "bg-primary/15 text-primary-deep",
   New: "bg-emerald-500/15 text-emerald-700",
   Celebrity: "bg-purple-500/15 text-purple-700",
 };
-
-export function handleConsultAction(astrologer: Astrologer, mode: ConsultMode) {
-  toast(`${mode === "Chat" ? "Chat" : "Call"} sessions are launching soon`, {
-    description: `You'll be able to connect with ${astrologer.name} directly once live ${mode.toLowerCase()} goes live on AstroView.`,
-  });
-}
 
 export default function AstrologerCard({
   astrologer,
@@ -103,7 +93,9 @@ export default function AstrologerCard({
         <div className="text-sm">
           <span className="font-semibold text-foreground">₹{astrologer.pricePerMin}</span>
           <span className="text-muted-foreground">/min</span>
-          <p className="text-[11px] text-muted-foreground">{astrologer.experienceYears} yrs experience</p>
+          <p className="text-[11px] text-muted-foreground">
+            {astrologer.experienceYears} yrs experience
+          </p>
         </div>
 
         <button
@@ -115,7 +107,11 @@ export default function AstrologerCard({
               : "bg-muted text-muted-foreground cursor-not-allowed"
           }`}
         >
-          {mode === "Chat" ? <MessageCircle className="h-3.5 w-3.5" /> : <Phone className="h-3.5 w-3.5" />}
+          {mode === "Chat" ? (
+            <MessageCircle className="h-3.5 w-3.5" />
+          ) : (
+            <Phone className="h-3.5 w-3.5" />
+          )}
           {supportsMode ? mode : `No ${mode.toLowerCase()}`}
         </button>
       </div>
