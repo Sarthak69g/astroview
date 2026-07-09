@@ -182,8 +182,7 @@ function NumberDetailPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
-              to="/services/$slug"
-              params={{ slug: "tarot-numerology" }}
+              to="/consultation"
               className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-95 transition"
             >
               Explore Tarot & numerology

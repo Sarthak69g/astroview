@@ -159,8 +159,7 @@ function NumerologyHub() {
           chart — a fuller picture than any single number can give on its own.
         </p>
         <Link
-          to="/services/$slug"
-          params={{ slug: "tarot-numerology" }}
+          to="/consultation"
           className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-95 transition"
         >
           Explore Tarot & numerology

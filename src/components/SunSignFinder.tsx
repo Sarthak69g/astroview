@@ -145,8 +145,7 @@ export default function SunSignFinder() {
                   <p className="mt-1 text-xs text-muted-foreground">{sign.dateRange}</p>
                   <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{sign.blurb}</p>
                   <Link
-                    to="/services/$slug"
-                    params={{ slug: "birth-chart-analysis" }}
+                    to="/consultation"
                     className="mt-5 inline-flex items-center justify-center gap-1.5 text-sm font-medium text-primary-deep hover:gap-2.5 transition-all"
                   >
                     See your full chart <ArrowRight className="h-3.5 w-3.5" />

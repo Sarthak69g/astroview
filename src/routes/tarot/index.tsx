@@ -185,10 +185,10 @@ function TarotHub() {
             consultation goes much further than any spread alone.
           </p>
           <Link
-            to="/services"
+            to="/consultation"
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-95 transition"
           >
-            Explore our services
+            Talk to an astrologer
             <ChevronRight className="h-4 w-4" />
           </Link>
         </Reveal>

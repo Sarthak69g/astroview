@@ -267,8 +267,7 @@ function HoroscopeHub() {
             house positions, and Dasha timeline all shape who you are and what's ahead.
           </p>
           <Link
-            to="/services/$slug"
-            params={{ slug: "birth-chart-analysis" }}
+            to="/consultation"
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-primary text-primary-foreground text-sm font-semibold hover:opacity-95 transition"
           >
             Explore birth chart analysis

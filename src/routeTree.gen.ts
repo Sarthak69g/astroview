@@ -12,13 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TarotIndexRouteImport } from './routes/tarot/index'
-import { Route as ServicesIndexRouteImport } from './routes/services/index'
+import { Route as PujaIndexRouteImport } from './routes/puja/index'
 import { Route as NumerologyIndexRouteImport } from './routes/numerology/index'
 import { Route as HoroscopeIndexRouteImport } from './routes/horoscope/index'
+import { Route as ConsultationIndexRouteImport } from './routes/consultation/index'
 import { Route as TarotSpreadRouteImport } from './routes/tarot/$spread'
-import { Route as ServicesSlugRouteImport } from './routes/services/$slug'
+import { Route as PujaSlugRouteImport } from './routes/puja/$slug'
 import { Route as NumerologyNumberRouteImport } from './routes/numerology/$number'
 import { Route as HoroscopeSignRouteImport } from './routes/horoscope/$sign'
+import { Route as ConsultationSlugRouteImport } from './routes/consultation/$slug'
 
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
@@ -35,9 +37,9 @@ const TarotIndexRoute = TarotIndexRouteImport.update({
   path: '/tarot/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ServicesIndexRoute = ServicesIndexRouteImport.update({
-  id: '/services/',
-  path: '/services/',
+const PujaIndexRoute = PujaIndexRouteImport.update({
+  id: '/puja/',
+  path: '/puja/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NumerologyIndexRoute = NumerologyIndexRouteImport.update({
@@ -50,14 +52,19 @@ const HoroscopeIndexRoute = HoroscopeIndexRouteImport.update({
   path: '/horoscope/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsultationIndexRoute = ConsultationIndexRouteImport.update({
+  id: '/consultation/',
+  path: '/consultation/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TarotSpreadRoute = TarotSpreadRouteImport.update({
   id: '/tarot/$spread',
   path: '/tarot/$spread',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ServicesSlugRoute = ServicesSlugRouteImport.update({
-  id: '/services/$slug',
-  path: '/services/$slug',
+const PujaSlugRoute = PujaSlugRouteImport.update({
+  id: '/puja/$slug',
+  path: '/puja/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NumerologyNumberRoute = NumerologyNumberRouteImport.update({
@@ -70,42 +77,53 @@ const HoroscopeSignRoute = HoroscopeSignRouteImport.update({
   path: '/horoscope/$sign',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsultationSlugRoute = ConsultationSlugRouteImport.update({
+  id: '/consultation/$slug',
+  path: '/consultation/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/consultation/$slug': typeof ConsultationSlugRoute
   '/horoscope/$sign': typeof HoroscopeSignRoute
   '/numerology/$number': typeof NumerologyNumberRoute
-  '/services/$slug': typeof ServicesSlugRoute
+  '/puja/$slug': typeof PujaSlugRoute
   '/tarot/$spread': typeof TarotSpreadRoute
+  '/consultation/': typeof ConsultationIndexRoute
   '/horoscope/': typeof HoroscopeIndexRoute
   '/numerology/': typeof NumerologyIndexRoute
-  '/services/': typeof ServicesIndexRoute
+  '/puja/': typeof PujaIndexRoute
   '/tarot/': typeof TarotIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/consultation/$slug': typeof ConsultationSlugRoute
   '/horoscope/$sign': typeof HoroscopeSignRoute
   '/numerology/$number': typeof NumerologyNumberRoute
-  '/services/$slug': typeof ServicesSlugRoute
+  '/puja/$slug': typeof PujaSlugRoute
   '/tarot/$spread': typeof TarotSpreadRoute
+  '/consultation': typeof ConsultationIndexRoute
   '/horoscope': typeof HoroscopeIndexRoute
   '/numerology': typeof NumerologyIndexRoute
-  '/services': typeof ServicesIndexRoute
+  '/puja': typeof PujaIndexRoute
   '/tarot': typeof TarotIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/consultation/$slug': typeof ConsultationSlugRoute
   '/horoscope/$sign': typeof HoroscopeSignRoute
   '/numerology/$number': typeof NumerologyNumberRoute
-  '/services/$slug': typeof ServicesSlugRoute
+  '/puja/$slug': typeof PujaSlugRoute
   '/tarot/$spread': typeof TarotSpreadRoute
+  '/consultation/': typeof ConsultationIndexRoute
   '/horoscope/': typeof HoroscopeIndexRoute
   '/numerology/': typeof NumerologyIndexRoute
-  '/services/': typeof ServicesIndexRoute
+  '/puja/': typeof PujaIndexRoute
   '/tarot/': typeof TarotIndexRoute
 }
 export interface FileRouteTypes {
@@ -113,50 +131,58 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/consultation/$slug'
     | '/horoscope/$sign'
     | '/numerology/$number'
-    | '/services/$slug'
+    | '/puja/$slug'
     | '/tarot/$spread'
+    | '/consultation/'
     | '/horoscope/'
     | '/numerology/'
-    | '/services/'
+    | '/puja/'
     | '/tarot/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/consultation/$slug'
     | '/horoscope/$sign'
     | '/numerology/$number'
-    | '/services/$slug'
+    | '/puja/$slug'
     | '/tarot/$spread'
+    | '/consultation'
     | '/horoscope'
     | '/numerology'
-    | '/services'
+    | '/puja'
     | '/tarot'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/consultation/$slug'
     | '/horoscope/$sign'
     | '/numerology/$number'
-    | '/services/$slug'
+    | '/puja/$slug'
     | '/tarot/$spread'
+    | '/consultation/'
     | '/horoscope/'
     | '/numerology/'
-    | '/services/'
+    | '/puja/'
     | '/tarot/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  ConsultationSlugRoute: typeof ConsultationSlugRoute
   HoroscopeSignRoute: typeof HoroscopeSignRoute
   NumerologyNumberRoute: typeof NumerologyNumberRoute
-  ServicesSlugRoute: typeof ServicesSlugRoute
+  PujaSlugRoute: typeof PujaSlugRoute
   TarotSpreadRoute: typeof TarotSpreadRoute
+  ConsultationIndexRoute: typeof ConsultationIndexRoute
   HoroscopeIndexRoute: typeof HoroscopeIndexRoute
   NumerologyIndexRoute: typeof NumerologyIndexRoute
-  ServicesIndexRoute: typeof ServicesIndexRoute
+  PujaIndexRoute: typeof PujaIndexRoute
   TarotIndexRoute: typeof TarotIndexRoute
 }
 
@@ -183,11 +209,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TarotIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/services/': {
-      id: '/services/'
-      path: '/services'
-      fullPath: '/services/'
-      preLoaderRoute: typeof ServicesIndexRouteImport
+    '/puja/': {
+      id: '/puja/'
+      path: '/puja'
+      fullPath: '/puja/'
+      preLoaderRoute: typeof PujaIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/numerology/': {
@@ -204,6 +230,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HoroscopeIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/consultation/': {
+      id: '/consultation/'
+      path: '/consultation'
+      fullPath: '/consultation/'
+      preLoaderRoute: typeof ConsultationIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tarot/$spread': {
       id: '/tarot/$spread'
       path: '/tarot/$spread'
@@ -211,11 +244,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TarotSpreadRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/services/$slug': {
-      id: '/services/$slug'
-      path: '/services/$slug'
-      fullPath: '/services/$slug'
-      preLoaderRoute: typeof ServicesSlugRouteImport
+    '/puja/$slug': {
+      id: '/puja/$slug'
+      path: '/puja/$slug'
+      fullPath: '/puja/$slug'
+      preLoaderRoute: typeof PujaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/numerology/$number': {
@@ -232,19 +265,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HoroscopeSignRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/consultation/$slug': {
+      id: '/consultation/$slug'
+      path: '/consultation/$slug'
+      fullPath: '/consultation/$slug'
+      preLoaderRoute: typeof ConsultationSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  ConsultationSlugRoute: ConsultationSlugRoute,
   HoroscopeSignRoute: HoroscopeSignRoute,
   NumerologyNumberRoute: NumerologyNumberRoute,
-  ServicesSlugRoute: ServicesSlugRoute,
+  PujaSlugRoute: PujaSlugRoute,
   TarotSpreadRoute: TarotSpreadRoute,
+  ConsultationIndexRoute: ConsultationIndexRoute,
   HoroscopeIndexRoute: HoroscopeIndexRoute,
   NumerologyIndexRoute: NumerologyIndexRoute,
-  ServicesIndexRoute: ServicesIndexRoute,
+  PujaIndexRoute: PujaIndexRoute,
   TarotIndexRoute: TarotIndexRoute,
 }
 export const routeTree = rootRouteImport

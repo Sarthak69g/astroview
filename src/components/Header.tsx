@@ -5,19 +5,17 @@ import { ArrowRight, Menu, X } from "lucide-react";
 import logoAsset from "@/assets/logo.png";
 
 const navLinks = [
-  { id: "home",        label: "Home",        to: "/"            },
-  { id: "services",    label: "Services",    to: "/services"    },
-  { id: "horoscope",   label: "Horoscope",   to: "/horoscope"   },
-  { id: "numerology",  label: "Numerology",  to: "/numerology"  },
-  { id: "tarot",       label: "Tarot",       to: "/tarot"       },
-  { id: "why",         label: "Why Us",      to: "/#why"        },
-  { id: "journey",     label: "Journey",     to: "/#journey"    },
-  { id: "contact",     label: "Contact",     to: "/#contact"    },
-  { id: "faq",         label: "FAQ",         to: "/#faq"        },
-  { id: "about",       label: "About",       to: "/about"       },
+  { id: "home",         label: "Home",         to: "/"             },
+  { id: "consultation", label: "Consultation", to: "/consultation" },
+  { id: "puja",         label: "Puja",         to: "/puja"         },
+  { id: "horoscope",    label: "Horoscope",    to: "/horoscope"    },
+  { id: "numerology",   label: "Numerology",   to: "/numerology"   },
+  { id: "tarot",        label: "Tarot",        to: "/tarot"        },
+  { id: "contact",      label: "Contact",      to: "/#contact"     },
+  { id: "about",        label: "About",        to: "/about"        },
 ];
 
-const SECTION_IDS = ["why", "journey", "contact", "faq"];
+const SECTION_IDS = ["contact"];
 
 export default function Header() {
   const [menuOpen,      setMenuOpen]      = useState(false);
@@ -52,13 +50,14 @@ export default function Header() {
   }, [pathname]);
 
   const isActive = (href: string): boolean => {
-    if (href === "/")           return pathname === "/" && !activeSection;
-    if (href === "/services")   return pathname.startsWith("/services");
-    if (href === "/horoscope")  return pathname.startsWith("/horoscope");
-    if (href === "/numerology") return pathname.startsWith("/numerology");
-    if (href === "/tarot")      return pathname.startsWith("/tarot");
-    if (href === "/about")      return pathname === "/about";
-    if (href.startsWith("/#"))  return pathname === "/" && activeSection === href.substring(2);
+    if (href === "/")             return pathname === "/" && !activeSection;
+    if (href === "/consultation") return pathname.startsWith("/consultation");
+    if (href === "/puja")         return pathname.startsWith("/puja");
+    if (href === "/horoscope")    return pathname.startsWith("/horoscope");
+    if (href === "/numerology")   return pathname.startsWith("/numerology");
+    if (href === "/tarot")        return pathname.startsWith("/tarot");
+    if (href === "/about")        return pathname === "/about";
+    if (href.startsWith("/#"))    return pathname === "/" && activeSection === href.substring(2);
     return false;
   };
 
@@ -103,11 +102,11 @@ export default function Header() {
           </nav>
 
           <Link
-            to="/services"
+            to="/consultation"
             preload="intent"
             className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] transition-all duration-200"
           >
-            Our services <ArrowRight className="h-4 w-4" />
+            Talk now <ArrowRight className="h-4 w-4" />
           </Link>
 
           <button
@@ -169,12 +168,12 @@ export default function Header() {
 
             <div className="p-5 border-t border-border">
               <Link
-                to="/services"
+                to="/consultation"
                 preload="intent"
                 onClick={() => setMenuOpen(false)}
                 className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-primary px-5 py-3.5 text-sm font-medium text-primary-foreground shadow-soft"
               >
-                Our services <ArrowRight className="h-4 w-4" />
+                Talk now <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </div>

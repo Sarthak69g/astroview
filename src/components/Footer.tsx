@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import {
   Phone,
   Mail,
@@ -8,7 +7,6 @@ import {
   MapPin,
 } from "lucide-react";
 import logoAsset from "@/assets/logo.png";
-import { services } from "@/data/servicesData";
 
 const CONTACT = {
   email: "support@kamleshkhyatiinfosolution.com",
@@ -26,7 +24,7 @@ const CONTACT = {
 function Footer() {
   return (
     <footer className="border-t border-border bg-card/40">
-      <div className="mx-auto max-w-7xl px-6 py-14 grid md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10">
+      <div className="mx-auto max-w-7xl px-6 py-14 grid md:grid-cols-[1.3fr_0.85fr_0.85fr_1.1fr] gap-10">
         {/* Brand col */}
         <div>
           <div className="flex items-center gap-2.5">
@@ -75,10 +73,11 @@ function Footer() {
           <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Explore</p>
           <ul className="mt-4 space-y-2.5 text-sm">
             {[
-              ["Services", "#services"],
-              ["Why Us", "#why"],
-              ["Journey", "#journey"],
-              ["FAQ", "#faq"],
+              ["Consultation", "/consultation"],
+              ["Puja", "/puja"],
+              ["Horoscope", "/horoscope"],
+              ["Numerology", "/numerology"],
+              ["Tarot", "/tarot"],
               ["About Us", "/about"],
             ].map(([label, href]) => (
               <li key={href}><a href={href} className="hover:text-primary transition">{label}</a></li>
@@ -86,20 +85,17 @@ function Footer() {
           </ul>
         </div>
 
-        {/* Services col */}
+        {/* Company col */}
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Services</p>
+          <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Company</p>
           <ul className="mt-4 space-y-2.5 text-sm">
-            {services.map((s) => (
-              <li key={s.slug}>
-                <Link
-  to="/services/$slug"
-  params={{ slug: s.slug }}
-  className="hover:text-primary transition"
->
-  {s.name}
-</Link>
-              </li>
+            {[
+              ["Why Us", "#why"],
+              ["Journey", "#journey"],
+              ["FAQ", "#faq"],
+              ["Contact", "#contact"],
+            ].map(([label, href]) => (
+              <li key={href}><a href={href} className="hover:text-primary transition">{label}</a></li>
             ))}
           </ul>
         </div>

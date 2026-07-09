@@ -1,12 +1,15 @@
 import logoAsset from "@/assets/logo.png";
 import { sendContactEmail } from "@/lib/emailjs-config";
+import { getAstrologerBySlug, type Astrologer, type ConsultMode } from "@/data/astrologersData";
 import { services as allServices } from "@/data/servicesData";
-import { getServiceIcon } from "@/data/serviceIcons";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { pujas } from "@/data/pujaData";
+import PujaCard from "@/components/PujaCard";
 import {
   ArrowRight,
   Mail,
   MapPin,
+  MessageCircle,
   Moon,
   Phone,
   ShieldCheck,
@@ -17,6 +20,7 @@ import {
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import SunSignFinder from "@/components/SunSignFinder";
+import AstrologerCard from "@/components/AstrologerCard";
 import Reveal from "@/components/Reveal";
 import Starfield from "@/components/Starfield";
 
@@ -50,13 +54,6 @@ const CONTACT = {
     "Gautam Budh Nagar UP – 201301",
   ],
 };
-
-export const services = allServices.slice(0, 6).map((s) => ({
-  slug: s.slug,
-  icon: getServiceIcon(s.icon),
-  title: s.name,
-  text: s.shortDesc,
-}));
 
 const pillars = [
   {
@@ -141,7 +138,8 @@ function Landing() {
       <Hero />
       {/* <TrustStrip /> — disabled for now, content not finalized */}
       <SunSignFinder />
-      <Services />
+      <Consultation />
+      <PujaTeaser />
       <Why />
       <Values />
       <Promise />
@@ -268,10 +266,10 @@ function Hero() {
             }}
           >
             <a
-              href="/services"
+              href="/consultation"
               className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-6 py-3.5 text-sm font-medium text-primary-foreground shadow-glow hover:scale-[1.02] transition"
             >
-              Explore our services <ArrowRight className="h-4 w-4" />
+              Talk to an astrologer <ArrowRight className="h-4 w-4" />
             </a>
             <a
               href="#contact"
@@ -365,70 +363,125 @@ function Hero() {
 
 // ─── Starfield ────────────────────────────────────────────────────────────────
 
-// ─── Services ─────────────────────────────────────────────────────────────────
+// ─── Consultation ─────────────────────────────────────────────────────────────
 
-function Services() {
+const FEATURED_ASTROLOGER_SLUGS = [
+  "acharya-devraj-shastri",
+  "meera-iyer",
+  "priyanka-sharma",
+];
+
+function Consultation() {
+  const [mode, setMode] = useState<ConsultMode>("Chat");
+  const featured = FEATURED_ASTROLOGER_SLUGS.map((slug) => getAstrologerBySlug(slug)).filter(
+    Boolean
+  ) as Astrologer[];
+
   return (
-    <section id="services" className="relative pt-14 pb-16 md:pt-20 md:pb-20">
+    <section id="consultation" className="relative pt-14 pb-16 md:pt-20 md:pb-20">
       <div className="mx-auto max-w-7xl px-6">
         <Reveal>
           <div className="max-w-2xl">
             <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
-              What we offer
+              Consultation
             </p>
             <h2 className="mt-3 text-4xl md:text-5xl font-display font-semibold tracking-tight">
-              Six ways to meet your chart.
+              Talk to an astrologer, right now.
             </h2>
             <p className="mt-4 text-muted-foreground text-lg">
-              A focused set of services — each shaped with care. Click any to learn more.
+              Chat or call — pick what suits you, then choose an astrologer whose
+              specialty matches what you're looking for.
             </p>
           </div>
         </Reveal>
 
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {services.map((s, idx) => (
-            <Reveal key={s.title} delay={idx * 70}>
-              <a
-                href={`/services/${s.slug}`}
-                className="group relative flex flex-col h-full rounded-3xl border border-border bg-card p-7 shadow-card hover:shadow-glow hover:-translate-y-1.5 hover:border-primary/25 transition-all duration-300"
-              >
-                {/* Top shimmer line on hover */}
-                <div className="absolute inset-x-0 top-0 h-px rounded-t-3xl bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <Reveal delay={60}>
+          <div className="mt-8 inline-flex items-center gap-1.5 rounded-full border border-border bg-card p-1.5 shadow-card">
+            <button
+              onClick={() => setMode("Chat")}
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+                mode === "Chat"
+                  ? "bg-gradient-primary text-primary-foreground shadow-soft"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <MessageCircle className="h-4 w-4" /> Chat
+            </button>
+            <button
+              onClick={() => setMode("Call")}
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+                mode === "Call"
+                  ? "bg-gradient-primary text-primary-foreground shadow-soft"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Phone className="h-4 w-4" /> Call
+            </button>
+          </div>
+        </Reveal>
 
-                {/* Service number */}
-                <span className="absolute top-6 right-7 text-xs font-medium text-muted-foreground/30 select-none tabular-nums">
-                  {String(idx + 1).padStart(2, "0")}
-                </span>
-
-                {/* Icon */}
-                <div className="h-12 w-12 rounded-2xl bg-gradient-primary text-primary-foreground flex items-center justify-center shadow-soft group-hover:scale-110 group-hover:shadow-glow transition-all duration-300">
-                  <s.icon className="h-5 w-5" />
-                </div>
-
-                <h3 className="mt-5 text-xl font-display font-semibold group-hover:text-primary-deep transition-colors duration-200">
-                  {s.title}
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">{s.text}</p>
-
-                <div className="mt-5 flex items-center gap-1.5">
-                  <span className="text-xs font-medium text-primary-deep/70 group-hover:text-primary-deep transition-colors">
-                    Learn more
-                  </span>
-                  <ArrowRight className="h-3.5 w-3.5 text-primary-deep/50 group-hover:text-primary-deep group-hover:translate-x-1 transition-all duration-200" />
-                </div>
-              </a>
+        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {featured.map((a, idx) => (
+            <Reveal key={a.id} delay={idx * 70}>
+              <AstrologerCard astrologer={a} mode={mode} />
             </Reveal>
           ))}
         </div>
 
         <Reveal delay={200}>
           <div className="mt-8 text-center">
-            <a
-              href="/services"
+            <Link
+              to="/consultation"
               className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-medium hover:bg-accent hover:border-primary/20 transition-all duration-200"
             >
-              View all services <ArrowRight className="h-4 w-4" />
-            </a>
+              View all astrologers <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+// ─── Puja ─────────────────────────────────────────────────────────────────────
+
+function PujaTeaser() {
+  const featured = pujas.slice(0, 3);
+
+  return (
+    <section className="relative pt-14 pb-16 md:pt-20 md:pb-20 bg-accent/20">
+      <div className="mx-auto max-w-7xl px-6">
+        <Reveal>
+          <div className="max-w-2xl">
+            <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
+              Puja
+            </p>
+            <h2 className="mt-3 text-4xl md:text-5xl font-display font-semibold tracking-tight">
+              Book a pandit ji, for any occasion.
+            </h2>
+            <p className="mt-4 text-muted-foreground text-lg">
+              At home, over video call, or on request — choose a puja, pick a
+              package that fits, and let a verified pandit handle the rest.
+            </p>
+          </div>
+        </Reveal>
+
+        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {featured.map((p, idx) => (
+            <Reveal key={p.slug} delay={idx * 70}>
+              <PujaCard puja={p} />
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal delay={200}>
+          <div className="mt-8 text-center">
+            <Link
+              to="/puja"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-sm font-medium hover:bg-accent hover:border-primary/20 transition-all duration-200"
+            >
+              View all pujas <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </Reveal>
       </div>
