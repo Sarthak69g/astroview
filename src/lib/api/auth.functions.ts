@@ -49,16 +49,46 @@ async function callApi(path: string, init: RequestInit, token?: string): Promise
   const envelope = json && typeof json === "object" ? (json as Record<string, unknown>) : null;
 
   if (!res.ok || (envelope && envelope.success === false)) {
-    const message =
+    const baseMessage =
       envelope && typeof envelope.message === "string"
         ? envelope.message
         : `Astro API error (${res.status})`;
-    throw new Error(message);
+
+    // `message` alone is often generic (e.g. "User profile fields validation
+    // failed") and doesn't say which field. The envelope's `errors` field
+    // usually carries the per-field detail — surface it in both the thrown
+    // message (so it reaches the toast) and a server log (so it's in the
+    // Vercel function logs even if the toast gets missed/screenshotted).
+    const errors = envelope?.errors;
+    const detail = formatValidationErrors(errors);
+
+    // eslint-disable-next-line no-console
+    console.error(`[AstroAPI] ${path} failed (${res.status}):`, baseMessage, errors ?? "(no errors field)");
+
+    throw new Error(detail ? `${baseMessage} — ${detail}` : baseMessage);
   }
 
   // Unwrap the envelope's `data` field if present; otherwise return as-is
   // (defensive, in case some endpoint ever responds unwrapped).
   return envelope && "data" in envelope ? envelope.data : json;
+}
+
+// Handles both shapes seen from ASP.NET-style validation responses:
+// a flat array of messages, or a { fieldName: ["msg", ...] } map.
+function formatValidationErrors(errors: unknown): string | null {
+  if (!errors) return null;
+  if (Array.isArray(errors)) {
+    const flat = errors.filter((e) => typeof e === "string").join("; ");
+    return flat || null;
+  }
+  if (typeof errors === "object") {
+    const parts = Object.entries(errors as Record<string, unknown>).map(([field, msgs]) => {
+      const text = Array.isArray(msgs) ? msgs.join(", ") : String(msgs);
+      return `${field}: ${text}`;
+    });
+    return parts.join("; ") || null;
+  }
+  return null;
 }
 
 function safeJsonParse(text: string): unknown {
@@ -109,6 +139,17 @@ export const verifyLoginOtp = createServerFn({ method: "POST" })
 
 // --- POST /api/User/RegisterUser — first-time users, after OTP verify ---
 // Requires the bearer token from OtpVerification (was 401-ing without it).
+//
+// CONFIRMED 2026-07-10: the backend rejects a combined `name` field —
+// "FirstName: First name is required" comes back even when `name` is set.
+// It wants FirstName/LastName as separate fields, matching what
+// GetUserProfile already returns (firstName/lastName, not name). The UI
+// only collects a single "Your name" input, so we split it here: first
+// word -> firstName, remaining words -> lastName. If there's no second
+// word, lastName reuses firstName rather than sending an empty string —
+// some existing backend records still carry the literal Swagger placeholder
+// "string" for lastName, which is a strong signal that field is required
+// and can't be blank.
 export const registerUser = createServerFn({ method: "POST" })
   .validator(
     z.object({
@@ -119,8 +160,15 @@ export const registerUser = createServerFn({ method: "POST" })
     }),
   )
   .handler(async ({ data }) => {
-    const { token, ...body } = data;
-    return callApi("/RegisterUser", { method: "POST", body: JSON.stringify(body) }, token);
+    const { token, name, ...rest } = data;
+    const trimmed = name.trim().replace(/\s+/g, " ");
+    const [firstName, ...restWords] = trimmed.split(" ");
+    const lastName = restWords.join(" ") || firstName;
+    return callApi(
+      "/RegisterUser",
+      { method: "POST", body: JSON.stringify({ ...rest, firstName, lastName }) },
+      token,
+    );
   });
 
 // --- PUT /api/User/UserProfile — update profile details (needs token) ---
