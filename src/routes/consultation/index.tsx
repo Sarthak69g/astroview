@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { MessageCircle, Phone, Search } from "lucide-react";
 import Starfield from "@/components/Starfield";
 import AstrologerCard from "@/components/AstrologerCard";
+import Reveal from "@/components/Reveal";
 import { astrologers } from "@/data/astrologersData";
 import { services } from "@/data/servicesData";
 import type { ConsultMode } from "@/data/astrologersData";
@@ -130,7 +131,9 @@ function ConsultationPage() {
         {filtered.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {filtered.map((a, idx) => (
-              <AstrologerCard key={a.id} astrologer={a} mode={mode} delay={idx * 40} />
+              <Reveal key={a.id} delay={idx * 40}>
+                <AstrologerCard astrologer={a} mode={mode} />
+              </Reveal>
             ))}
           </div>
         ) : (

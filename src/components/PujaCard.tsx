@@ -9,7 +9,7 @@ import { useState } from "react";
 import { type Puja, formatINR } from "@/data/pujaData";
 import { getPujaIcon } from "@/data/pujaIcons";
 
-export default function PujaCard({ puja, delay = 0 }: { puja: Puja; delay?: number }) {
+export default function PujaCard({ puja }: { puja: Puja }) {
   const Icon = getPujaIcon(puja.icon);
   const startingPrice = puja.packages[0].price;
   const [imageFailed, setImageFailed] = useState(false);
@@ -19,7 +19,6 @@ export default function PujaCard({ puja, delay = 0 }: { puja: Puja; delay?: numb
       to="/puja/$slug"
       params={{ slug: puja.slug }}
       className="group relative flex flex-col h-full rounded-3xl border border-border bg-card shadow-card overflow-hidden hover:shadow-glow hover:-translate-y-1.5 hover:border-primary/25 transition-all duration-300"
-      style={{ animationDelay: `${delay}ms` }}
     >
       {/* Deity/ritual photo — gives the card a real visual connection to the puja */}
       <div className={`relative h-48 w-full overflow-hidden ${puja.accentColor}`}>

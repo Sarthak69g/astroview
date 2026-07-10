@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import Starfield from "@/components/Starfield";
 import PujaCard from "@/components/PujaCard";
+import Reveal from "@/components/Reveal";
 import OnRequestPujaForm from "@/components/OnRequestPujaForm";
 import { pujas, pujaCategories, type PujaCategory } from "@/data/pujaData";
 
@@ -112,7 +113,9 @@ function PujaPage() {
           {filtered.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {filtered.map((p, idx) => (
-                <PujaCard key={p.slug} puja={p} delay={idx * 40} />
+                <Reveal key={p.slug} delay={idx * 40}>
+                  <PujaCard puja={p} />
+                </Reveal>
               ))}
             </div>
           ) : (

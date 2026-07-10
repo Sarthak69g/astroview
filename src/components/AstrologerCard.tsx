@@ -20,11 +20,9 @@ const badgeStyles: Record<NonNullable<Astrologer["badge"]>, string> = {
 export default function AstrologerCard({
   astrologer,
   mode,
-  delay = 0,
 }: {
   astrologer: Astrologer;
   mode: ConsultMode;
-  delay?: number;
 }) {
   const supportsMode = astrologer.modes.includes(mode);
   const specialtyNames = astrologer.specialties
@@ -32,10 +30,7 @@ export default function AstrologerCard({
     .filter(Boolean) as string[];
 
   return (
-    <article
-      className="group relative flex flex-col h-full rounded-3xl border border-border bg-card p-6 shadow-card hover:shadow-glow hover:-translate-y-1.5 hover:border-primary/25 transition-all duration-300"
-      style={{ animationDelay: `${delay}ms` }}
-    >
+    <article className="group relative flex flex-col h-full rounded-3xl border border-border bg-card p-6 shadow-card hover:shadow-glow hover:-translate-y-1.5 hover:border-primary/25 transition-all duration-300">
       {astrologer.badge && (
         <span
           className={`absolute top-4 right-4 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide ${badgeStyles[astrologer.badge]}`}

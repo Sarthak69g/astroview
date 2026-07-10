@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ShieldCheck, Eye, Heart, Sparkles, MapPin, Mail, Phone } from "lucide-react";
 import Starfield from "@/components/Starfield";
+import Reveal from "@/components/Reveal";
 
 const CONTACT = {
   email: "support@kamleshkhyatiinfosolution.com",
@@ -40,12 +41,22 @@ function AboutPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <AboutHero />
-      <WhyExist />
+      <Reveal>
+        <WhyExist />
+      </Reveal>
       <Beliefs />
-      <HowWeWork />
-      <WhatBuilding />
-      <CompanySection />
-      <ClosingStatement />
+      <Reveal>
+        <HowWeWork />
+      </Reveal>
+      <Reveal>
+        <WhatBuilding />
+      </Reveal>
+      <Reveal>
+        <CompanySection />
+      </Reveal>
+      <Reveal>
+        <ClosingStatement />
+      </Reveal>
     </div>
   );
 }
@@ -151,28 +162,29 @@ function Beliefs() {
   return (
     <section className="py-24 bg-accent/20">
       <div className="mx-auto max-w-7xl px-6">
-        <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
-          What We Believe
-        </p>
+        <Reveal>
+          <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
+            What We Believe
+          </p>
 
-        <h2 className="mt-4 text-4xl md:text-5xl font-display font-semibold">
-          Principles that guide every decision.
-        </h2>
+          <h2 className="mt-4 text-4xl md:text-5xl font-display font-semibold">
+            Principles that guide every decision.
+          </h2>
+        </Reveal>
 
         <div className="mt-14 grid md:grid-cols-2 gap-6">
-          {beliefs.map((item) => (
-            <div
-              key={item.title}
-              className="rounded-3xl border border-border bg-card p-8 shadow-card hover:-translate-y-1 hover:shadow-glow transition-all duration-300"
-            >
-              <h3 className="font-display text-2xl font-semibold">
-                {item.title}
-              </h3>
+          {beliefs.map((item, idx) => (
+            <Reveal key={item.title} delay={idx * 70}>
+              <div className="rounded-3xl border border-border bg-card p-8 shadow-card hover:-translate-y-1 hover:shadow-glow transition-all duration-300">
+                <h3 className="font-display text-2xl font-semibold">
+                  {item.title}
+                </h3>
 
-              <p className="mt-4 text-muted-foreground leading-relaxed">
-                {item.text}
-              </p>
-            </div>
+                <p className="mt-4 text-muted-foreground leading-relaxed">
+                  {item.text}
+                </p>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>

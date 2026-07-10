@@ -3,6 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { numerologyNumbers } from "../../data/numerologyData";
 import NumerologyCalculator from "@/components/NumerologyCalculator";
 import Starfield from "@/components/Starfield";
+import Reveal from "@/components/Reveal";
 import { ChevronRight, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/numerology/")({
@@ -127,8 +128,10 @@ function NumerologyHub() {
           <h2 className="font-display text-2xl font-semibold text-foreground">The nine foundations.</h2>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {coreNumbers.map((n) => (
-            <NumberCard key={n.slug} n={n} />
+          {coreNumbers.map((n, idx) => (
+            <Reveal key={n.slug} delay={idx * 40}>
+              <NumberCard n={n} />
+            </Reveal>
           ))}
         </div>
       </section>
@@ -143,8 +146,10 @@ function NumerologyHub() {
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {masterNumbers.map((n) => (
-            <NumberCard key={n.slug} n={n} />
+          {masterNumbers.map((n, idx) => (
+            <Reveal key={n.slug} delay={idx * 40}>
+              <NumberCard n={n} />
+            </Reveal>
           ))}
         </div>
       </section>
