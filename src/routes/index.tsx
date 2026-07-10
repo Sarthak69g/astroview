@@ -267,7 +267,7 @@ function Hero() {
           >
             <a
               href="/consultation"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-6 py-3.5 text-sm font-medium text-primary-foreground shadow-glow hover:scale-[1.02] transition"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-6 py-3.5 text-sm font-medium text-primary-foreground shadow-glow hover:scale-[1.02] active:scale-[0.97] transition"
             >
               Talk to an astrologer <ArrowRight className="h-4 w-4" />
             </a>
@@ -317,7 +317,10 @@ function Hero() {
             <div className="relative h-[340px] w-[340px] md:h-[420px] md:w-[420px] rounded-full bg-gradient-to-br from-card to-accent/50 shadow-glow flex items-center justify-center animate-float-slow">
               <img src={logoAsset} alt="AstroView emblem" className="h-[78%] w-[78%] object-contain drop-shadow-xl" />
             </div>
-            <div className="absolute -left-6 top-10 rounded-2xl bg-card/90 backdrop-blur border border-border px-4 py-3 shadow-card flex items-center gap-2.5">
+            <div
+              className="absolute -left-6 top-10 animate-chip-float rounded-2xl bg-card/90 backdrop-blur border border-border px-4 py-3 shadow-card flex items-center gap-2.5"
+              style={{ animationDelay: "0s" }}
+            >
               <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                 <Moon className="h-4 w-4 text-primary" />
               </div>
@@ -326,7 +329,10 @@ function Hero() {
                 <p className="text-sm font-medium">Chandra in Rohini</p>
               </div>
             </div>
-            <div className="absolute -right-4 bottom-12 rounded-2xl bg-card/90 backdrop-blur border border-border px-4 py-3 shadow-card flex items-center gap-2.5">
+            <div
+              className="absolute -right-4 bottom-12 animate-chip-float rounded-2xl bg-card/90 backdrop-blur border border-border px-4 py-3 shadow-card flex items-center gap-2.5"
+              style={{ animationDelay: "-2.5s" }}
+            >
               <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
                 <Star className="h-4 w-4 text-primary" />
               </div>
@@ -894,7 +900,7 @@ function Contact() {
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-primary px-8 py-3 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-primary px-8 py-3 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] active:scale-[0.97] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100"
               >
                 {loading ? "Sending Inquiry..." : <><span>Send Message</span><ArrowRight className="h-4 w-4" /></>}
               </button>

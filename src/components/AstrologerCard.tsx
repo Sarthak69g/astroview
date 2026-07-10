@@ -98,7 +98,7 @@ export default function AstrologerCard({
           disabled={!supportsMode}
           className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200 ${
             supportsMode
-              ? "bg-gradient-primary text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.03]"
+              ? "bg-gradient-primary text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.03] active:scale-[0.96]"
               : "bg-muted text-muted-foreground cursor-not-allowed"
           }`}
         >

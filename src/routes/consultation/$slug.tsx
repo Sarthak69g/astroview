@@ -114,7 +114,7 @@ function AstrologerProfilePage() {
                   disabled={!astrologer.modes.includes("Chat")}
                   className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all ${
                     astrologer.modes.includes("Chat")
-                      ? "bg-gradient-primary text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02]"
+                      ? "bg-gradient-primary text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] active:scale-[0.97]"
                       : "bg-muted text-muted-foreground cursor-not-allowed"
                   }`}
                 >

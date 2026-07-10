@@ -265,7 +265,7 @@ function PujaDetailPage() {
             disabled={!canProceed}
             className={`mt-5 inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-semibold transition-all ${
               canProceed
-                ? "bg-gradient-primary text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02]"
+                ? "bg-gradient-primary text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] active:scale-[0.97]"
                 : "bg-muted text-muted-foreground cursor-not-allowed"
             }`}
           >

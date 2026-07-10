@@ -171,7 +171,7 @@ export default function OnRequestPujaForm() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-8 py-3 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-2 rounded-full bg-gradient-primary px-8 py-3 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] active:scale-[0.97] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100"
           >
             {loading ? "Sending…" : <><span>Send</span><ArrowRight className="h-4 w-4" /></>}
           </button>

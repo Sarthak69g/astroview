@@ -8,6 +8,7 @@ import Reveal from "@/components/Reveal";
 import { astrologers } from "@/data/astrologersData";
 import { services } from "@/data/servicesData";
 import type { ConsultMode } from "@/data/astrologersData";
+import { useSlidingIndicator } from "@/hooks/use-sliding-indicator";
 
 export const Route = createFileRoute("/consultation/")({
   head: () => ({
@@ -32,6 +33,8 @@ function ConsultationPage() {
   const [mode, setMode] = useState<ConsultMode>("Chat");
   const [specialty, setSpecialty] = useState<string>("all");
   const [query, setQuery] = useState("");
+  const { containerRef: modeToggleRef, register: registerModeBtn, style: modePillStyle } =
+    useSlidingIndicator(mode);
 
   const filtered = useMemo(() => {
     return astrologers.filter((a) => {
@@ -63,23 +66,33 @@ function ConsultationPage() {
           </p>
 
           {/* Mode toggle */}
-          <div className="mt-10 inline-flex items-center gap-1.5 rounded-full border border-border bg-card p-1.5 shadow-card">
+          <div
+            ref={modeToggleRef}
+            className="mt-10 relative inline-flex items-center gap-1.5 rounded-full border border-border bg-card p-1.5 shadow-card"
+          >
+            <span
+              aria-hidden="true"
+              className="absolute top-1.5 bottom-1.5 rounded-full bg-gradient-primary shadow-soft transition-[left,width] duration-300 ease-out"
+              style={{
+                left: modePillStyle.left,
+                width: modePillStyle.width,
+                opacity: modePillStyle.ready ? 1 : 0,
+              }}
+            />
             <button
+              ref={registerModeBtn("Chat")}
               onClick={() => setMode("Chat")}
-              className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                mode === "Chat"
-                  ? "bg-gradient-primary text-primary-foreground shadow-soft"
-                  : "text-muted-foreground hover:text-foreground"
+              className={`relative z-10 inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-colors active:scale-[0.97] ${
+                mode === "Chat" ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <MessageCircle className="h-4 w-4" /> Chat
             </button>
             <button
+              ref={registerModeBtn("Call")}
               onClick={() => setMode("Call")}
-              className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                mode === "Call"
-                  ? "bg-gradient-primary text-primary-foreground shadow-soft"
-                  : "text-muted-foreground hover:text-foreground"
+              className={`relative z-10 inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-semibold transition-colors active:scale-[0.97] ${
+                mode === "Call" ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               <Phone className="h-4 w-4" /> Call

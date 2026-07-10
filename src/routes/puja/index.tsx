@@ -7,6 +7,7 @@ import PujaCard from "@/components/PujaCard";
 import Reveal from "@/components/Reveal";
 import OnRequestPujaForm from "@/components/OnRequestPujaForm";
 import { pujas, pujaCategories, type PujaCategory } from "@/data/pujaData";
+import { useSlidingIndicator } from "@/hooks/use-sliding-indicator";
 
 export const Route = createFileRoute("/puja/")({
   head: () => ({
@@ -30,6 +31,8 @@ export const Route = createFileRoute("/puja/")({
 function PujaPage() {
   const [category, setCategory] = useState<PujaCategory | "all">("all");
   const [query, setQuery] = useState("");
+  const { containerRef: categoryToggleRef, register: registerCategoryBtn, style: categoryPillStyle } =
+    useSlidingIndicator(category);
 
   const filtered = useMemo(() => {
     return pujas.filter((p) => {
@@ -61,13 +64,26 @@ function PujaPage() {
           </p>
 
           {/* Category toggle */}
-          <div className="mt-10 inline-flex flex-wrap justify-center items-center gap-1.5 rounded-full border border-border bg-card p-1.5 shadow-card">
+          <div
+            ref={categoryToggleRef}
+            className="mt-10 relative inline-flex flex-wrap justify-center items-center gap-1.5 rounded-full border border-border bg-card p-1.5 shadow-card"
+          >
+            <span
+              aria-hidden="true"
+              className="absolute rounded-full bg-gradient-primary shadow-soft transition-[left,top,width,height] duration-300 ease-out"
+              style={{
+                left: categoryPillStyle.left,
+                top: categoryPillStyle.top,
+                width: categoryPillStyle.width,
+                height: categoryPillStyle.height,
+                opacity: categoryPillStyle.ready ? 1 : 0,
+              }}
+            />
             <button
+              ref={registerCategoryBtn("all")}
               onClick={() => setCategory("all")}
-              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                category === "all"
-                  ? "bg-gradient-primary text-primary-foreground shadow-soft"
-                  : "text-muted-foreground hover:text-foreground"
+              className={`relative z-10 px-5 py-2.5 rounded-full text-sm font-semibold transition-colors active:scale-[0.97] ${
+                category === "all" ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
               }`}
             >
               All
@@ -75,11 +91,10 @@ function PujaPage() {
             {pujaCategories.map((c) => (
               <button
                 key={c}
+                ref={registerCategoryBtn(c)}
                 onClick={() => setCategory(c)}
-                className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                  category === c
-                    ? "bg-gradient-primary text-primary-foreground shadow-soft"
-                    : "text-muted-foreground hover:text-foreground"
+                className={`relative z-10 px-5 py-2.5 rounded-full text-sm font-semibold transition-colors active:scale-[0.97] ${
+                  category === c ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {c}

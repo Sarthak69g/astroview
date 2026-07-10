@@ -5,6 +5,7 @@ import { ArrowRight, Menu, User, Wallet, History, MessageCircle, LogOut, X } fro
 import logoAsset from "@/assets/logo.png";
 import { useAuth } from "@/lib/auth-context";
 import { avatarUrl } from "@/lib/avatar";
+import { useSlidingIndicator } from "@/hooks/use-sliding-indicator";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -91,111 +92,132 @@ export default function Header() {
     };
   }, [menuOpen]);
 
+  // Which nav link (if any) is active right now, for the sliding pill below.
+  const activeLinkId = navLinks.find((link) => isActive(link.to))?.id ?? null;
+  const { containerRef: navRef, register: registerNavLink, style: pillStyle } =
+    useSlidingIndicator(activeLinkId);
+
+  // Background lives on a separate absolutely-positioned pill now, so the
+  // links themselves only need to swap text color.
   const activeCls =
-    "text-sm font-medium text-primary bg-primary/10 px-4 py-2 rounded-full transition-all duration-200";
+    "relative z-10 text-sm font-medium text-primary px-4 py-2 rounded-full transition-colors duration-200";
   const inactiveCls =
-    "text-sm text-muted-foreground hover:text-foreground px-4 py-2 rounded-full transition-all duration-200";
+    "relative z-10 text-sm text-muted-foreground hover:text-foreground px-4 py-2 rounded-full transition-colors duration-200";
 
   return (
     <>
-      <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? "backdrop-blur-xl bg-background/85 border-b border-border/50 shadow-[0_1px_12px_oklch(0.58_0.18_42_/_0.08)]"
-            : "backdrop-blur-xl bg-background/70 border-b border-border/30"
-        }`}
-      >
-        <div className="mx-auto max-w-7xl px-6 h-18 py-3 flex items-center justify-between">
-          <Link to="/" preload="intent" className="flex items-center gap-2.5 shrink-0">
-            <img src={logoAsset} alt="AstroView" className="h-10 w-10" />
-            <span className="text-xl font-display font-semibold tracking-tight">
-              Astro<span className="text-primary">View</span>
-            </span>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.to}
-                to={link.to}
-                preload="intent"
-                className={isActive(link.to) ? activeCls : inactiveCls}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="hidden md:flex items-center gap-3">
-            <Link
-              to="/consultation"
-              preload="intent"
-              className="inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] transition-all duration-200"
-            >
-              Talk now <ArrowRight className="h-4 w-4" />
+      <header className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-5 pt-3 sm:pt-4">
+        <div
+          className={`mx-auto max-w-7xl rounded-2xl border backdrop-blur-xl transition-all duration-300 ease-out ${
+            scrolled
+              ? "bg-background/85 border-border/60 shadow-soft scale-[0.99]"
+              : "bg-background/70 border-border/30 shadow-card scale-100"
+          }`}
+        >
+          <div className="mx-auto px-6 h-16 py-3 flex items-center justify-between">
+            <Link to="/" preload="intent" className="flex items-center gap-2.5 shrink-0">
+              <img src={logoAsset} alt="AstroView" className="h-10 w-10" />
+              <span className="text-xl font-display font-semibold tracking-tight">
+                Astro<span className="text-primary">View</span>
+              </span>
             </Link>
 
-            {isLoggedIn && user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-1 focus-visible:ring-ring">
-                  <img
-                    src={avatarUrl(user.mobileNo)}
-                    alt={user.name}
-                    className="h-9 w-9 rounded-full border border-border bg-secondary object-cover"
-                  />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuLabel>
-                    <p className="text-sm font-semibold">{user.name}</p>
-                    <p className="text-xs font-normal text-muted-foreground">+91 {user.mobileNo}</p>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile" className="cursor-pointer">
-                      <User className="h-4 w-4" /> Profile
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/recharge" className="cursor-pointer">
-                      <Wallet className="h-4 w-4" /> Wallet
-                      <span className="ml-auto text-xs font-medium text-primary-deep">
-                        ₹{walletBalance}
-                      </span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem disabled>
-                    <History className="h-4 w-4" /> Order history
-                  </DropdownMenuItem>
-                  <DropdownMenuItem disabled>
-                    <MessageCircle className="h-4 w-4" /> Customer support
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={handleLogout}
-                    className="cursor-pointer text-destructive focus:text-destructive"
-                  >
-                    <LogOut className="h-4 w-4" /> Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Link
-                to="/login"
-                preload="intent"
-                className="inline-flex items-center gap-1.5 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground hover:bg-accent transition-all duration-200"
-              >
-                Login
-              </Link>
-            )}
-          </div>
+            <nav ref={navRef} className="hidden md:flex items-center gap-1 relative">
+              <span
+                aria-hidden="true"
+                className="absolute top-0 h-full rounded-full bg-primary/10 transition-[left,width] duration-300 ease-out"
+                style={{
+                  left: pillStyle.left,
+                  width: pillStyle.width,
+                  opacity: activeLinkId && pillStyle.ready ? 1 : 0,
+                }}
+              />
+              {navLinks.map((link) => (
+                <Link
+                  key={link.to}
+                  ref={registerNavLink(link.id)}
+                  to={link.to}
+                  preload="intent"
+                  className={isActive(link.to) ? activeCls : inactiveCls}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
 
-          <button
-            onClick={() => setMenuOpen(true)}
-            className="md:hidden p-2 text-foreground rounded-lg hover:bg-accent transition"
-            aria-label="Open menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
+            <div className="hidden md:flex items-center gap-3">
+              <Link
+                to="/consultation"
+                preload="intent"
+                className="inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] active:scale-[0.97] transition-all duration-200"
+              >
+                Talk now <ArrowRight className="h-4 w-4" />
+              </Link>
+
+              {isLoggedIn && user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-1 focus-visible:ring-ring">
+                    <img
+                      src={avatarUrl(user.mobileNo)}
+                      alt={user.name}
+                      className="h-9 w-9 rounded-full border border-border bg-secondary object-cover"
+                    />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>
+                      <p className="text-sm font-semibold">{user.name}</p>
+                      <p className="text-xs font-normal text-muted-foreground">
+                        +91 {user.mobileNo}
+                      </p>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/profile" className="cursor-pointer">
+                        <User className="h-4 w-4" /> Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/recharge" className="cursor-pointer">
+                        <Wallet className="h-4 w-4" /> Wallet
+                        <span className="ml-auto text-xs font-medium text-primary-deep">
+                          ₹{walletBalance}
+                        </span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled>
+                      <History className="h-4 w-4" /> Order history
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled>
+                      <MessageCircle className="h-4 w-4" /> Customer support
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={handleLogout}
+                      className="cursor-pointer text-destructive focus:text-destructive"
+                    >
+                      <LogOut className="h-4 w-4" /> Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link
+                  to="/login"
+                  preload="intent"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground hover:bg-accent transition-all duration-200"
+                >
+                  Login
+                </Link>
+              )}
+            </div>
+
+            <button
+              onClick={() => setMenuOpen(true)}
+              className="md:hidden p-2 text-foreground rounded-lg hover:bg-accent transition"
+              aria-label="Open menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          </div>
         </div>
       </header>
 
