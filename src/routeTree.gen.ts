@@ -9,6 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RechargeRouteImport } from './routes/recharge'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TarotIndexRouteImport } from './routes/tarot/index'
@@ -22,6 +25,21 @@ import { Route as NumerologyNumberRouteImport } from './routes/numerology/$numbe
 import { Route as HoroscopeSignRouteImport } from './routes/horoscope/$sign'
 import { Route as ConsultationSlugRouteImport } from './routes/consultation/$slug'
 
+const RechargeRoute = RechargeRouteImport.update({
+  id: '/recharge',
+  path: '/recharge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -86,6 +104,9 @@ const ConsultationSlugRoute = ConsultationSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/recharge': typeof RechargeRoute
   '/consultation/$slug': typeof ConsultationSlugRoute
   '/horoscope/$sign': typeof HoroscopeSignRoute
   '/numerology/$number': typeof NumerologyNumberRoute
@@ -100,6 +121,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/recharge': typeof RechargeRoute
   '/consultation/$slug': typeof ConsultationSlugRoute
   '/horoscope/$sign': typeof HoroscopeSignRoute
   '/numerology/$number': typeof NumerologyNumberRoute
@@ -115,6 +139,9 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/recharge': typeof RechargeRoute
   '/consultation/$slug': typeof ConsultationSlugRoute
   '/horoscope/$sign': typeof HoroscopeSignRoute
   '/numerology/$number': typeof NumerologyNumberRoute
@@ -131,6 +158,9 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/login'
+    | '/profile'
+    | '/recharge'
     | '/consultation/$slug'
     | '/horoscope/$sign'
     | '/numerology/$number'
@@ -145,6 +175,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/login'
+    | '/profile'
+    | '/recharge'
     | '/consultation/$slug'
     | '/horoscope/$sign'
     | '/numerology/$number'
@@ -159,6 +192,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/login'
+    | '/profile'
+    | '/recharge'
     | '/consultation/$slug'
     | '/horoscope/$sign'
     | '/numerology/$number'
@@ -174,6 +210,9 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  LoginRoute: typeof LoginRoute
+  ProfileRoute: typeof ProfileRoute
+  RechargeRoute: typeof RechargeRoute
   ConsultationSlugRoute: typeof ConsultationSlugRoute
   HoroscopeSignRoute: typeof HoroscopeSignRoute
   NumerologyNumberRoute: typeof NumerologyNumberRoute
@@ -188,6 +227,27 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/recharge': {
+      id: '/recharge'
+      path: '/recharge'
+      fullPath: '/recharge'
+      preLoaderRoute: typeof RechargeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -278,6 +338,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  LoginRoute: LoginRoute,
+  ProfileRoute: ProfileRoute,
+  RechargeRoute: RechargeRoute,
   ConsultationSlugRoute: ConsultationSlugRoute,
   HoroscopeSignRoute: HoroscopeSignRoute,
   NumerologyNumberRoute: NumerologyNumberRoute,

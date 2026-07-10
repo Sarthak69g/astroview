@@ -1,29 +1,46 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowRight, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, User, Wallet, History, MessageCircle, LogOut, X } from "lucide-react";
 import logoAsset from "@/assets/logo.png";
+import { useAuth } from "@/lib/auth-context";
+import { avatarUrl } from "@/lib/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navLinks = [
-  { id: "home",         label: "Home",         to: "/"             },
+  { id: "home", label: "Home", to: "/" },
   { id: "consultation", label: "Consultation", to: "/consultation" },
-  { id: "puja",         label: "Puja",         to: "/puja"         },
-  { id: "horoscope",    label: "Horoscope",    to: "/horoscope"    },
-  { id: "numerology",   label: "Numerology",   to: "/numerology"   },
-  { id: "tarot",        label: "Tarot",        to: "/tarot"        },
-  { id: "contact",      label: "Contact",      to: "/#contact"     },
-  { id: "about",        label: "About",        to: "/about"        },
+  { id: "puja", label: "Puja", to: "/puja" },
+  { id: "horoscope", label: "Horoscope", to: "/horoscope" },
+  { id: "numerology", label: "Numerology", to: "/numerology" },
+  { id: "tarot", label: "Tarot", to: "/tarot" },
+  { id: "contact", label: "Contact", to: "/#contact" },
+  { id: "about", label: "About", to: "/about" },
 ];
 
 const SECTION_IDS = ["contact"];
 
 export default function Header() {
-  const [menuOpen,      setMenuOpen]      = useState(false);
-  const [scrolled,      setScrolled]      = useState(false);
-  const [mounted,       setMounted]       = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { user, isLoggedIn, logout, walletBalance } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate({ to: "/" });
+  };
 
   // Scroll shadow
   useEffect(() => {
@@ -34,13 +51,16 @@ export default function Header() {
 
   // Section highlighting via IntersectionObserver (homepage only)
   useEffect(() => {
-    if (pathname !== "/") { setActiveSection(null); return; }
+    if (pathname !== "/") {
+      setActiveSection(null);
+      return;
+    }
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries.find((e) => e.isIntersecting);
         if (visible) setActiveSection(visible.target.id);
       },
-      { rootMargin: "-15% 0px -60% 0px", threshold: 0 }
+      { rootMargin: "-15% 0px -60% 0px", threshold: 0 },
     );
     SECTION_IDS.forEach((id) => {
       const el = document.getElementById(id);
@@ -50,25 +70,31 @@ export default function Header() {
   }, [pathname]);
 
   const isActive = (href: string): boolean => {
-    if (href === "/")             return pathname === "/" && !activeSection;
+    if (href === "/") return pathname === "/" && !activeSection;
     if (href === "/consultation") return pathname.startsWith("/consultation");
-    if (href === "/puja")         return pathname.startsWith("/puja");
-    if (href === "/horoscope")    return pathname.startsWith("/horoscope");
-    if (href === "/numerology")   return pathname.startsWith("/numerology");
-    if (href === "/tarot")        return pathname.startsWith("/tarot");
-    if (href === "/about")        return pathname === "/about";
-    if (href.startsWith("/#"))    return pathname === "/" && activeSection === href.substring(2);
+    if (href === "/puja") return pathname.startsWith("/puja");
+    if (href === "/horoscope") return pathname.startsWith("/horoscope");
+    if (href === "/numerology") return pathname.startsWith("/numerology");
+    if (href === "/tarot") return pathname.startsWith("/tarot");
+    if (href === "/about") return pathname === "/about";
+    if (href.startsWith("/#")) return pathname === "/" && activeSection === href.substring(2);
     return false;
   };
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [menuOpen]);
 
-  const activeCls   = "text-sm font-medium text-primary bg-primary/10 px-4 py-2 rounded-full transition-all duration-200";
-  const inactiveCls = "text-sm text-muted-foreground hover:text-foreground px-4 py-2 rounded-full transition-all duration-200";
+  const activeCls =
+    "text-sm font-medium text-primary bg-primary/10 px-4 py-2 rounded-full transition-all duration-200";
+  const inactiveCls =
+    "text-sm text-muted-foreground hover:text-foreground px-4 py-2 rounded-full transition-all duration-200";
 
   return (
     <>
@@ -80,7 +106,6 @@ export default function Header() {
         }`}
       >
         <div className="mx-auto max-w-7xl px-6 h-18 py-3 flex items-center justify-between">
-
           <Link to="/" preload="intent" className="flex items-center gap-2.5 shrink-0">
             <img src={logoAsset} alt="AstroView" className="h-10 w-10" />
             <span className="text-xl font-display font-semibold tracking-tight">
@@ -101,13 +126,68 @@ export default function Header() {
             ))}
           </nav>
 
-          <Link
-            to="/consultation"
-            preload="intent"
-            className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] transition-all duration-200"
-          >
-            Talk now <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="hidden md:flex items-center gap-3">
+            <Link
+              to="/consultation"
+              preload="intent"
+              className="inline-flex items-center gap-1.5 rounded-full bg-gradient-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] transition-all duration-200"
+            >
+              Talk now <ArrowRight className="h-4 w-4" />
+            </Link>
+
+            {isLoggedIn && user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-1 focus-visible:ring-ring">
+                  <img
+                    src={avatarUrl(user.mobileNo)}
+                    alt={user.name}
+                    className="h-9 w-9 rounded-full border border-border bg-secondary object-cover"
+                  />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <p className="text-sm font-semibold">{user.name}</p>
+                    <p className="text-xs font-normal text-muted-foreground">+91 {user.mobileNo}</p>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="cursor-pointer">
+                      <User className="h-4 w-4" /> Profile
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/recharge" className="cursor-pointer">
+                      <Wallet className="h-4 w-4" /> Wallet
+                      <span className="ml-auto text-xs font-medium text-primary-deep">
+                        ₹{walletBalance}
+                      </span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem disabled>
+                    <History className="h-4 w-4" /> Order history
+                  </DropdownMenuItem>
+                  <DropdownMenuItem disabled>
+                    <MessageCircle className="h-4 w-4" /> Customer support
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="cursor-pointer text-destructive focus:text-destructive"
+                  >
+                    <LogOut className="h-4 w-4" /> Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link
+                to="/login"
+                preload="intent"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border px-5 py-2.5 text-sm font-medium text-foreground hover:bg-accent transition-all duration-200"
+              >
+                Login
+              </Link>
+            )}
+          </div>
 
           <button
             onClick={() => setMenuOpen(true)}
@@ -119,67 +199,109 @@ export default function Header() {
         </div>
       </header>
 
-      {mounted && createPortal(
-        <>
-          <div
-            className={`fixed inset-0 bg-foreground/40 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
-              menuOpen ? "opacity-100 z-[9998] pointer-events-auto" : "opacity-0 z-[-1] pointer-events-none"
-            }`}
-            onClick={() => setMenuOpen(false)}
-          />
-          <div
-            className={`fixed top-0 right-0 h-full w-[280px] bg-background border-l border-border shadow-2xl flex flex-col md:hidden transition-transform duration-300 ease-in-out z-[9999] ${
-              menuOpen ? "translate-x-0" : "translate-x-full"
-            }`}
-          >
-            <div className="flex items-center justify-between px-6 py-5 border-b border-border">
-              <div className="flex items-center gap-2">
-                <img src={logoAsset} alt="" className="h-8 w-8" />
-                <span className="font-display font-semibold text-lg">
-                  Astro<span className="text-primary">View</span>
-                </span>
+      {mounted &&
+        createPortal(
+          <>
+            <div
+              className={`fixed inset-0 bg-foreground/40 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
+                menuOpen
+                  ? "opacity-100 z-[9998] pointer-events-auto"
+                  : "opacity-0 z-[-1] pointer-events-none"
+              }`}
+              onClick={() => setMenuOpen(false)}
+            />
+            <div
+              className={`fixed top-0 right-0 h-full w-[280px] bg-background border-l border-border shadow-2xl flex flex-col md:hidden transition-transform duration-300 ease-in-out z-[9999] ${
+                menuOpen ? "translate-x-0" : "translate-x-full"
+              }`}
+            >
+              <div className="flex items-center justify-between px-6 py-5 border-b border-border">
+                <div className="flex items-center gap-2">
+                  <img src={logoAsset} alt="" className="h-8 w-8" />
+                  <span className="font-display font-semibold text-lg">
+                    Astro<span className="text-primary">View</span>
+                  </span>
+                </div>
+                <button
+                  onClick={() => setMenuOpen(false)}
+                  className="p-1.5 rounded-full hover:bg-accent transition"
+                  aria-label="Close menu"
+                >
+                  <X className="h-5 w-5" />
+                </button>
               </div>
-              <button
-                onClick={() => setMenuOpen(false)}
-                className="p-1.5 rounded-full hover:bg-accent transition"
-                aria-label="Close menu"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
 
-            <nav className="flex flex-col gap-1 p-4 flex-1">
-              {navLinks.map((link) => (
+              {isLoggedIn && user ? (
                 <Link
-                  key={link.to}
-                  to={link.to}
+                  to="/profile"
                   preload="intent"
                   onClick={() => setMenuOpen(false)}
-                  className={
-                    isActive(link.to)
-                      ? "px-4 py-3.5 rounded-xl text-base font-semibold text-foreground bg-accent transition"
-                      : "px-4 py-3.5 rounded-xl text-base font-medium text-foreground hover:bg-accent transition"
-                  }
+                  className="flex items-center gap-3 px-6 py-4 border-b border-border"
                 >
-                  {link.label}
+                  <img
+                    src={avatarUrl(user.mobileNo)}
+                    alt={user.name}
+                    className="h-10 w-10 rounded-full border border-border bg-secondary object-cover"
+                  />
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold truncate">{user.name}</p>
+                    <p className="text-xs text-muted-foreground">Wallet: ₹{walletBalance}</p>
+                  </div>
                 </Link>
-              ))}
-            </nav>
+              ) : (
+                <Link
+                  to="/login"
+                  preload="intent"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-2 px-6 py-4 border-b border-border text-sm font-semibold text-primary-deep"
+                >
+                  <User className="h-4 w-4" /> Login / Sign up
+                </Link>
+              )}
 
-            <div className="p-5 border-t border-border">
-              <Link
-                to="/consultation"
-                preload="intent"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-primary px-5 py-3.5 text-sm font-medium text-primary-foreground shadow-soft"
-              >
-                Talk now <ArrowRight className="h-4 w-4" />
-              </Link>
+              <nav className="flex flex-col gap-1 p-4 flex-1">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.to}
+                    to={link.to}
+                    preload="intent"
+                    onClick={() => setMenuOpen(false)}
+                    className={
+                      isActive(link.to)
+                        ? "px-4 py-3.5 rounded-xl text-base font-semibold text-foreground bg-accent transition"
+                        : "px-4 py-3.5 rounded-xl text-base font-medium text-foreground hover:bg-accent transition"
+                    }
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+
+              <div className="p-5 border-t border-border space-y-2.5">
+                <Link
+                  to="/consultation"
+                  preload="intent"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-center gap-2 w-full rounded-full bg-gradient-primary px-5 py-3.5 text-sm font-medium text-primary-foreground shadow-soft"
+                >
+                  Talk now <ArrowRight className="h-4 w-4" />
+                </Link>
+                {isLoggedIn && (
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      handleLogout();
+                    }}
+                    className="flex items-center justify-center gap-2 w-full rounded-full border border-border px-5 py-3 text-sm font-medium text-destructive"
+                  >
+                    <LogOut className="h-4 w-4" /> Logout
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        </>,
-        document.body
-      )}
+          </>,
+          document.body,
+        )}
     </>
   );
 }

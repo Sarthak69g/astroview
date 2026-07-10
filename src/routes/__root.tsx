@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AuthProvider } from "@/lib/auth-context";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import RouteTransition from "@/components/RouteTransition";
@@ -94,19 +95,21 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Header />
+      <AuthProvider>
+        <Header />
 
-      <RouteTransition>
-        <Outlet />
-      </RouteTransition>
+        <RouteTransition>
+          <Outlet />
+        </RouteTransition>
 
-      <Footer />
+        <Footer />
 
-      <Toaster
-        position="top-right"
-        richColors
-        closeButton
-      />
+        <Toaster
+          position="top-right"
+          richColors
+          closeButton
+        />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

@@ -6,9 +6,7 @@
 import { toast } from "sonner";
 import { type Astrologer, type ConsultMode } from "@/data/astrologersData";
 
-export function avatarUrl(seed: string) {
-  return `https://api.dicebear.com/8.x/personas/svg?seed=${encodeURIComponent(seed)}&backgroundColor=fde9d0,fbe0c4,f7d9b0&radius=50`;
-}
+export { avatarUrl } from "@/lib/avatar";
 
 export function handleConsultAction(astrologer: Astrologer, mode: ConsultMode) {
   toast(`${mode === "Chat" ? "Chat" : "Call"} sessions are launching soon`, {
