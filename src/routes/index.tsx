@@ -7,6 +7,8 @@ import { pujas } from "@/data/pujaData";
 import PujaCard from "@/components/PujaCard";
 import {
   ArrowRight,
+  ChevronDown,
+  Clock,
   Mail,
   MapPin,
   MessageCircle,
@@ -764,67 +766,67 @@ function Contact() {
     }
   };
 
+  const inputCls =
+    "w-full h-13 sm:h-14 rounded-xl border border-border bg-background px-4 text-sm sm:text-base outline-none focus:border-primary transition-colors";
+
   return (
     <section id="contact" className="pt-8 pb-20 md:pt-12 md:pb-28 bg-gradient-to-b from-background to-accent/30">
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <Reveal>
-          <div className="max-w-3xl mx-auto text-center mb-14">
-            <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
+          <div className="max-w-3xl mx-auto text-center mb-10 md:mb-14">
+            <p className="text-xs uppercase tracking-[0.22em] text-primary font-semibold">
               Get In Touch
             </p>
-            <h2 className="mt-4 text-4xl md:text-5xl font-display font-semibold tracking-tight">
+            <h2 className="mt-4 text-3xl sm:text-4xl md:text-5xl font-display font-semibold tracking-tight">
               We'd love to hear from you.
             </h2>
-            <p className="mt-4 text-muted-foreground text-lg">
+            <p className="mt-4 text-muted-foreground text-base sm:text-lg">
               Reach out with your questions, feedback, or simply say hello.
             </p>
           </div>
         </Reveal>
 
-        <div className="grid lg:grid-cols-[360px_1fr] gap-6 lg:gap-8">
-          {/* Info cards */}
+        <div className="grid md:grid-cols-[300px_1fr] lg:grid-cols-[340px_1fr] gap-6 lg:gap-8 items-stretch">
+          {/* Unified info card */}
           <Reveal delay={80}>
-            <div className="space-y-5">
-              <div className="rounded-3xl border border-border bg-card p-6 shadow-card">
-                <div className="flex gap-4">
-                  <MapPin className="h-5 w-5 text-primary mt-1 shrink-0" />
-                  <div>
-                    <h3 className="font-display text-lg font-semibold">Visit Our Office</h3>
-                    <div className="mt-3 text-sm text-muted-foreground leading-relaxed">
-                      {CONTACT.address.map((line, i) => <p key={i}>{line}</p>)}
-                    </div>
+            <div className="h-full rounded-[2rem] border border-border bg-card shadow-card divide-y divide-border overflow-hidden">
+              <div className="flex gap-4 p-6">
+                <MapPin className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                <div>
+                  <h3 className="font-display text-base font-semibold">Visit Our Office</h3>
+                  <div className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                    {CONTACT.address.map((line, i) => <p key={i}>{line}</p>)}
                   </div>
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-border bg-card p-6 shadow-card">
-                <div className="flex gap-4">
-                  <Phone className="h-5 w-5 text-primary mt-1 shrink-0" />
-                  <div>
-                    <h3 className="font-display text-lg font-semibold">Call Us</h3>
-                    <a href={`tel:${CONTACT.phone}`} className="mt-2 block text-muted-foreground hover:text-primary transition">
-                      {CONTACT.phone}
-                    </a>
-                  </div>
+              <div className="flex gap-4 p-6">
+                <Phone className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                <div>
+                  <h3 className="font-display text-base font-semibold">Call Us</h3>
+                  <a href={`tel:${CONTACT.phone}`} className="mt-2 block text-sm text-muted-foreground hover:text-primary transition">
+                    {CONTACT.phone}
+                  </a>
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-border bg-card p-6 shadow-card">
-                <div className="flex gap-4">
-                  <Mail className="h-5 w-5 text-primary mt-1 shrink-0" />
-                  <div>
-                    <h3 className="font-display text-lg font-semibold">Email Us</h3>
-                    <a href={`mailto:${CONTACT.email}`} className="mt-2 block break-all text-muted-foreground hover:text-primary transition">
-                      {CONTACT.email}
-                    </a>
-                  </div>
+              <div className="flex gap-4 p-6">
+                <Mail className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                <div className="min-w-0">
+                  <h3 className="font-display text-base font-semibold">Email Us</h3>
+                  <a href={`mailto:${CONTACT.email}`} className="mt-2 block break-all text-sm text-muted-foreground hover:text-primary transition">
+                    {CONTACT.email}
+                  </a>
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-border bg-card p-6 shadow-card">
-                <h3 className="font-display text-lg font-semibold">Availability</h3>
-                <p className="mt-3 text-sm text-muted-foreground">Monday – Saturday</p>
-                <p className="text-sm text-muted-foreground">10:00 AM – 7:00 PM</p>
+              <div className="flex gap-4 p-6">
+                <Clock className="h-5 w-5 text-primary mt-0.5 shrink-0" />
+                <div>
+                  <h3 className="font-display text-base font-semibold">Availability</h3>
+                  <p className="mt-2 text-sm text-muted-foreground">Monday – Saturday</p>
+                  <p className="text-sm text-muted-foreground">10:00 AM – 7:00 PM</p>
+                </div>
               </div>
             </div>
           </Reveal>
@@ -833,9 +835,9 @@ function Contact() {
           <Reveal delay={160}>
             <form
               onSubmit={handleSubmit}
-              className="rounded-[2rem] border border-border bg-card p-5 md:p-10 shadow-card"
+              className="h-full rounded-[2rem] border border-border bg-card p-5 sm:p-6 md:p-10 shadow-card flex flex-col"
             >
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
                 <input
                   disabled={loading}
                   type="text"
@@ -847,7 +849,7 @@ function Contact() {
                   }}
                   placeholder="Full Name"
                   required
-                  className="w-full h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary transition-colors"
+                  className={inputCls}
                 />
                 <input
                   disabled={loading}
@@ -857,7 +859,7 @@ function Contact() {
                   onChange={handleChange}
                   placeholder="Email Address"
                   required
-                  className="w-full h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary transition-colors"
+                  className={inputCls}
                 />
                 <input
                   disabled={loading}
@@ -870,37 +872,40 @@ function Contact() {
                   }}
                   placeholder="Phone Number"
                   required
-                  className="w-full h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary transition-colors"
+                  className={inputCls}
                 />
-                <select
-                  name="service"
-                  value={formData.service}
-                  onChange={handleChange}
-                  className="w-full h-14 rounded-xl border border-border bg-background px-4 outline-none focus:border-primary transition-colors"
-                >
-                  <option value="">Select Service</option>
-                  {allServices.map((service) => (
-                    <option key={service.slug} value={service.name}>
-                      {service.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select
+                    name="service"
+                    value={formData.service}
+                    onChange={handleChange}
+                    className={`${inputCls} appearance-none pr-10 ${formData.service ? "" : "text-muted-foreground"}`}
+                  >
+                    <option value="">Select Service</option>
+                    {allServices.map((service) => (
+                      <option key={service.slug} value={service.name}>
+                        {service.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                </div>
               </div>
 
               <textarea
-                rows={6}
+                rows={5}
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
                 placeholder="Tell us how we can help..."
                 required
-                className="mt-6 w-full rounded-xl border border-border bg-background p-4 outline-none focus:border-primary transition-colors resize-none"
+                className="mt-4 sm:mt-6 w-full flex-1 min-h-[120px] rounded-xl border border-border bg-background p-4 text-sm sm:text-base outline-none focus:border-primary transition-colors resize-none"
               />
 
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-6 inline-flex items-center gap-2 rounded-full bg-gradient-primary px-8 py-3 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] active:scale-[0.97] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100"
+                className="mt-4 sm:mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-gradient-primary px-8 py-3 text-sm font-medium text-primary-foreground shadow-soft hover:opacity-95 hover:scale-[1.02] active:scale-[0.97] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed disabled:active:scale-100 w-full sm:w-auto sm:self-start"
               >
                 {loading ? "Sending Inquiry..." : <><span>Send Message</span><ArrowRight className="h-4 w-4" /></>}
               </button>

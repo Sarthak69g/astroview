@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as RechargeRouteImport } from './routes/recharge'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -25,6 +27,11 @@ import { Route as NumerologyNumberRouteImport } from './routes/numerology/$numbe
 import { Route as HoroscopeSignRouteImport } from './routes/horoscope/$sign'
 import { Route as ConsultationSlugRouteImport } from './routes/consultation/$slug'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RechargeRoute = RechargeRouteImport.update({
   id: '/recharge',
   path: '/recharge',
@@ -33,6 +40,11 @@ const RechargeRoute = RechargeRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -105,8 +117,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/profile': typeof ProfileRoute
   '/recharge': typeof RechargeRoute
+  '/terms': typeof TermsRoute
   '/consultation/$slug': typeof ConsultationSlugRoute
   '/horoscope/$sign': typeof HoroscopeSignRoute
   '/numerology/$number': typeof NumerologyNumberRoute
@@ -122,8 +136,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/profile': typeof ProfileRoute
   '/recharge': typeof RechargeRoute
+  '/terms': typeof TermsRoute
   '/consultation/$slug': typeof ConsultationSlugRoute
   '/horoscope/$sign': typeof HoroscopeSignRoute
   '/numerology/$number': typeof NumerologyNumberRoute
@@ -140,8 +156,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/login': typeof LoginRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/profile': typeof ProfileRoute
   '/recharge': typeof RechargeRoute
+  '/terms': typeof TermsRoute
   '/consultation/$slug': typeof ConsultationSlugRoute
   '/horoscope/$sign': typeof HoroscopeSignRoute
   '/numerology/$number': typeof NumerologyNumberRoute
@@ -159,8 +177,10 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/login'
+    | '/privacy-policy'
     | '/profile'
     | '/recharge'
+    | '/terms'
     | '/consultation/$slug'
     | '/horoscope/$sign'
     | '/numerology/$number'
@@ -176,8 +196,10 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/login'
+    | '/privacy-policy'
     | '/profile'
     | '/recharge'
+    | '/terms'
     | '/consultation/$slug'
     | '/horoscope/$sign'
     | '/numerology/$number'
@@ -193,8 +215,10 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/login'
+    | '/privacy-policy'
     | '/profile'
     | '/recharge'
+    | '/terms'
     | '/consultation/$slug'
     | '/horoscope/$sign'
     | '/numerology/$number'
@@ -211,8 +235,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   LoginRoute: typeof LoginRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   ProfileRoute: typeof ProfileRoute
   RechargeRoute: typeof RechargeRoute
+  TermsRoute: typeof TermsRoute
   ConsultationSlugRoute: typeof ConsultationSlugRoute
   HoroscopeSignRoute: typeof HoroscopeSignRoute
   NumerologyNumberRoute: typeof NumerologyNumberRoute
@@ -227,6 +253,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/recharge': {
       id: '/recharge'
       path: '/recharge'
@@ -239,6 +272,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -339,8 +379,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   LoginRoute: LoginRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   ProfileRoute: ProfileRoute,
   RechargeRoute: RechargeRoute,
+  TermsRoute: TermsRoute,
   ConsultationSlugRoute: ConsultationSlugRoute,
   HoroscopeSignRoute: HoroscopeSignRoute,
   NumerologyNumberRoute: NumerologyNumberRoute,

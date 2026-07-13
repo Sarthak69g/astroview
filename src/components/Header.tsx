@@ -50,24 +50,37 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Section highlighting via IntersectionObserver (homepage only)
+  // Section highlighting (homepage only). Checks each tracked section's
+  // position against a line just below the fixed header on every scroll —
+  // more reliable than an IntersectionObserver rootMargin band, which can
+  // miss tall sections (the pill would get stuck on "Home" once the section
+  // scrolled past that narrow band without ever registering as active).
   useEffect(() => {
     if (pathname !== "/") {
       setActiveSection(null);
       return;
     }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.find((e) => e.isIntersecting);
-        if (visible) setActiveSection(visible.target.id);
-      },
-      { rootMargin: "-15% 0px -60% 0px", threshold: 0 },
-    );
-    SECTION_IDS.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-    return () => observer.disconnect();
+    const HEADER_OFFSET = 110;
+    const updateActiveSection = () => {
+      let current: string | null = null;
+      for (const id of SECTION_IDS) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= HEADER_OFFSET && rect.bottom > HEADER_OFFSET) {
+          current = id;
+          break;
+        }
+      }
+      setActiveSection(current);
+    };
+    updateActiveSection();
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
+    window.addEventListener("resize", updateActiveSection);
+    return () => {
+      window.removeEventListener("scroll", updateActiveSection);
+      window.removeEventListener("resize", updateActiveSection);
+    };
   }, [pathname]);
 
   const isActive = (href: string): boolean => {

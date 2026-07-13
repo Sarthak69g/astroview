@@ -1,58 +1,57 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ShieldCheck, Eye, Heart, Sparkles, MapPin, Mail, Phone } from "lucide-react";
+import { useRef, useState } from "react";
+import {
+  ShieldCheck,
+  Eye,
+  Heart,
+  Sparkles,
+  Compass,
+  Search,
+  Hammer,
+  Rocket,
+  Plus,
+} from "lucide-react";
 import Starfield from "@/components/Starfield";
 import Reveal from "@/components/Reveal";
-
-const CONTACT = {
-  email: "support@kamleshkhyatiinfosolution.com",
-  phone: "+91-9319843151",
-  address: ["Unit No.202, Second Floor, Plot No. 103,", "Block A, Sector 63 Noida,", "Gautam Budh Nagar UP – 201301"],
-};
 
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About — AstroView" },
-      { name: "description", content: "AstroView is a modern home for Vedic astrology — built by KamleshKhyati Infosolution, designed for seekers who value tradition, honesty, and clarity." },
+      {
+        name: "description",
+        content:
+          "AstroView is a modern home for Vedic astrology — built by KamleshKhyati Infosolution, designed for seekers who value tradition, honesty, and clarity.",
+      },
       { property: "og:title", content: "About — AstroView" },
-      { property: "og:description", content: "AstroView is a modern home for Vedic astrology — built by KamleshKhyati Infosolution, designed for seekers who value tradition, honesty, and clarity." },
+      {
+        property: "og:description",
+        content:
+          "AstroView is a modern home for Vedic astrology — built by KamleshKhyati Infosolution, designed for seekers who value tradition, honesty, and clarity.",
+      },
       { name: "twitter:title", content: "About — AstroView" },
-      { name: "twitter:description", content: "AstroView is a modern home for Vedic astrology — built by KamleshKhyati Infosolution, designed for seekers who value tradition, honesty, and clarity." },
+      {
+        name: "twitter:description",
+        content:
+          "AstroView is a modern home for Vedic astrology — built by KamleshKhyati Infosolution, designed for seekers who value tradition, honesty, and clarity.",
+      },
     ],
   }),
   component: AboutPage,
 });
-
-const values = [
-  { icon: ShieldCheck, title: "Honesty over impressiveness", text: "We won't dress up uncertainty as prophecy. When astrology can't tell you something definitively, we'll say so. Honest guidance is more valuable than dramatic prediction." },
-  { icon: Eye, title: "Transparency in practice", text: "We'll always show our reasoning. Whether it's a Dasha period, a planetary transit, or a Guna Milan score — we explain what it means and why it matters to your situation." },
-  { icon: Heart, title: "People, not products", text: "Every person who consults AstroView is a unique individual with a real story. We'll never treat you as a session to close or a query to resolve." },
-  { icon: Sparkles, title: "Tradition without rigidity", text: "Vedic astrology is thousands of years old. We respect that lineage deeply. We also believe tradition is best honoured by applying it thoughtfully, not mechanically." },
-];
-
-const timeline = [
-  { year: "The beginning", text: "KamleshKhyati Infosolution started AstroView with a simple question: why does astrology online feel so transactional? The platforms that existed were loud, ad-heavy, and impersonal. We wanted something different." },
-  { year: "The research", text: "We spent time speaking with seekers — people who genuinely used astrology to navigate decisions — and with practising astrologers. The gap between what people needed and what was available was clear." },
-  { year: "The build", text: "We began building AstroView from scratch. The brief was simple: slow, private, honest, beautiful. No fake reviews. No manufactured urgency. No pop-ups. Just astrology, done properly." },
-  { year: "Coming soon", text: "AstroView is in its final stages before launch. Our first release will include Janam Kundli reports, live call consultations, and chat readings — each built around real astrologers and real care." },
-];
 
 function AboutPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <AboutHero />
       <Reveal>
-        <WhyExist />
-      </Reveal>
-      <Beliefs />
-      <Reveal>
-        <HowWeWork />
+        <Origin />
       </Reveal>
       <Reveal>
-        <WhatBuilding />
+        <Beliefs />
       </Reveal>
       <Reveal>
-        <CompanySection />
+        <Journey />
       </Reveal>
       <Reveal>
         <ClosingStatement />
@@ -61,163 +60,262 @@ function AboutPage() {
   );
 }
 
+// ─── Hero ───────────────────────────────────────────────────────────────────
+
 function AboutHero() {
   return (
-    <section className="relative overflow-hidden py-24 md:py-36 bg-gradient-hero">
+    <section className="relative overflow-hidden pt-28 pb-16 md:pt-36 md:pb-20 bg-gradient-hero">
       <Starfield />
-      <div className="mx-auto max-w-5xl px-6 text-center">
+      <div className="mx-auto max-w-4xl px-6 text-center">
         <p className="text-xs uppercase tracking-[0.25em] text-primary font-medium">
           Who We Are
         </p>
 
-        <h1 className="mt-6 font-display text-5xl md:text-7xl font-semibold leading-none">
-          Built slowly.
-          <br />
-          <span className="text-gradient">Built carefully.</span>
+        <h1 className="mt-5 font-display text-4xl md:text-6xl font-semibold leading-tight">
+          Built slowly. <span className="text-gradient">Built carefully.</span>
         </h1>
 
-        <p className="mt-8 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-          AstroView was created because seeking guidance online had started to
-          feel loud. We wanted to build something quieter, more thoughtful and
-          rooted in genuine human conversation.
+        <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+          AstroView exists because seeking guidance online had started to feel
+          loud. We're building something quieter — rooted in real
+          conversation, not manufactured urgency.
         </p>
 
-        <div className="mt-12 grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
-          {[
-            "Classical Vedic Methods",
-            "Human Astrologers",
-            "Privacy First",
-          ].map((item) => (
-            <div
-              key={item}
-              className="rounded-2xl border border-border bg-card/70 backdrop-blur p-5"
-            >
-              {item}
-            </div>
-          ))}
+        <div className="mt-8 flex flex-wrap justify-center gap-2.5">
+          {["Classical Vedic Methods", "Human Astrologers", "Privacy First"].map(
+            (item) => (
+              <span
+                key={item}
+                className="rounded-full border border-border bg-card/70 backdrop-blur px-4 py-2 text-sm"
+              >
+                {item}
+              </span>
+            ),
+          )}
         </div>
       </div>
     </section>
   );
 }
 
+// ─── Origin ─────────────────────────────────────────────────────────────────
 
-function WhyExist() {
+function Origin() {
   return (
-    <section className="py-24">
-      <div className="mx-auto max-w-4xl px-6">
-        <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
-          Why AstroView Exists
-        </p>
-
-        <h2 className="mt-4 text-4xl md:text-5xl font-display font-semibold">
-          A different idea.
-        </h2>
-
-        <div className="mt-10 space-y-6 text-lg text-muted-foreground leading-relaxed">
-          <p>
-            The modern internet is very good at capturing attention.
-            It is less good at creating trust.
+    <section className="py-14 md:py-16">
+      <div className="mx-auto max-w-6xl px-6 grid md:grid-cols-2 gap-8 md:gap-10 items-center">
+        <div>
+          <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
+            Why AstroView Exists
           </p>
-
-          <p>
-            Many astrology platforms are designed around urgency,
-            transactions and volume.
+          <h2 className="mt-3 text-3xl md:text-4xl font-display font-semibold leading-snug">
+            A different starting question.
+          </h2>
+          <p className="mt-5 text-muted-foreground leading-relaxed">
+            Most astrology platforms are built around attention — urgency,
+            volume, one more purchase. We started AstroView by asking the
+            opposite question: what would this feel like if it were designed
+            around the person seeking guidance, not the platform selling it?
           </p>
+          <p className="mt-4 text-muted-foreground leading-relaxed">
+            That question shaped every decision since — from how a reading is
+            explained to how (and whether) we ask you to pay again.
+          </p>
+        </div>
 
-          <blockquote className="border-l-2 border-primary pl-6 text-foreground font-medium text-xl">
-            “What would astrology feel like if it were designed around the
-            person seeking guidance rather than the platform providing it?”
-          </blockquote>
-
-          <p>
-            That question became AstroView.
+        <div className="rounded-[2rem] border border-border bg-card p-8 md:p-10 shadow-card">
+          <span className="font-display text-5xl text-primary/30 leading-none">
+            "
+          </span>
+          <p className="mt-2 font-display text-xl md:text-2xl leading-snug">
+            Astrology designed around the seeker, not the platform.
+          </p>
+          <p className="mt-5 text-sm text-muted-foreground">
+            The question that became AstroView.
           </p>
         </div>
       </div>
     </section>
   );
 }
+
+// ─── Beliefs (interactive accordion) ───────────────────────────────────────
+
+const beliefs = [
+  {
+    icon: ShieldCheck,
+    title: "Honesty over impressiveness",
+    text: "If astrology can't answer something clearly, we say so — rather than dressing up uncertainty as prophecy. Honest guidance beats dramatic prediction, every time.",
+  },
+  {
+    icon: Eye,
+    title: "Transparency in practice",
+    text: "We show our reasoning. Whether it's a Dasha period, a transit, or a Guna Milan score, we explain what it means and why it matters to your specific situation.",
+  },
+  {
+    icon: Heart,
+    title: "People, not sessions",
+    text: "Everyone who consults AstroView is a real person with a real story — never a query to resolve or a session to close as fast as possible.",
+  },
+  {
+    icon: Sparkles,
+    title: "Tradition, applied thoughtfully",
+    text: "Vedic astrology is thousands of years old, and we respect that lineage. We also believe it's honoured best by applying it with care, not mechanically.",
+  },
+];
 
 function Beliefs() {
-  const beliefs = [
-    {
-      title: "Honesty before certainty",
-      text: "If astrology cannot answer something clearly, we believe it is better to say so than invent confidence."
-    },
-    {
-      title: "People before products",
-      text: "Every consultation represents a real person navigating real decisions."
-    },
-    {
-      title: "Tradition before trends",
-      text: "Our work is rooted in classical Vedic principles."
-    },
-    {
-      title: "Clarity before complexity",
-      text: "Insights should be understandable, useful and grounded."
-    }
-  ];
+  const [openIdx, setOpenIdx] = useState(0);
 
   return (
-    <section className="py-24 bg-accent/20">
-      <div className="mx-auto max-w-7xl px-6">
+    <section className="py-14 md:py-16 bg-accent/20">
+      <div className="mx-auto max-w-4xl px-6">
         <Reveal>
           <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
             What We Believe
           </p>
-
-          <h2 className="mt-4 text-4xl md:text-5xl font-display font-semibold">
-            Principles that guide every decision.
+          <h2 className="mt-3 text-3xl md:text-4xl font-display font-semibold">
+            Four principles, non-negotiable.
           </h2>
         </Reveal>
 
-        <div className="mt-14 grid md:grid-cols-2 gap-6">
-          {beliefs.map((item, idx) => (
-            <Reveal key={item.title} delay={idx * 70}>
-              <div className="rounded-3xl border border-border bg-card p-8 shadow-card hover:-translate-y-1 hover:shadow-glow transition-all duration-300">
-                <h3 className="font-display text-2xl font-semibold">
-                  {item.title}
-                </h3>
-
-                <p className="mt-4 text-muted-foreground leading-relaxed">
-                  {item.text}
-                </p>
-              </div>
-            </Reveal>
-          ))}
+        <div className="mt-8 rounded-3xl border border-border bg-card shadow-card divide-y divide-border overflow-hidden">
+          {beliefs.map((item, idx) => {
+            const isOpen = openIdx === idx;
+            const Icon = item.icon;
+            return (
+              <BeliefRow
+                key={item.title}
+                icon={Icon}
+                title={item.title}
+                text={item.text}
+                isOpen={isOpen}
+                onToggle={() => setOpenIdx(isOpen ? -1 : idx)}
+              />
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
 
-
-function HowWeWork() {
+function BeliefRow({
+  icon: Icon,
+  title,
+  text,
+  isOpen,
+  onToggle,
+}: {
+  icon: typeof ShieldCheck;
+  title: string;
+  text: string;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  const bodyRef = useRef<HTMLDivElement>(null);
   return (
-    <section className="py-16 md:py-20">
+    <div className={`transition-colors duration-300 ${isOpen ? "bg-accent/30" : ""}`}>
+      <button
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="w-full flex items-center gap-4 p-5 md:p-6 text-left cursor-pointer"
+      >
+        <span
+          className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors ${
+            isOpen ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary"
+          }`}
+        >
+          <Icon className="h-5 w-5" />
+        </span>
+        <span className="flex-1 font-display text-base md:text-lg font-semibold">
+          {title}
+        </span>
+        <Plus
+          className={`h-5 w-5 shrink-0 text-primary transition-transform duration-300 ${
+            isOpen ? "rotate-45" : "rotate-0"
+          }`}
+        />
+      </button>
+      <div
+        ref={bodyRef}
+        className="overflow-hidden"
+        style={{
+          maxHeight: isOpen ? bodyRef.current?.scrollHeight ?? 200 : 0,
+          transition: "max-height 0.35s cubic-bezier(0.4,0,0.2,1)",
+        }}
+      >
+        <p className="px-5 md:px-6 pb-6 pl-[3.75rem] md:pl-[4.25rem] text-sm md:text-base text-muted-foreground leading-relaxed">
+          {text}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Journey (tabs) ─────────────────────────────────────────────────────────
+
+const journey = [
+  {
+    label: "The beginning",
+    icon: Compass,
+    text: "KamleshKhyati Infosolution started AstroView with a simple question: why does astrology online feel so transactional? The platforms out there were loud, ad-heavy and impersonal — we wanted something different.",
+  },
+  {
+    label: "The research",
+    icon: Search,
+    text: "We spent real time with seekers who use astrology to navigate decisions, and with practising astrologers. The gap between what people needed and what existed online was obvious.",
+  },
+  {
+    label: "The build",
+    icon: Hammer,
+    text: "We began building AstroView from scratch, with a simple brief: slow, private, honest, beautiful. No fake reviews, no manufactured urgency, no pop-ups. Just astrology, done properly.",
+  },
+  {
+    label: "Coming soon",
+    icon: Rocket,
+    text: "AstroView is in its final stages before launch. Our first release includes Janam Kundli reports, live call consultations and chat readings — all built around real astrologers and real care.",
+  },
+];
+
+function Journey() {
+  const [active, setActive] = useState(0);
+  const current = journey[active];
+
+  return (
+    <section className="py-14 md:py-16">
       <div className="mx-auto max-w-4xl px-6">
         <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
-          How We Work
+          Our Journey
         </p>
-
-        <h2 className="mt-4 text-4xl md:text-5xl font-display font-semibold">
-          Listen first.
+        <h2 className="mt-3 text-3xl md:text-4xl font-display font-semibold">
+          Where we've been, where we're going.
         </h2>
 
-        <div className="mt-10 space-y-6 text-lg text-muted-foreground leading-relaxed">
-          <p>
-            Every reading begins with understanding the person before
-            interpreting the chart.
-          </p>
+        <div className="mt-8 flex flex-wrap gap-2">
+          {journey.map((step, idx) => {
+            const Icon = step.icon;
+            const isActive = idx === active;
+            return (
+              <button
+                key={step.label}
+                onClick={() => setActive(idx)}
+                className={`inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-200 cursor-pointer ${
+                  isActive
+                    ? "bg-primary text-primary-foreground shadow-soft"
+                    : "border border-border text-muted-foreground hover:text-foreground hover:bg-accent"
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                {step.label}
+              </button>
+            );
+          })}
+        </div>
 
-          <p>
-            Astrology can reveal possibilities.
-            Conversation provides context.
-          </p>
-
-          <p>
-            We believe both matter.
+        <div className="mt-6 rounded-3xl border border-border bg-card p-7 md:p-9 shadow-card min-h-[9rem] flex items-center">
+          <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+            {current.text}
           </p>
         </div>
       </div>
@@ -225,97 +323,34 @@ function HowWeWork() {
   );
 }
 
-function WhatBuilding() {
-  return (
-    <section className="py-16 md:py-20 bg-accent/20">
-      <div className="mx-auto max-w-5xl px-6 text-center">
-        <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
-          What We Are Building
-        </p>
-
-        <h2 className="mt-4 text-4xl md:text-5xl font-display font-semibold">
-          Trust over attention.
-        </h2>
-
-        <p className="mt-8 text-lg text-muted-foreground leading-relaxed">
-          Our goal is not to become the loudest astrology platform.
-          Our goal is to become one of the most trusted.
-        </p>
-        <div className="mt-10 flex flex-wrap justify-center gap-3">
-  {[
-    "Human Guidance",
-    "Privacy First",
-    "No Fear-Based Selling",
-    "Transparent Consultations",
-  ].map((item) => (
-    <div
-      key={item}
-      className="rounded-full border border-border bg-card px-4 py-2 text-sm"
-    >
-      {item}
-    </div>
-  ))}
-</div>
-      </div>
-    </section>
-  );
-}
-function CompanySection() {
-  return (
-    <section className="py-24">
-      <div className="mx-auto max-w-4xl px-6 text-center">
-        <p className="text-xs uppercase tracking-[0.22em] text-primary font-medium">
-          Built By
-        </p>
-
-        <h2 className="mt-4 text-4xl font-display font-semibold">
-          KamleshKhyati Infosolution Pvt. Ltd.
-        </h2>
-
-        <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-          AstroView is built by a technology company based in Noida, India.
-          Every detail of the experience has been designed and developed
-          in-house with a focus on usability, trust and clarity.
-        </p>
-      </div>
-    </section>
-  );
-}
+// ─── Closing ────────────────────────────────────────────────────────────────
 
 function ClosingStatement() {
   return (
-    <section className="py-24">
+    <section className="py-14 md:py-16">
       <div className="mx-auto max-w-5xl px-6">
-        <div className="rounded-[2.5rem] bg-gradient-cosmic p-10 md:p-16 shadow-glow">
-
-          <p className="text-3xl md:text-5xl font-display text-cosmic-foreground leading-snug">
-            “We don't claim to have all the answers.
-            We simply believe that honest guidance,
-            delivered with care, can help people
-            see their path more clearly.”
-          </p>
-
-          <p className="mt-8 text-cosmic-foreground/70">
-            — The AstroView Team
-          </p>
-
+        <div className="rounded-[2.5rem] bg-gradient-cosmic p-8 md:p-14 shadow-glow grid md:grid-cols-[1fr_auto] gap-8 items-center">
+          <div>
+            <p className="text-3xl md:text-4xl font-display text-cosmic-foreground leading-snug">
+              "We don't claim to have all the answers. We simply believe
+              honest guidance, delivered with care, helps people see their
+              path more clearly."
+            </p>
+            <p className="mt-6 text-cosmic-foreground/70">— The AstroView Team</p>
+          </div>
+          <div className="md:border-l md:border-cosmic-foreground/20 md:pl-8 md:max-w-[220px]">
+            <p className="text-xs uppercase tracking-[0.22em] text-cosmic-foreground/60 font-medium">
+              Built By
+            </p>
+            <p className="mt-2 font-display text-lg text-cosmic-foreground font-semibold">
+              KamleshKhyati Infosolution Pvt. Ltd.
+            </p>
+            <p className="mt-2 text-sm text-cosmic-foreground/70">
+              Noida, India — designed and built in-house.
+            </p>
+          </div>
         </div>
       </div>
     </section>
   );
 }
-
-<div className="mt-10 grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
-  {[
-    "Classical Vedic Methods",
-    "Human Astrologers",
-    "Privacy First",
-  ].map((item) => (
-    <div
-      key={item}
-      className="rounded-2xl border border-border bg-card/60 backdrop-blur px-5 py-4 text-sm font-medium"
-    >
-      {item}
-    </div>
-  ))}
-</div>

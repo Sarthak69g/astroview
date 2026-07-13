@@ -146,9 +146,19 @@ function Footer() {
       </div>
 
       <div className="border-t border-border/60">
-        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-muted-foreground">
+        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} AstroView. All rights reserved.</p>
-          <p>KamleshKhyati Infosolution Pvt. Ltd.</p>
+          <div className="flex items-center gap-4">
+            <Link to="/privacy-policy" className="hover:text-primary transition">
+              Privacy Policy
+            </Link>
+            <span className="text-border">|</span>
+            <Link to="/terms" className="hover:text-primary transition">
+              Terms of Service
+            </Link>
+            <span className="text-border hidden sm:inline">|</span>
+            <p className="hidden sm:block">KamleshKhyati Infosolution Pvt. Ltd.</p>
+          </div>
         </div>
       </div>
     </footer>

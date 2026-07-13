@@ -4,7 +4,7 @@
 // from freehoroscopeapi.com (no key needed) and caches it in localStorage so
 // each sign only refetches once per period.
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   Sparkles,
@@ -80,13 +80,26 @@ function DimensionCard({ icon: Icon, data }: { icon: typeof Briefcase; data: Dim
 
 export default function DailyHoroscope({ signSlug, signName }: { signSlug: string; signName: string }) {
   const [period, setPeriod] = useState<HoroscopePeriod>("daily");
+  // One-shot flag: set right before a manual retry, consumed (and reset) by
+  // the very next fetch. This means "Try again" bypasses a bad cache entry
+  // without permanently disabling caching for the rest of the session.
+  const forceRefreshRef = useRef(false);
 
   const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["horoscope", signSlug, period],
-    queryFn: () => fetchHoroscope(signSlug, period),
+    queryFn: () => {
+      const forceRefresh = forceRefreshRef.current;
+      forceRefreshRef.current = false;
+      return fetchHoroscope(signSlug, period, { forceRefresh });
+    },
     staleTime: 1000 * 60 * 30,
     retry: 1,
   });
+
+  const handleRetry = () => {
+    forceRefreshRef.current = true;
+    refetch();
+  };
 
   return (
     <section className="max-w-4xl mx-auto px-6 -mt-8 mb-14 relative z-10">
@@ -134,7 +147,7 @@ export default function DailyHoroscope({ signSlug, signName }: { signSlug: strin
               briefly unavailable.
             </p>
             <button
-              onClick={() => refetch()}
+              onClick={handleRetry}
               className="inline-flex items-center gap-1.5 text-xs font-semibold text-cosmic-foreground/80 hover:text-cosmic-foreground transition"
             >
               <RefreshCw className={`h-3 w-3 ${isFetching ? "animate-spin" : ""}`} />

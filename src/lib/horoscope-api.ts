@@ -42,13 +42,43 @@ function readCache(key: string): HoroscopeResult | null {
   try {
     const raw = localStorage.getItem(key);
     if (!raw) return null;
-    return JSON.parse(raw) as HoroscopeResult;
+    const parsed = JSON.parse(raw) as HoroscopeResult;
+    if (!isValidHoroscopeText(parsed.horoscope)) {
+      // A bad/garbled response got cached at some point (upstream glitch).
+      // Drop it so the next call re-fetches instead of showing junk forever.
+      localStorage.removeItem(key);
+      return null;
+    }
+    return parsed;
   } catch {
     return null;
   }
 }
 
+// Sanity check on the horoscope text before we trust or cache it. Guards
+// against upstream glitches like freehoroscopeapi.com occasionally
+// returning short, garbled, or heavily-repetitive placeholder strings
+// (seen in production as e.g. ".Forms.Forms.Forms000.Forms000...") instead
+// of an actual forecast paragraph.
+function isValidHoroscopeText(text: unknown): text is string {
+  if (typeof text !== "string") return false;
+  const trimmed = text.trim();
+  if (trimmed.length < 40) return false;
+
+  const words = trimmed.split(/\s+/).filter(Boolean);
+  if (words.length < 8) return false;
+
+  // Real forecast copy uses a healthy variety of words. Garbled/repetitive
+  // output (like the bug above) collapses to a handful of tokens repeated
+  // over and over — catch that with a unique-word ratio floor.
+  const uniqueWords = new Set(words.map((w) => w.toLowerCase()));
+  if (uniqueWords.size / words.length < 0.35) return false;
+
+  return true;
+}
+
 function writeCache(key: string, value: HoroscopeResult) {
+  if (!isValidHoroscopeText(value.horoscope)) return; // never cache junk
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch {
@@ -59,13 +89,23 @@ function writeCache(key: string, value: HoroscopeResult) {
 export async function fetchHoroscope(
   sign: string,
   period: HoroscopePeriod,
+  options: { forceRefresh?: boolean } = {},
 ): Promise<HoroscopeResult> {
   const key = cacheKey(sign, period);
-  const cached = readCache(key);
-  if (cached) return cached;
 
-  const result = await getHoroscope({ data: { sign, period } });
-  writeCache(key, result as HoroscopeResult);
-  return result as HoroscopeResult;
+  if (!options.forceRefresh) {
+    const cached = readCache(key);
+    if (cached) return cached;
+  }
+
+  const result = (await getHoroscope({ data: { sign, period } })) as HoroscopeResult;
+
+  if (!isValidHoroscopeText(result.horoscope)) {
+    // Upstream returned something that doesn't look like a real horoscope.
+    // Surface this as an error rather than showing garbled text to users.
+    throw new Error("Horoscope response looked malformed — not displaying it.");
+  }
+
+  writeCache(key, result);
+  return result;
 }
-
