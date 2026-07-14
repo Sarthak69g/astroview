@@ -31,7 +31,7 @@ const compatConfig = {
 function SignStrip({ current }: { current: string }) {
   return (
     <div className="overflow-x-auto scrollbar-none">
-      <div className="flex gap-2 min-w-max px-6 pb-2">
+      <div className="flex justify-center gap-2 min-w-max mx-auto px-6 pb-2">
         {zodiacSigns.map((s) => (
           <Link
             key={s.slug}
