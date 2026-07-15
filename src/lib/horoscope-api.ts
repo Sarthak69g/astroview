@@ -1,11 +1,10 @@
 // src/lib/horoscope-api.ts
 // Client-side helper for daily/weekly/monthly horoscope text. The actual
-// HTTP call to freehoroscopeapi.com happens server-side (see
-// lib/api/horoscope.functions.ts) because that API doesn't send CORS
-// headers, so calling it directly from the browser gets blocked. Results
-// are cached in localStorage so a sign only gets re-fetched once per day
-// (or once per week/month for those periods), matching how often the
-// underlying data actually changes.
+// HTTP call to AstrologyAPI.com happens server-side (see
+// lib/api/horoscope.functions.ts) so the API token never reaches the
+// browser bundle. Results are cached in localStorage so a sign only gets
+// re-fetched once per day (or once per week/month for those periods),
+// matching how often the underlying data actually changes.
 
 import { getHoroscope } from "@/lib/api/horoscope.functions";
 

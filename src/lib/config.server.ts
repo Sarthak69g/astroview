@@ -22,5 +22,16 @@ export function getServerConfig() {
     // Add server-only values here, e.g.:
     //   databaseUrl: process.env.DATABASE_URL,
     //   stripeSecretKey: process.env.STRIPE_SECRET_KEY,
+    // AstrologyAPI.com's recommended auth method: a single Access Token
+    // (aka Wallet Token) sent in a custom `x-astrologyapi-key` header —
+    // confirmed against their official Quick Start guide. Simpler and
+    // safer than the Basic Auth (userId+apiKey) alternative.
+    astrologyApiAccessToken: process.env.ASTROLOGYAPI_ACCESS_TOKEN,
+    // Prokerala uses OAuth2 client-credentials — a Client ID + Secret
+    // exchanged server-side for a short-lived bearer token (see
+    // kundli.functions.ts). Get these from the Prokerala dashboard >
+    // API Access > your app's Client Credentials.
+    prokeralaClientId: process.env.PROKERALA_CLIENT_ID,
+    prokeralaClientSecret: process.env.PROKERALA_CLIENT_SECRET,
   };
 }

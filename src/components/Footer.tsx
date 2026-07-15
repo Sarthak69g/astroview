@@ -70,6 +70,7 @@ function Footer() {
             {[
               ["Consultation", "/consultation"],
               ["Puja", "/puja"],
+              ["Kundli", "/kundli"],
               ["Horoscope", "/horoscope"],
               ["Numerology", "/numerology"],
               ["Tarot", "/tarot"],

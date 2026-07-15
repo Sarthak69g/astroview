@@ -19,11 +19,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TarotIndexRouteImport } from './routes/tarot/index'
 import { Route as PujaIndexRouteImport } from './routes/puja/index'
 import { Route as NumerologyIndexRouteImport } from './routes/numerology/index'
+import { Route as KundliIndexRouteImport } from './routes/kundli/index'
 import { Route as HoroscopeIndexRouteImport } from './routes/horoscope/index'
 import { Route as ConsultationIndexRouteImport } from './routes/consultation/index'
 import { Route as TarotSpreadRouteImport } from './routes/tarot/$spread'
 import { Route as PujaSlugRouteImport } from './routes/puja/$slug'
 import { Route as NumerologyNumberRouteImport } from './routes/numerology/$number'
+import { Route as KundliMatchingRouteImport } from './routes/kundli/matching'
+import { Route as KundliGeneratorRouteImport } from './routes/kundli/generator'
 import { Route as HoroscopeSignRouteImport } from './routes/horoscope/$sign'
 import { Route as ConsultationSlugRouteImport } from './routes/consultation/$slug'
 
@@ -77,6 +80,11 @@ const NumerologyIndexRoute = NumerologyIndexRouteImport.update({
   path: '/numerology/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KundliIndexRoute = KundliIndexRouteImport.update({
+  id: '/kundli/',
+  path: '/kundli/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HoroscopeIndexRoute = HoroscopeIndexRouteImport.update({
   id: '/horoscope/',
   path: '/horoscope/',
@@ -102,6 +110,16 @@ const NumerologyNumberRoute = NumerologyNumberRouteImport.update({
   path: '/numerology/$number',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KundliMatchingRoute = KundliMatchingRouteImport.update({
+  id: '/kundli/matching',
+  path: '/kundli/matching',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KundliGeneratorRoute = KundliGeneratorRouteImport.update({
+  id: '/kundli/generator',
+  path: '/kundli/generator',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HoroscopeSignRoute = HoroscopeSignRouteImport.update({
   id: '/horoscope/$sign',
   path: '/horoscope/$sign',
@@ -123,11 +141,14 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/consultation/$slug': typeof ConsultationSlugRoute
   '/horoscope/$sign': typeof HoroscopeSignRoute
+  '/kundli/generator': typeof KundliGeneratorRoute
+  '/kundli/matching': typeof KundliMatchingRoute
   '/numerology/$number': typeof NumerologyNumberRoute
   '/puja/$slug': typeof PujaSlugRoute
   '/tarot/$spread': typeof TarotSpreadRoute
   '/consultation/': typeof ConsultationIndexRoute
   '/horoscope/': typeof HoroscopeIndexRoute
+  '/kundli/': typeof KundliIndexRoute
   '/numerology/': typeof NumerologyIndexRoute
   '/puja/': typeof PujaIndexRoute
   '/tarot/': typeof TarotIndexRoute
@@ -142,11 +163,14 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/consultation/$slug': typeof ConsultationSlugRoute
   '/horoscope/$sign': typeof HoroscopeSignRoute
+  '/kundli/generator': typeof KundliGeneratorRoute
+  '/kundli/matching': typeof KundliMatchingRoute
   '/numerology/$number': typeof NumerologyNumberRoute
   '/puja/$slug': typeof PujaSlugRoute
   '/tarot/$spread': typeof TarotSpreadRoute
   '/consultation': typeof ConsultationIndexRoute
   '/horoscope': typeof HoroscopeIndexRoute
+  '/kundli': typeof KundliIndexRoute
   '/numerology': typeof NumerologyIndexRoute
   '/puja': typeof PujaIndexRoute
   '/tarot': typeof TarotIndexRoute
@@ -162,11 +186,14 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/consultation/$slug': typeof ConsultationSlugRoute
   '/horoscope/$sign': typeof HoroscopeSignRoute
+  '/kundli/generator': typeof KundliGeneratorRoute
+  '/kundli/matching': typeof KundliMatchingRoute
   '/numerology/$number': typeof NumerologyNumberRoute
   '/puja/$slug': typeof PujaSlugRoute
   '/tarot/$spread': typeof TarotSpreadRoute
   '/consultation/': typeof ConsultationIndexRoute
   '/horoscope/': typeof HoroscopeIndexRoute
+  '/kundli/': typeof KundliIndexRoute
   '/numerology/': typeof NumerologyIndexRoute
   '/puja/': typeof PujaIndexRoute
   '/tarot/': typeof TarotIndexRoute
@@ -183,11 +210,14 @@ export interface FileRouteTypes {
     | '/terms'
     | '/consultation/$slug'
     | '/horoscope/$sign'
+    | '/kundli/generator'
+    | '/kundli/matching'
     | '/numerology/$number'
     | '/puja/$slug'
     | '/tarot/$spread'
     | '/consultation/'
     | '/horoscope/'
+    | '/kundli/'
     | '/numerology/'
     | '/puja/'
     | '/tarot/'
@@ -202,11 +232,14 @@ export interface FileRouteTypes {
     | '/terms'
     | '/consultation/$slug'
     | '/horoscope/$sign'
+    | '/kundli/generator'
+    | '/kundli/matching'
     | '/numerology/$number'
     | '/puja/$slug'
     | '/tarot/$spread'
     | '/consultation'
     | '/horoscope'
+    | '/kundli'
     | '/numerology'
     | '/puja'
     | '/tarot'
@@ -221,11 +254,14 @@ export interface FileRouteTypes {
     | '/terms'
     | '/consultation/$slug'
     | '/horoscope/$sign'
+    | '/kundli/generator'
+    | '/kundli/matching'
     | '/numerology/$number'
     | '/puja/$slug'
     | '/tarot/$spread'
     | '/consultation/'
     | '/horoscope/'
+    | '/kundli/'
     | '/numerology/'
     | '/puja/'
     | '/tarot/'
@@ -241,11 +277,14 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   ConsultationSlugRoute: typeof ConsultationSlugRoute
   HoroscopeSignRoute: typeof HoroscopeSignRoute
+  KundliGeneratorRoute: typeof KundliGeneratorRoute
+  KundliMatchingRoute: typeof KundliMatchingRoute
   NumerologyNumberRoute: typeof NumerologyNumberRoute
   PujaSlugRoute: typeof PujaSlugRoute
   TarotSpreadRoute: typeof TarotSpreadRoute
   ConsultationIndexRoute: typeof ConsultationIndexRoute
   HoroscopeIndexRoute: typeof HoroscopeIndexRoute
+  KundliIndexRoute: typeof KundliIndexRoute
   NumerologyIndexRoute: typeof NumerologyIndexRoute
   PujaIndexRoute: typeof PujaIndexRoute
   TarotIndexRoute: typeof TarotIndexRoute
@@ -323,6 +362,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NumerologyIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/kundli/': {
+      id: '/kundli/'
+      path: '/kundli'
+      fullPath: '/kundli/'
+      preLoaderRoute: typeof KundliIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/horoscope/': {
       id: '/horoscope/'
       path: '/horoscope'
@@ -358,6 +404,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NumerologyNumberRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/kundli/matching': {
+      id: '/kundli/matching'
+      path: '/kundli/matching'
+      fullPath: '/kundli/matching'
+      preLoaderRoute: typeof KundliMatchingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kundli/generator': {
+      id: '/kundli/generator'
+      path: '/kundli/generator'
+      fullPath: '/kundli/generator'
+      preLoaderRoute: typeof KundliGeneratorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/horoscope/$sign': {
       id: '/horoscope/$sign'
       path: '/horoscope/$sign'
@@ -385,11 +445,14 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   ConsultationSlugRoute: ConsultationSlugRoute,
   HoroscopeSignRoute: HoroscopeSignRoute,
+  KundliGeneratorRoute: KundliGeneratorRoute,
+  KundliMatchingRoute: KundliMatchingRoute,
   NumerologyNumberRoute: NumerologyNumberRoute,
   PujaSlugRoute: PujaSlugRoute,
   TarotSpreadRoute: TarotSpreadRoute,
   ConsultationIndexRoute: ConsultationIndexRoute,
   HoroscopeIndexRoute: HoroscopeIndexRoute,
+  KundliIndexRoute: KundliIndexRoute,
   NumerologyIndexRoute: NumerologyIndexRoute,
   PujaIndexRoute: PujaIndexRoute,
   TarotIndexRoute: TarotIndexRoute,
