@@ -720,6 +720,6 @@ function KundliGeneratorPage() {
           </Reveal>
         )}
       </div>
-    </div>
+    </div> 
   );
 }
