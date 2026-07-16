@@ -1,21 +1,17 @@
 // src/components/BirthDetailsForm.tsx
 //
 // Reusable birth-details input block: name, date of birth, time of birth,
-// and place of birth (with a "Locate" button that geocodes the typed place
-// via Nominatim, server-proxied through geocode.functions.ts). Used twice
-// on the Kundli Matching page (boy + girl), and built to be reused as-is
-// on the upcoming single-person Kundli Making page.
-//
-// Geocoding is a separate explicit action (not auto-fire-on-blur) so we
-// don't hammer Nominatim's free tier on every keystroke/blur — the parent
-// only gets valid lat/long/timezone once the user confirms the resolved
-// place looks right.
+// and place of birth. The place field is PlaceAutocomplete — an India-only
+// type-ahead over a bundled offline dataset of towns/cities (instant, no
+// network call), with an explicit "search all of India" fallback to
+// Nominatim for anything not in that dataset. See PlaceAutocomplete.tsx.
+// Used twice on the Kundli Matching page (boy + girl), and reused as-is on
+// the Kundli Generator (single-person) page.
 
 import { useState } from "react";
-import { MapPin, Loader2, CheckCircle2, CalendarIcon, Clock } from "lucide-react";
+import { CalendarIcon, Clock } from "lucide-react";
 import { format, parse } from "date-fns";
-import { toast } from "sonner";
-import { geocodePlace } from "@/lib/api/geocode.functions";
+import PlaceAutocomplete from "@/components/PlaceAutocomplete";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
@@ -53,7 +49,6 @@ const HOURS_12 = Array.from({ length: 12 }, (_, i) => i + 1);
 const MINUTES_60 = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
 
 export default function BirthDetailsForm({ label, value, onChange }: Props) {
-  const [locating, setLocating] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
   const [timeOpen, setTimeOpen] = useState(false);
 
@@ -100,27 +95,24 @@ export default function BirthDetailsForm({ label, value, onChange }: Props) {
     onChange({ ...value, [key]: val });
   };
 
-  const handleLocate = async () => {
-    if (!value.place.trim()) {
-      toast.error("Enter a place of birth first");
-      return;
-    }
-    try {
-      setLocating(true);
-      const result = await geocodePlace({ data: { query: value.place.trim() } });
-      onChange({
-        ...value,
-        latitude: result.latitude,
-        longitude: result.longitude,
-        utcOffsetHours: result.utcOffsetHours,
-        resolvedPlace: result.displayName,
-      });
-      toast.success("Location found");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Couldn't find that place");
-    } finally {
-      setLocating(false);
-    }
+  const handlePlaceText = (text: string) => {
+    set("place", text);
+  };
+
+  const handlePlaceSelect = (selection: {
+    label: string;
+    latitude: number;
+    longitude: number;
+    utcOffsetHours: number;
+  }) => {
+    onChange({
+      ...value,
+      place: selection.label,
+      latitude: selection.latitude,
+      longitude: selection.longitude,
+      utcOffsetHours: selection.utcOffsetHours,
+      resolvedPlace: selection.label,
+    });
   };
 
   return (
@@ -251,36 +243,14 @@ export default function BirthDetailsForm({ label, value, onChange }: Props) {
 
       <div>
         <label className="text-xs font-medium text-muted-foreground mb-1 block">
-          Place of Birth
+          Place of Birth (India)
         </label>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={value.place}
-            onChange={(e) => set("place", e.target.value)}
-            placeholder="e.g. Jaipur, Rajasthan"
-            className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-          />
-          <button
-            type="button"
-            onClick={handleLocate}
-            disabled={locating}
-            className="shrink-0 flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-2 text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-60"
-          >
-            {locating ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <MapPin className="h-4 w-4" />
-            )}
-            Locate
-          </button>
-        </div>
-        {value.resolvedPlace && (
-          <p className="mt-1.5 flex items-center gap-1 text-xs text-green-700">
-            <CheckCircle2 className="h-3.5 w-3.5" />
-            {value.resolvedPlace}
-          </p>
-        )}
+        <PlaceAutocomplete
+          value={value.place}
+          onChangeText={handlePlaceText}
+          onSelect={handlePlaceSelect}
+          resolvedPlace={value.resolvedPlace}
+        />
       </div>
     </div>
   );
