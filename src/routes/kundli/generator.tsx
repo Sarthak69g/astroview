@@ -13,8 +13,17 @@
 // Mahadasha -> Antardasha timeline tucked into an accordion.
 
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { Sparkles, Loader2, CheckCircle2, AlertTriangle, Clock3, Download } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  Sparkles,
+  Loader2,
+  CheckCircle2,
+  AlertTriangle,
+  Clock3,
+  Download,
+  LayoutGrid,
+  Orbit,
+} from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import Starfield from "@/components/Starfield";
@@ -36,6 +45,12 @@ import {
   type DashaMaha,
   type DashaAntar,
 } from "@/lib/api/kundli-chart.functions";
+import {
+  getKundliChartSvg,
+  getPlanetPositions,
+  type PlanetPositionItem,
+} from "@/lib/api/kundli-visual.functions";
+import { getYogaMeaning } from "@/data/yogaMeaningsData";
 import { downloadKundliChartPdf } from "@/lib/pdf/kundli-chart-pdf";
 
 export const Route = createFileRoute("/kundli/generator")({
@@ -76,6 +91,44 @@ function findCurrentMaha(periods: DashaMaha[]): DashaMaha | undefined {
   return periods.find((m) => isCurrent(m.start, m.end));
 }
 
+// One short, jargon-free paragraph synthesizing what the snapshot cards +
+// Mangal Dosha actually mean, for someone who doesn't already know what a
+// "Chandra Rasi" or "Manglik exception" is. Sits above the detail cards so
+// there's always a plain-language entry point into the chart before the
+// terminology starts.
+function buildGlanceSummary(result: KundliChartPayload): string | null {
+  const { nakshatra, mangalDosha } = result;
+  if (!nakshatra.chandraRasi && !nakshatra.sooryaRasi) return null;
+
+  const parts: string[] = [];
+  if (nakshatra.chandraRasi) {
+    parts.push(
+      `Your Moon sits in ${nakshatra.chandraRasi}${
+        nakshatra.nakshatraName ? `, within the ${nakshatra.nakshatraName} nakshatra` : ""
+      } — in Vedic astrology this shapes your emotional instincts and inner temperament more than your Sun sign does.`,
+    );
+  }
+  if (nakshatra.sooryaRasi) {
+    parts.push(
+      `Your Sun is in ${nakshatra.sooryaRasi}, which speaks to your core identity, willpower, and how you tend to show up in the world.`,
+    );
+  }
+  if (mangalDosha) {
+    if (!mangalDosha.hasDosha) {
+      parts.push("You are not Manglik, so this particular factor won't come up in matchmaking.");
+    } else if (mangalDosha.hasException) {
+      parts.push(
+        "You do carry a Manglik influence, but a classical exception applies to it — traditionally read as cancelling out most of its effect, so it's usually not a major concern.",
+      );
+    } else {
+      parts.push(
+        "You are Manglik — a factor commonly weighed in Indian marriage matching, worth discussing with an astrologer if it's relevant to you.",
+      );
+    }
+  }
+  return parts.join(" ");
+}
+
 // ---- small presentational pieces ----
 
 function SnapshotCard({
@@ -107,17 +160,198 @@ function DetailRow({ label, value }: { label: string; value?: string | number })
   );
 }
 
+// Birth details needed to independently request the chart SVG and the
+// planet-position table — both are separate Prokerala calls from
+// getKundliChart, fetched in parallel once a submission succeeds.
+interface ChartRequestInput {
+  date: string;
+  time: string;
+  latitude: number;
+  longitude: number;
+  utcOffsetHours: number;
+}
+
+function PlanetPositionsTable({ planets }: { planets: PlanetPositionItem[] }) {
+  if (planets.length === 0) return null;
+  return (
+    <div className="overflow-x-auto rounded-xl border border-border bg-card">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-border text-left text-xs text-muted-foreground">
+            <th className="px-4 py-2.5 font-medium">Planet</th>
+            <th className="px-4 py-2.5 font-medium">Rasi</th>
+            <th className="px-4 py-2.5 font-medium">Rasi Lord</th>
+            <th className="px-4 py-2.5 font-medium">House</th>
+            <th className="px-4 py-2.5 font-medium">Degree</th>
+          </tr>
+        </thead>
+        <tbody>
+          {planets.map((p) => (
+            <tr key={p.name} className="border-b border-border/60 last:border-0">
+              <td className="px-4 py-2.5 font-medium text-foreground">
+                {p.name}
+                {p.isRetrograde && (
+                  <span className="ml-1.5 text-[10px] font-medium text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded-full align-middle">
+                    Retrograde
+                  </span>
+                )}
+              </td>
+              <td className="px-4 py-2.5 text-foreground/90">{p.rasi ?? "—"}</td>
+              <td className="px-4 py-2.5 text-muted-foreground">{p.rasiLord ?? "—"}</td>
+              <td className="px-4 py-2.5 text-muted-foreground">{p.house ?? "—"}</td>
+              <td className="px-4 py-2.5 text-muted-foreground">
+                {typeof p.degree === "number" ? `${p.degree.toFixed(2)}°` : "—"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function ChartAndPlanetsSection({ input }: { input: ChartRequestInput }) {
+  const [chartStyle, setChartStyle] = useState<"north-indian" | "south-indian">("north-indian");
+  const [svg, setSvg] = useState<string | null>(null);
+  const [svgLoading, setSvgLoading] = useState(true);
+  const [svgError, setSvgError] = useState<string | null>(null);
+  const [planets, setPlanets] = useState<PlanetPositionItem[]>([]);
+  const [planetsLoading, setPlanetsLoading] = useState(true);
+  const [planetsError, setPlanetsError] = useState<string | null>(null);
+
+  // Planet positions don't depend on chart style — fetch once per
+  // submission only. Splitting this from the SVG effect below means
+  // toggling North/South Indian doesn't burn a second planet-position call
+  // against Prokerala's rate limit for no reason.
+  useEffect(() => {
+    let cancelled = false;
+    setPlanetsLoading(true);
+    setPlanetsError(null);
+
+    getPlanetPositions({ data: input })
+      .then((result) => {
+        if (!cancelled) setPlanets(result);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setPlanetsError(err instanceof Error ? err.message : "Couldn't load planet positions");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setPlanetsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [input.date, input.time, input.latitude, input.longitude, input.utcOffsetHours]);
+
+  useEffect(() => {
+    let cancelled = false;
+    setSvgLoading(true);
+    setSvgError(null);
+
+    getKundliChartSvg({ data: { ...input, chartType: "rasi", chartStyle } })
+      .then((result) => {
+        if (!cancelled) setSvg(result);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setSvgError(err instanceof Error ? err.message : "Couldn't load the chart");
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setSvgLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [input.date, input.time, input.latitude, input.longitude, input.utcOffsetHours, chartStyle]);
+
+  const loading = planetsLoading || svgLoading;
+
+  return (
+    <div className="rounded-xl border border-border bg-card px-5 py-4 space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <p className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+          <LayoutGrid className="h-4 w-4 text-primary-deep" />
+          Your Rasi Chart (D1)
+        </p>
+        <div className="inline-flex rounded-full border border-border p-0.5 text-xs">
+          {(["north-indian", "south-indian"] as const).map((style) => (
+            <button
+              key={style}
+              type="button"
+              onClick={() => setChartStyle(style)}
+              className={`px-3 py-1 rounded-full transition-colors ${
+                chartStyle === style
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {style === "north-indian" ? "North Indian" : "South Indian"}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {svgLoading && (
+        <div className="flex items-center justify-center py-12 text-sm text-muted-foreground gap-2">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Drawing your chart…
+        </div>
+      )}
+
+      {svgError && !svgLoading && <p className="text-sm text-destructive py-4">{svgError}</p>}
+
+      {!svgLoading && !svgError && svg && (
+        <div
+          className="mx-auto max-w-sm [&_svg]:w-full [&_svg]:h-auto"
+          // Prokerala's own rendered chart SVG — safe to inline, sourced
+          // directly from our own server function's response, not user input.
+          dangerouslySetInnerHTML={{ __html: svg }}
+        />
+      )}
+
+      <div className="pt-1">
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2 flex items-center gap-1.5">
+          <Orbit className="h-3.5 w-3.5" />
+          Planet Positions
+        </p>
+        {planetsLoading && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            Loading planet positions…
+          </div>
+        )}
+        {planetsError && !planetsLoading && (
+          <p className="text-sm text-destructive py-2">{planetsError}</p>
+        )}
+        {!planetsLoading && !planetsError && planets.length > 0 && (
+          <PlanetPositionsTable planets={planets} />
+        )}
+      </div>
+    </div>
+  );
+}
+
 function KundliResult({
   result,
   onDownload,
+  chartInput,
 }: {
   result: KundliChartPayload;
   onDownload: () => void;
+  chartInput: ChartRequestInput;
 }) {
   const { nakshatra, mangalDosha, yogaGroups, dashaPeriods, dashaBalance } = result;
 
   const currentMaha = findCurrentMaha(dashaPeriods);
   const currentAntar = currentMaha ? findCurrentAntar(currentMaha.antardasha) : undefined;
+  const glanceSummary = buildGlanceSummary(result);
 
   return (
     <div className="space-y-6">
@@ -151,6 +385,21 @@ function KundliResult({
         <SnapshotCard label="Zodiac (Western)" value={nakshatra.zodiac} />
       </div>
 
+      {/* The actual chart + planet-by-planet placements — the piece that
+          was missing entirely before: everything above this point was
+          interpretation, with nothing to visually verify it against. */}
+      <ChartAndPlanetsSection input={chartInput} />
+
+      {/* Plain-English synthesis — the entry point before the jargon starts */}
+      {glanceSummary && (
+        <div className="rounded-xl border border-primary/20 bg-primary/5 px-5 py-4">
+          <p className="text-xs font-semibold text-primary-deep uppercase tracking-wide mb-1.5">
+            Your Kundli, in Plain Words
+          </p>
+          <p className="text-sm text-foreground/90 leading-relaxed">{glanceSummary}</p>
+        </div>
+      )}
+
       {/* Nakshatra details */}
       <div className="rounded-xl border border-border bg-card px-5 py-4">
         <p className="text-sm font-semibold text-foreground mb-3">Nakshatra Details</p>
@@ -164,10 +413,10 @@ function KundliResult({
             }
           />
           <DetailRow label="Deity" value={nakshatra.deity} />
-          <DetailRow label="Ganam" value={nakshatra.ganam} />
+          <DetailRow label="Ganam (temperament type)" value={nakshatra.ganam} />
           <DetailRow label="Symbol" value={nakshatra.symbol} />
           <DetailRow label="Animal Sign" value={nakshatra.animalSign} />
-          <DetailRow label="Nadi" value={nakshatra.nadi} />
+          <DetailRow label="Nadi (used in match-making)" value={nakshatra.nadi} />
           <DetailRow label="Best Direction" value={nakshatra.bestDirection} />
           <DetailRow label="Birth Stone" value={nakshatra.birthStone} />
           <DetailRow label="Syllables" value={nakshatra.syllables} />
@@ -219,25 +468,53 @@ function KundliResult({
       {/* Yogas actually present in the chart */}
       {yogaGroups.length > 0 && (
         <div className="rounded-xl border border-border bg-card px-5 py-4">
-          <p className="text-sm font-semibold text-foreground mb-3">Yogas in Your Chart</p>
+          <p className="text-sm font-semibold text-foreground mb-1">Yogas in Your Chart</p>
+          <p className="text-xs text-muted-foreground mb-3">
+            Special planetary combinations found in your birth chart, and what they traditionally
+            point to.
+          </p>
           <div className="space-y-4">
             {yogaGroups.map((group) => (
               <div key={group.name}>
                 <p className="text-xs font-medium text-primary-deep mb-2">{group.name}</p>
                 <div className="space-y-2">
-                  {group.yogas.map((yoga) => (
-                    <div
-                      key={yoga.name}
-                      className="rounded-lg border border-border/60 bg-background px-3.5 py-2.5"
-                    >
-                      <p className="text-sm font-medium text-foreground">{yoga.name}</p>
-                      {yoga.description && (
-                        <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                          {yoga.description}
-                        </p>
-                      )}
-                    </div>
-                  ))}
+                  {group.yogas.map((yoga) => {
+                    const meaning = getYogaMeaning(yoga.name, group.name);
+                    return (
+                      <div
+                        key={yoga.name}
+                        className="rounded-lg border border-border/60 bg-background px-3.5 py-2.5"
+                      >
+                        <div className="flex items-center justify-between gap-2 mb-1">
+                          <p className="text-sm font-medium text-foreground">{yoga.name}</p>
+                          {meaning && (
+                            <span className="text-[10px] font-medium text-primary-deep bg-primary/10 px-1.5 py-0.5 rounded-full shrink-0">
+                              {meaning.tag}
+                            </span>
+                          )}
+                        </div>
+                        {meaning ? (
+                          <p className="text-xs text-foreground/80 leading-relaxed">{meaning.meaning}</p>
+                        ) : (
+                          yoga.description && (
+                            <p className="text-xs text-muted-foreground leading-relaxed">
+                              {yoga.description}
+                            </p>
+                          )
+                        )}
+                        {meaning && yoga.description && (
+                          <details className="mt-1.5 group">
+                            <summary className="text-[11px] text-muted-foreground cursor-pointer hover:text-primary-deep select-none">
+                              Astrological detail
+                            </summary>
+                            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                              {yoga.description}
+                            </p>
+                          </details>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -428,7 +705,17 @@ function KundliGeneratorPage() {
         {result && (
           <Reveal>
             <div className="mt-10">
-              <KundliResult result={result} onDownload={handleDownload} />
+              <KundliResult
+                result={result}
+                onDownload={handleDownload}
+                chartInput={{
+                  date: details.date,
+                  time: details.time,
+                  latitude: details.latitude as number,
+                  longitude: details.longitude as number,
+                  utcOffsetHours: details.utcOffsetHours as number,
+                }}
+              />
             </div>
           </Reveal>
         )}

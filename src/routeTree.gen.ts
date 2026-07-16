@@ -18,6 +18,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TarotIndexRouteImport } from './routes/tarot/index'
 import { Route as PujaIndexRouteImport } from './routes/puja/index'
+import { Route as PanchangIndexRouteImport } from './routes/panchang/index'
 import { Route as NumerologyIndexRouteImport } from './routes/numerology/index'
 import { Route as KundliIndexRouteImport } from './routes/kundli/index'
 import { Route as HoroscopeIndexRouteImport } from './routes/horoscope/index'
@@ -73,6 +74,11 @@ const TarotIndexRoute = TarotIndexRouteImport.update({
 const PujaIndexRoute = PujaIndexRouteImport.update({
   id: '/puja/',
   path: '/puja/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PanchangIndexRoute = PanchangIndexRouteImport.update({
+  id: '/panchang/',
+  path: '/panchang/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NumerologyIndexRoute = NumerologyIndexRouteImport.update({
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/horoscope/': typeof HoroscopeIndexRoute
   '/kundli/': typeof KundliIndexRoute
   '/numerology/': typeof NumerologyIndexRoute
+  '/panchang/': typeof PanchangIndexRoute
   '/puja/': typeof PujaIndexRoute
   '/tarot/': typeof TarotIndexRoute
 }
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/horoscope': typeof HoroscopeIndexRoute
   '/kundli': typeof KundliIndexRoute
   '/numerology': typeof NumerologyIndexRoute
+  '/panchang': typeof PanchangIndexRoute
   '/puja': typeof PujaIndexRoute
   '/tarot': typeof TarotIndexRoute
 }
@@ -195,6 +203,7 @@ export interface FileRoutesById {
   '/horoscope/': typeof HoroscopeIndexRoute
   '/kundli/': typeof KundliIndexRoute
   '/numerology/': typeof NumerologyIndexRoute
+  '/panchang/': typeof PanchangIndexRoute
   '/puja/': typeof PujaIndexRoute
   '/tarot/': typeof TarotIndexRoute
 }
@@ -219,6 +228,7 @@ export interface FileRouteTypes {
     | '/horoscope/'
     | '/kundli/'
     | '/numerology/'
+    | '/panchang/'
     | '/puja/'
     | '/tarot/'
   fileRoutesByTo: FileRoutesByTo
@@ -241,6 +251,7 @@ export interface FileRouteTypes {
     | '/horoscope'
     | '/kundli'
     | '/numerology'
+    | '/panchang'
     | '/puja'
     | '/tarot'
   id:
@@ -263,6 +274,7 @@ export interface FileRouteTypes {
     | '/horoscope/'
     | '/kundli/'
     | '/numerology/'
+    | '/panchang/'
     | '/puja/'
     | '/tarot/'
   fileRoutesById: FileRoutesById
@@ -286,6 +298,7 @@ export interface RootRouteChildren {
   HoroscopeIndexRoute: typeof HoroscopeIndexRoute
   KundliIndexRoute: typeof KundliIndexRoute
   NumerologyIndexRoute: typeof NumerologyIndexRoute
+  PanchangIndexRoute: typeof PanchangIndexRoute
   PujaIndexRoute: typeof PujaIndexRoute
   TarotIndexRoute: typeof TarotIndexRoute
 }
@@ -353,6 +366,13 @@ declare module '@tanstack/react-router' {
       path: '/puja'
       fullPath: '/puja/'
       preLoaderRoute: typeof PujaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/panchang/': {
+      id: '/panchang/'
+      path: '/panchang'
+      fullPath: '/panchang/'
+      preLoaderRoute: typeof PanchangIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/numerology/': {
@@ -454,6 +474,7 @@ const rootRouteChildren: RootRouteChildren = {
   HoroscopeIndexRoute: HoroscopeIndexRoute,
   KundliIndexRoute: KundliIndexRoute,
   NumerologyIndexRoute: NumerologyIndexRoute,
+  PanchangIndexRoute: PanchangIndexRoute,
   PujaIndexRoute: PujaIndexRoute,
   TarotIndexRoute: TarotIndexRoute,
 }

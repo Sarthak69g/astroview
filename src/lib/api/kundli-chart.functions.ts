@@ -184,6 +184,32 @@ function toPlanetRef(p?: RawPlanetRef): PlanetRef | undefined {
   return { name: p.name, vedicName: p.vedic_name };
 }
 
+// Prokerala's `description` fields (Mangal Dosha, yoga explanations, Dasha
+// balance) are auto-generated prose from THEIR servers, not something we
+// build — see the file header on parseYogaGroups(). Occasionally that
+// generator produces a self-referential, broken sentence (observed: a
+// planet name appearing 3+ times in one sentence, e.g. "Saturn, the lord
+// of lagna, resides in Seventh house with Saturn... in conjunction with
+// Saturn..."). Rather than trying to rewrite Prokerala's grammar (fragile,
+// and risks introducing a factually wrong claim), we just don't show a
+// sentence that fails this basic coherence check — the UI falls back to
+// the curated plain-language yoga meanings in yogaMeaningsData.ts instead.
+const KNOWN_PLANETS = [
+  "Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu",
+];
+
+function isCoherentText(text?: unknown): string | undefined {
+  if (typeof text !== "string" || !text) return undefined;
+  const sentences = text.split(/(?<=[.!?])\s+/);
+  for (const sentence of sentences) {
+    for (const planet of KNOWN_PLANETS) {
+      const count = (sentence.match(new RegExp(`\\b${planet}\\b`, "g")) ?? []).length;
+      if (count >= 3) return undefined;
+    }
+  }
+  return text;
+}
+
 function parseNakshatra(raw?: RawNakshatraDetails): NakshatraSnapshot {
   if (!raw) return {};
   return {
@@ -211,10 +237,10 @@ function parseMangalDosha(raw?: RawMangalDosha): MangalDosha | null {
   if (!raw || typeof raw.has_dosha !== "boolean") return null;
   return {
     hasDosha: raw.has_dosha,
-    description: raw.description,
+    description: isCoherentText(raw.description),
     hasException: raw.has_exception,
-    exceptions: raw.exceptions,
-    remedies: raw.remedies,
+    exceptions: isCoherentText(raw.exceptions),
+    remedies: isCoherentText(raw.remedies),
   };
 }
 
@@ -227,10 +253,10 @@ function parseYogaGroups(raw?: RawYogaGroup[]): YogaGroup[] {
   return raw
     .map((group) => ({
       name: group.name ?? "Yogas",
-      summary: group.description,
+      summary: isCoherentText(group.description),
       yogas: (group.yoga_list ?? [])
         .filter((y) => y.has_yoga && y.name)
-        .map((y) => ({ name: y.name as string, description: y.description })),
+        .map((y) => ({ name: y.name as string, description: isCoherentText(y.description) })),
     }))
     .filter((group) => group.yogas.length > 0);
 }
@@ -253,7 +279,7 @@ function parseDashaPeriods(raw?: RawDashaMaha[]): DashaMaha[] {
 
 function parseDashaBalance(raw?: RawDashaBalance): DashaBalance | null {
   if (!raw) return null;
-  return { lord: raw.lord?.name, description: raw.description };
+  return { lord: raw.lord?.name, description: isCoherentText(raw.description) };
 }
 
 export const getKundliChart = createServerFn({ method: "POST" })
@@ -285,6 +311,13 @@ export const getKundliChart = createServerFn({ method: "POST" })
     if (!rawJson.data) {
       throw new Error("Kundli generator response was empty or in an unexpected shape.");
     }
+
+    // Debug aid — the isCoherentText() crash (text.split is not a function)
+    // showed at least one field's real runtime shape doesn't match our
+    // declared RawKundliData types (which were never validated against a
+    // live response). Check this log if anything still looks off or
+    // renders as missing, then remove once confirmed stable.
+    console.log("[Kundli] raw response:", JSON.stringify(rawJson.data).slice(0, 3000));
 
     const raw = rawJson.data;
 

@@ -15,6 +15,7 @@ import {
   Sparkles,
   Hash,
   Heart,
+  Sunrise,
 } from "lucide-react";
 import logoAsset from "@/assets/logo.png";
 import { useAuth } from "@/lib/auth-context";
@@ -64,6 +65,12 @@ const freeServiceLinks = [
     to: "/kundli",
     description: "Generate a chart or match two horoscopes",
     icon: Heart,
+  },
+  {
+    label: "Panchang",
+    to: "/panchang",
+    description: "Tithi, Nakshatra, Rahu Kaal & more, for today",
+    icon: Sunrise,
   },
 ];
 
