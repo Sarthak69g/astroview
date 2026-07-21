@@ -1,6 +1,8 @@
 import logoAsset from "@/assets/logo.png";
 import { sendContactEmail } from "@/lib/emailjs-config";
-import { getAstrologerBySlug, type Astrologer, type ConsultMode } from "@/data/astrologersData";
+import { mapGridRecordToAstrologer, type Astrologer, type ConsultMode } from "@/data/astrologersData";
+import { getAstrologersGrid } from "@/lib/api/astrologer.functions";
+import { useAuth } from "@/lib/auth-context";
 import { services as allServices } from "@/data/servicesData";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { pujas } from "@/data/pujaData";
@@ -373,17 +375,29 @@ function Hero() {
 
 // ─── Consultation ─────────────────────────────────────────────────────────────
 
-const FEATURED_ASTROLOGER_SLUGS = [
-  "acharya-devraj-shastri",
-  "meera-iyer",
-  "priyanka-sharma",
-];
-
 function Consultation() {
+  const { user } = useAuth();
   const [mode, setMode] = useState<ConsultMode>("Chat");
-  const featured = FEATURED_ASTROLOGER_SLUGS.map((slug) => getAstrologerBySlug(slug)).filter(
-    Boolean
-  ) as Astrologer[];
+  const [featured, setFeatured] = useState<Astrologer[]>([]);
+
+  // PHASE 2: was 3 hardcoded mock slugs — now the first 3 real astrologers
+  // from the live grid. Fails silently (empty state below) rather than
+  // breaking the homepage if the directory can't be reached.
+  useEffect(() => {
+    let cancelled = false;
+    getAstrologersGrid({ data: { token: user?.token, pageIndex: 1, pageSize: 3 } })
+      .then((res) => {
+        if (!cancelled) setFeatured(res.listData.map(mapGridRecordToAstrologer));
+      })
+      .catch(() => {
+        if (!cancelled) setFeatured([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user?.token]);
+
+  if (featured.length === 0) return null;
 
   return (
     <section id="consultation" className="relative pt-14 pb-16 md:pt-20 md:pb-20">

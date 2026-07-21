@@ -172,15 +172,31 @@ export const registerUser = createServerFn({ method: "POST" })
   });
 
 // --- PUT /api/User/UserProfile — update profile details (needs token) ---
+// CONFIRMED against astro-admin-portal's UserProfile.jsx (Divyansh's build,
+// same backend): the real payload shape uses firstName/lastName (not a
+// combined name), genderId as a number (1/2/3), and location as
+// countryId/stateId/cityId foreign keys rather than free text — plus tob
+// (time of birth) and pob (place of birth), which are required before
+// chat is allowed. Kept `name`/`gender`/`city` accepted-but-unused on the
+// validator for backward compatibility with any other caller; the actual
+// request body only sends the confirmed backend fields.
 export const updateUserProfile = createServerFn({ method: "POST" })
   .validator(
     z.object({
       userId: z.string().min(1),
-      name: z.string().min(1).optional(),
+      firstName: z.string().min(1).optional(),
+      lastName: z.string().min(1).optional(),
       email: z.string().email().optional(),
       dob: z.string().optional(),
-      gender: z.string().optional(),
-      city: z.string().optional(),
+      tob: z.string().optional(),
+      pob: z.string().optional(),
+      genderId: z.number().optional(),
+      addressLine1: z.string().optional(),
+      addressLine2: z.string().optional(),
+      countryId: z.number().optional(),
+      stateId: z.number().optional(),
+      cityId: z.number().optional(),
+      pinCode: z.string().optional(),
       token: z.string().optional(),
     }),
   )

@@ -14,11 +14,39 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 export interface AstroViewUser {
   userId: string;
   mobileNo: string;
+  // `name` stays as the single display field used everywhere already
+  // (Header, profile header card) — firstName/lastName below are the
+  // source-of-truth fields sent to the backend, which validates them
+  // separately ("FirstName: First name is required" comes back even when
+  // a combined `name` is sent — confirmed in auth.functions.ts). `name`
+  // is kept in sync from firstName + lastName whenever either changes.
   name: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   dob?: string;
+  // Deprecated in favor of genderId (the backend's actual field — see
+  // astro-admin-portal's UserProfile.jsx: genderId 1=Male, 2=Female,
+  // 3=Other). Kept only so nothing that reads the old string breaks;
+  // new code should read genderId.
   gender?: string;
+  genderId?: number;
+  // Astrological details required before chat is allowed (mirrors the
+  // completeness check in astro-admin-portal's AstrologerListing.jsx).
+  tob?: string; // time of birth, "HH:MM" or "HH:MM:SS"
+  pob?: string; // place of birth, display label
+  pobLat?: number;
+  pobLng?: number;
+  // Deprecated free-text city in favor of the cityId lookup below — the
+  // backend stores location as a countryId/stateId/cityId FK chain, not
+  // free text (see dropdowns.functions.ts).
   city?: string;
+  addressLine1?: string;
+  addressLine2?: string;
+  countryId?: number;
+  stateId?: number;
+  cityId?: number;
+  pinCode?: string;
   token?: string;
 }
 
